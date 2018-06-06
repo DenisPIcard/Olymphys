@@ -1,0 +1,26 @@
+# config/packages/sonata.yaml
+
+sonata_core:
+    form:
+        mapping:
+            enabled: false
+    form_type: horizontal
+    
+sonata_user:
+    security_acl: false
+    manager_type: orm
+    class:
+        user: App\Application\Sonata\UserBundle\Entity\User
+        group: App\Application\Sonata\UserBundle\Entity\Group
+    
+sonata_translation:
+    locales: [en, fr, it, nl, es]
+    default_locale: fr
+    # here enable the types you need
+    gedmo:
+        enabled: true
+    knplabs:
+        enabled: true
+    #phpcr:
+    #    enabled: true
+    

@@ -1,0 +1,36 @@
+{% extends "bundles/FOSUserBundle/fosuser.html.twig" %}
+
+{% block fos_user_content %}
+    <div id="layout-view" class="view view-login">
+        {% if error %}
+            {#<div class="bg-danger">{{ error|trans({}, '@translations/FOSUserBundle') }}</div>#}
+            <div class="bg-danger">{{ 'Pseudo ou mot de passe incorrect' }}</div>
+        {% endif %}
+        <div id="login-form" class="col-md-4 col-md-offset-4">
+
+            <h1 class="text-center">Connexion</h1>
+
+            <form action="{{ path("fos_user_security_check") }}" method="post" class="center-block">
+
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+
+                <div class="form-group">
+                    <input class="form-control" type="text" id="username" name="_username" value="{{ last_username }}" required="required" placeholder="{{ "username ou email" }}"/>
+                </div>
+                <div class="form-group">
+                    <input class="form-control" type="password" id="password" name="_password" required="required" placeholder="{{ 'mot de passe' }}"/>
+                </div>
+                <a href="{{ path('fos_user_resetting_request') }}">Vous avez oublié votre mot de passe</a>
+                <br/><br />
+                <div class="form-group">
+                    <input type="checkbox" id="remember_me" name="_remember_me" value="on" />
+                    <label for="remember_me">{{ 'security.login.remember_me'|trans({}, 'FOSUserBundle') }}</label>
+                </div>
+
+                <input class="btn btn-primary btn-block" type="submit" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans({}, 'FOSUserBundle') }}" />
+
+            </form>
+
+        </div>
+    </div>
+{% endblock fos_user_content %}

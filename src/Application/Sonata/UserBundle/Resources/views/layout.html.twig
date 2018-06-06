@@ -1,0 +1,25 @@
+{# app/Resources/ODPFUSerBundle/views/layout.html.twig #}
+
+{% extends "ODPFCoreBundle::layout.html.twig" %}
+
+
+{% block title %}
+  Utilisateur - {{ parent() }}
+{% endblock %}
+
+{% block colgche %}
+
+ <ul class="nav nav-pills nav-stacked">
+          <li><a href="{{ path('odpf_core_home') }}">Accueil</a></li>
+
+            <li></li>
+
+        </ul>
+{% endblock %}
+
+{% block body %}
+        <div>
+            {% block fos_user_content %}
+            {% endblock fos_user_content %}
+        </div>
+{% endblock %}

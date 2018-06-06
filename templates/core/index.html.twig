@@ -1,0 +1,73 @@
+{# templates/Core/index.html.twig#}
+{# On utilise ici le layout général, qui se situe dans ce même CoreBundle #}
+{% extends "layout.html.twig" %}
+
+{% block title %}
+  Page d'accueil - {{ parent() }}
+{% endblock %}
+{% block colgche %}
+
+ <ul class="nav nav-pills nav-stacked">
+          <li><a href="{{ path('core_home') }}">Accueil</a></li>
+
+            <li></li>
+
+        </ul>
+
+       
+        <h3>Utilisateur</h3>
+        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+          Connecté en tant que {{ app.user.username }}
+          <br />
+          <a href="{{ path('fos_user_profile_show') }}">Mon profil</a>
+          <br />
+          <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
+        {% else %}
+            <a href="{{ path('fos_user_security_login') }}">Connectez vous</a> si vous avez un compte,
+          <p>
+          Ou <a href="{{ path('fos_user_registration_register') }}">créez un compte</a> si vous en souhaitez un  
+          <br />Sinon, entrez dans le menu
+        {% endif %}
+    
+{% endblock %}
+{% block body %}
+
+  <h2>Page d'accueil de notre site</h2>
+
+  {# On affiche tous les messages flash dont le nom est « info » #}
+  {% for message in app.session.flashbag.get('info') %}
+    <div class="alert alert-info">Message flash : {{ message }}</div>
+  {% endfor %}
+
+  <h3>Menu</h3>
+
+<ul class="nav nav-pills nav-stacked">
+    <li>
+    {% if is_granted('ROLE_ADMIN') %}
+      <a href="{{ path('sonata_admin_redirect') }}">
+        Administration
+      </a>
+      {% endif %}
+    </li>
+    
+    <li>
+        {% if is_granted('ROLE_COMITE') %}
+      <a >Pages Comité</a>
+      {% endif %}
+    </li>
+        <li>
+    {% if is_granted('ROLE_JURY') %}
+      <a >
+        Jury
+      </a>
+      {% endif %}
+    </li>
+ 
+    <li>Galeries Photos</li>
+    <li>Mémoires</li>
+    <li>Présentations</li>
+    
+</ul>
+{% endblock %}
+
+
