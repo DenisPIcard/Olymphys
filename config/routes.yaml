@@ -1,6 +1,7 @@
 core_home:
     path: /
     controller: App\Controller\CoreController::index
+    
 sonata_user_admin_security:
     resource: '@SonataUserBundle/Resources/config/routing/admin_security.xml'
     prefix: /admin

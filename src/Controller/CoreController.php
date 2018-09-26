@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class CoreController extends Controller
 {
-  // La page d'accueil
+
   public function index()
   {
     return $this->render('core/index.html.twig');

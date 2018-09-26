@@ -7,10 +7,14 @@ fos_user:
             type:   App\Application\FOSUser\Form\ProfileType
     
     user_class:     App\Application\Sonata\UserBundle\Entity\User
+    
+    registration:
+        confirmation:
+            enabled: true
 
     group:
         group_class:   App\Application\Sonata\UserBundle\Entity\Group
-        group_manager: sonata.user.orm.group_manager # If you're using doctrine orm (use sonata.user.mongodb.group_manager for mongodb)
+        group_manager: sonata.user.orm.group_manager
 
     service:
         user_manager: sonata.user.orm.user_manager
