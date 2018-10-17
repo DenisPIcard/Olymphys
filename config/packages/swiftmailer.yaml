@@ -1,3 +1,10 @@
 swiftmailer:
-    url: '%env(MAILER_URL)%'
+    transport: smtp
+    username: webmestre2
+    password: Pi=3,1415
+    host: mail.olymphys.fr
+    port: 465
+    encryption: ssl
+    auth-mode: login
+    timeout: 120
     spool: { type: 'memory' }

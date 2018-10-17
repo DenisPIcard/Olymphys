@@ -11,14 +11,17 @@ Layout de départ du site #}
 
     {% block stylesheets %}
       {# On charge le CSS de bootstrap depuis le site directement #}
-      <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     {% endblock %}
   </head>
 
   <body>
   <div class="container">
-    <div id="header" class="jumbotron">
+      <div class="page-header">
+    {#<div id="header" class="jumbotron">
       <h1>Olympiades de Physique France</h1>
+    <img src="../public/Phi.png" alt="logo des OdpF"  width="300"/>#}
+    <span><img src="https://upload.wikimedia.org/wikipedia/commons/3/36/Logo_odpf_long.png" alt="logo des OdpF"  width="300"/> </span>
      </div>
 
     <div class="row">

@@ -20,5 +20,5 @@ fos_user:
         user_manager: sonata.user.orm.user_manager
 
     from_email:
-        address: "denispicard48@gmail.com"
-        sender_name: "Denis Picard"
+        address: webmestre2@olymphys.fr
+        sender_name: Denis Picard
