@@ -1,6 +1,10 @@
 core_home:
     path: /
-    controller: App\Controller\CoreController::index
+    controller: App\Controller\CoreController:index
+    
+cyberjury_accueil:
+    path: cyberjury/accueil
+    controller: App\Controller\JuryController:accueil
     
 sonata_user_admin_security:
     resource: '@SonataUserBundle/Resources/config/routing/admin_security.xml'

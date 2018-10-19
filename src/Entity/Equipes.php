@@ -3,72 +3,182 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
+ * Equipes
+ *
+ * @ORM\Table(name="equipes")
  * @ORM\Entity(repositoryClass="App\Repository\EquipesRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Equipes
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=4)
+     * @var string
+     *
+     * @ORM\Column(name="lettre", type="string", length=255, unique=true)
      */
-    private $lettre_national;
+    private $lettre;
 
     /**
-     * @ORM\Column(type="string", length=4)
+     * @var string
+     *
+     * @ORM\Column(name="titreProjet", type="string", length=255, unique=true)
      */
-    private $numero_equipe;
+    private $titreProjet;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @var string
+     *
+     * @ORM\Column(name="titreCourt", type="string", length=255, unique=true)
      */
-    private $titre;
+    private $titreCourt;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="urlMemoire", type="string", length=255, nullable=true, unique=true)
+     */
+    private $urlMemoire;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="total", type="smallint", nullable=true)
+     */
+    private $total;
+
+    /**
+     * @var string
+     * @ORM\Column(name="classement", type="string", length=255, nullable=true)
+     */
+    private $classement;
+
+    /**
+     * @var int
+     * @ORM\Column(name="rang", type="smallint", nullable=true)
+     */
+    private $rang;
+
+ 
+
+
+    /**
+     * Get id
+     *
+     * @return int
+     */
     public function getId()
     {
         return $this->id;
     }
 
-    public function getLettreNational(): ?string
+    /**
+     * Set lettre
+     *
+     * @param string $lettre
+     *
+     * @return Equipes
+     */
+    public function setLettre($lettre)
     {
-        return $this->lettre_national;
-    }
-
-    public function setLettreNational(?string $lettre_national): self
-    {
-        $this->lettre_national = $lettre_national;
+        $this->lettre = $lettre;
 
         return $this;
     }
 
-    public function getNumeroEquipe(): ?string
+    /**
+     * Get lettre
+     *
+     * @return string
+     */
+    public function getLettre()
     {
-        return $this->numero_equipe;
+        return $this->lettre;
     }
 
-    public function setNumeroEquipe(string $numero_equipe): self
+    /**
+     * Set titreProjet
+     *
+     * @param string $titreProjet
+     *
+     * @return Equipes
+     */
+    public function setTitreProjet($titreProjet)
     {
-        $this->numero_equipe = $numero_equipe;
+        $this->titreProjet = $titreProjet;
 
         return $this;
     }
 
-    public function getTitre(): ?string
+    /**
+     * Get titreProjet
+     *
+     * @return string
+     */
+    public function getTitreProjet()
     {
-        return $this->titre;
+        return $this->titreProjet;
     }
 
-    public function setTitre(string $titre): self
+    /**
+     * Set titreCourt
+     *
+     * @param string $titreCourt
+     *
+     * @return Equipes
+     */
+    public function setTitreCourt($titreCourt)
     {
-        $this->titre = $titre;
+        $this->titreCourt = $titreCourt;
 
         return $this;
     }
+
+    /**
+     * Get titreCourt
+     *
+     * @return string
+     */
+    public function getTitreCourt()
+    {
+         return $this->titreCourt;
+    }
+
+    /**
+     * Set urlMemoire
+     *
+     * @param string $urlMemoire
+     *
+     * @return Equipes
+     */
+    public function setUrlMemoire($urlMemoire)
+    {
+        $this->urlMemoire = $urlMemoire;
+
+        return $this;
+    }
+
+    /**
+     * Get urlMemoire
+     *
+     * @return string
+     */
+    public function getUrlMemoire()
+    {
+        return $this->urlMemoire;
+    }
+
+   
 }

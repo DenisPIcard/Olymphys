@@ -5,30 +5,26 @@
 {% block title %}
   Page d'accueil - {{ parent() }}
 {% endblock %}
-{% block colgche %}
-
- <ul class="nav nav-pills nav-stacked">
-          <li><a href="{{ path('core_home') }}">Accueil</a></li>
-
-            <li></li>
-
-        </ul>
-
-       
-        <h3>Utilisateur</h3>
+{%block colgche %}
+    <a href="{{ path('core_home') }}">Accueil</a>
+  <ul>
+            <li><h3>Utilisateur</h3></li>
         {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-          Connecté en tant que {{ app.user.username }}
-          <br />
-          <a href="{{ path('fos_user_profile_show') }}">Mon profil</a>
-          <br />
-          <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
+            <li>Connecté en tant que {{ app.user.username }}</li>
+            <li><a href="{{ path('fos_user_profile_show') }}">Mon profil</a></li>
+            <li><a href="{{ path('fos_user_security_logout') }}">Déconnexion</a></li>
         {% else %}
-            <a href="{{ path('fos_user_security_login') }}">Connectez vous</a> si vous avez un compte,
-          <p>
-          Ou <a href="{{ path('fos_user_registration_register') }}">créez un compte</a> si vous en souhaitez un  
-          <br />Sinon, entrez dans le menu
+        <li><a href="{{ path('fos_user_security_login') }}">Connectez vous</a> si vous avez un compte,</li>
+        <li>Ou <a href="{{ path('fos_user_registration_register') }}">créez un compte</a> si vous en souhaitez un</li>
+        <li>Sinon, entrez dans le menu</li>
+   
         {% endif %}
+ </ul>
     
+{% endblock %}  
+{% block body_gche %}
+
+   
 {% endblock %}
 {% block body %}
 
@@ -57,8 +53,8 @@
     </li>
         <li>
     {% if is_granted('ROLE_JURY') %}
-      <a >
-        Jury
+      <a href="{{ path('cyberjury_accueil') }}">
+        Accueil du Jury
       </a>
       {% endif %}
     </li>
