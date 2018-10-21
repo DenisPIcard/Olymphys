@@ -6,6 +6,29 @@ cyberjury_accueil:
     path: cyberjury/accueil
     controller: App\Controller\JuryController:accueil
     
+cyberjury_evaluer_une_equipe:
+    path:     /evaluer_une_equipe/{id}
+    defaults: { _controller: App\Controller\JuryController:evaluer_une_equipe }
+    requirements: 
+        id_equipe : \d{1}|\d{2}   
+        
+cyberjury_infos_equipe:
+    path:     /infos_equipe/{id}
+    defaults: { _controller: App\Controller\JuryController:infos_equipe }
+    requirements: 
+        id_equipe : \d{1}|\d{2}
+        
+cyberjury_tableau_de_bord:
+     path:     /tableau_de_bord
+     defaults: { _controller: App\Controller\JuryController:tableau }
+
+
+cyberjury_phrases_amusantes:
+    path:     /phrases_amusantes/{id}
+    defaults: { _controller: App\Controller\JuryController:phrases }
+    requirements: 
+        id_equipe : \d{1}|\d{2}  
+     
 sonata_user_admin_security:
     resource: '@SonataUserBundle/Resources/config/routing/admin_security.xml'
     prefix: /admin

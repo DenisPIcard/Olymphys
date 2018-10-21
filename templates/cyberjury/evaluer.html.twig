@@ -1,0 +1,26 @@
+{% extends "layout.html.twig" %}
+{% block title %} Évaluer une équipe {% endblock %}
+
+{% block titre3 %} <span {% if (progression) %} class ="btn btn-primary btn-lg" {% else %} class ="btn btn-default btn-lg" {% endif %} > 
+	{{equipe.lettre}} </span>  {{ equipe.titreProjet}} 
+<a href="{{ equipe.urlMemoire }}" class="glyphicon glyphicon-book" title="Accéder au mémoire de l'équipe" target="_blank"> </a>
+
+<a href="{{ path('cyberjury_infos_equipe', {'id': equipe.id} ) }}" class="glyphicon glyphicon-info-sign" title="En savoir plus sur cette équipe"> </a>
+
+<a href="{{ path('cyberjury_phrases_amusantes', {'id': equipe.id} ) }}" class="glyphicon glyphicon-pencil" title="Les phrases amusantes" > </a>
+{% endblock %} 
+{% block navigation %}
+<button type="button" class="btn btn-default btn-block"  > <span class="glyphicon glyphicon-user">  </span> 					
+{{ jure.prenomJure|title }} {{ jure.nomJure|title }} 
+  </button>
+
+	{{ include ("cyberjury/navigation.html.twig") }}
+{% endblock %}
+{% block body %}
+{{ include ("cyberjury/form.html.twig") }}
+{% endblock %}
+{#{% if le jure est un lecteur %}
+			Une case pour évaluer le mémoire 
+		{% endif %} #}
+{% block pied_de_page %} 
+{% endblock %}

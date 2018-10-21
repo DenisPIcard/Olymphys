@@ -23,13 +23,8 @@ Layout de départ du site #}
     <img src="../public/Phi.png" alt="logo des OdpF"  width="300"/>#}
     <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/Logo_odpf_long.png" alt="logo des OdpF"  width="300"/>  					<h1 align="right"> 
     </div>
-
-    <div class="row">
-      <div id="menu" class="col-md-3">
-          {% block colgche %}
-          {% endblock %}
-
-              		<div id="menu" class="col-md-3">
+		<div class ="row">
+			<div id="menu" class="col-md-3">
 				<ul class="nav nav-pills nav-stacked">
 					{% block navigation %}
 					{% endblock %}
@@ -41,20 +36,17 @@ Layout de départ du site #}
 				     {% endblock %} 
 				</h3> 
 				<hr>
-				{% block body_gche %}
+				{% block body %}
 				{% endblock %}
 			</div>
+		</div>
 
-        
-            
-      </div>
-      <div id="content" class="col-md-9">
-        {% block body %}
+		<hr>
 
-        {% endblock %}
-      </div>
-    </div>
+			
+		</div>
 
+    
     <hr>
 
     <footer>
