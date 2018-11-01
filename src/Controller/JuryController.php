@@ -361,7 +361,7 @@ class JuryController extends Controller
 		}
 		// Si on n'est pas en POST, alors on affiche le formulaire. 
 
-		$content = $this->get('templating')->render('App:Jury:phrases.html.twig', 
+		$content = $this->get('templating')->render('cyberjury\phrases.html.twig', 
 			array(
 				'equipe'=>$equipe,
 				'form'=>$form->createView(),

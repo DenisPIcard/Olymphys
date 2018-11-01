@@ -663,11 +663,11 @@ class Eleves
     /**
      * Set equipeleves
      *
-     * @param \Odpf\CyberJuryBundle\Entity\Equipes $equipeleves
+     * @param \App\Entity\Equipes $equipeleves
      *
      * @return Eleves
      */
-    public function setEquipeleves(\Odpf\CyberJuryBundle\Entity\Equipes $equipeleves = null)
+    public function setEquipeleves(\App\Entity\Equipes $equipeleves = null)
     {
         $this->equipeleves = $equipeleves;
 
@@ -677,7 +677,7 @@ class Eleves
     /**
      * Get equipeleves
      *
-     * @return \Odpf\CyberJuryBundle\Entity\Equipes
+     * @return \App\Entity\Equipes
      */
     public function getEquipeleves()
     {

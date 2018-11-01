@@ -15,22 +15,22 @@ class ElevesAdmin extends AbstractAdmin
     {
         $formMapper->add('nom', TextType::class)
                    ->add('prenom', TextType::class)
-                   ->add('numero_equipe', TextType::class)
-                   ->add('lettre_national', TextType::class);
+                   ->add('numeroEequipe', TextType::class)
+                   ->add('lettreEquipe', TextType::class);
     }
 
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper->add('nom')
-                       ->add('numero_equipe')
-                       ->add('lettre_national');
+                       ->add('numeroEquipe')
+                       ->add('lettreEquipe');
     }
 
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper->addIdentifier('nom')
                    ->addIdentifier('prenom')
-                   ->addIdentifier('numero_equipe')
-                   ->addIdentifier('lettre_national');
+                   ->addIdentifier('numeroEquipe')
+                   ->addIdentifier('lettreEquipe');
     }
 }

@@ -48,15 +48,20 @@
     
     <li>
         {% if is_granted('ROLE_COMITE') %}
-      <a >Pages Comité</a>
-      {% endif %}
+            Pages Comité
+        {% endif %}
     </li>
-        <li>
-    {% if is_granted('ROLE_JURY') %}
-      <a href="{{ path('cyberjury_accueil') }}">
-        Accueil du Jury
-      </a>
-      {% endif %}
+    <li>
+    
+       {% if is_granted('ROLE_ADMIN') %}
+           <a href="{{ path('secretariat_accueil')}}">
+               Secrétariat
+           </a>
+       {% elseif is_granted('ROLE_JURY') %}
+            <a href="{{ path('cyberjury_accueil') }}">
+                Accueil du Jury
+            </a>
+       {% endif %}
     </li>
  
     <li>Galeries Photos</li>

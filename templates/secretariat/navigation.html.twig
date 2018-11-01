@@ -1,0 +1,46 @@
+<button type="button" class="btn btn-default btn-block"  > 
+	<span class="glyphicon glyphicon-user">  </span>  
+		{{ app.user.username}}  
+	<a href="{{ path('fos_user_security_logout')}}" class="glyphicon glyphicon-log-out"> </a>
+</button>
+<h3>Accueil </h3>
+<ul class="nav nav-pills nav-stacked">
+	<li><a href="{{ path('secretariat_accueil')}}">Accueil</a></li>
+	<li><a href="{{ path('secretariat_vueglobale')}}">Vue Globale</a></li>
+</ul>
+
+<h3>Le classement des équipes </h3>
+<ul class="nav nav-pills nav-stacked">
+
+	<li><a href="{{ path('secretariat_classement')}}">Classement des équipes (total des points décroissant)</a></li>
+	<li><a href="{{ path('secretariat_lesprix')}}">Les prix</a></li>
+	<li><a href="{{ path('secretariat_palmares')}}">Le palmarès (selon les points et les niveaux de prix)</a></li>
+	<li><a href="{{ path('secretariat_palmares_ajuste')}}">Le palmarès ajusté</a></li>
+	<li><a href="{{ path('secretariat_palmares_definitif')}}">Le palmarès définitif</a></li>
+</ul>
+
+<h3>Les prix </h3>
+<ul class="nav nav-pills nav-stacked">
+	<li><a href="{{ path('secretariat_mise_a_zero') }}"> Initialisation des tables </a></li>
+	<li><a href="{{ path('secretariat_attrib_prix', {'niveau' : 1 } )}}">Attribution des premiers prix</a></li>
+	<li><a href="{{ path('secretariat_attrib_prix', {'niveau' : 2 })}}">Attribution des deuxièmes prix</a></li>
+	<li><a href="{{ path('secretariat_attrib_prix', {'niveau' : 3 })}}">Attribution des troisièmes prix</a></li>
+	<li><a href="{{ path('secretariat_edition_prix')}}">Édition des prix</a></li>
+</ul>
+
+<h3>Les récompenses </h3>
+<ul class="nav nav-pills nav-stacked">
+	<li><a href="{{ path('secretariat_edition_visites')}}">Édition des visites</a></li>
+	<li><a href="{{ path('secretariat_lescadeaux')}}">Attribution des cadeaux</a></li>
+	<li><a href="{{ path('secretariat_edition_cadeaux')}}">Édition des cadeaux</a></li>
+	<li><a href="{{ path('secretariat_edition_phrases')}}">Édition des phrases et prix amusants</a></li>
+</ul>
+
+<h3>Édition du palmarès</h3>
+<ul class="nav nav-pills nav-stacked">
+	<li><a href="{{ path('secretariat_edition_palmares_complet')}}">Édition du palmarès complet</a></li>
+	<li><a href="{{ path('secretariat_tableau_excel_palmares_site') }}">Fichier Excel pour le site</a></li>
+	<li><a href="{{ path('secretariat_tableau_excel_palmares_jury') }}">Fichier Excel pour la proclamation du palmarès</a></li>
+</ul>
+<h3>Déconnexion</h3>
+<li><a href="{{ path('fos_user_security_logout')}}" class="glyphicon glyphicon-log-out"> Déconnexion</a></li>

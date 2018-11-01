@@ -1,0 +1,17 @@
+{% extends "layout.html.twig" %}
+{% block title %} Attribution des cadeaux {% endblock %}
+
+{% block titre3 %} <span class="btn btn-primary btn-lg" > {{equipe.lettre}} </span>  {{ equipe.titreProjet}}  {% endblock %}
+
+{% block navigation %}
+	{{ include ("secretariat/navigation.html.twig") }}
+{% endblock %}
+
+{% block body %}
+{% if attribue == 0 %}
+	{{ include ("secretariat/form-cadeaux.html.twig") }}
+{% else %}
+{{ include ("secretariat/form-cadeaux2.html.twig") }}
+{% endif %}
+
+{% endblock %}

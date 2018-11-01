@@ -21,21 +21,34 @@ services:
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
-        
-    admin.equipes:
-        class: App\Admin\EquipesAdmin
-        arguments: 
-            - ~
-            - App\Entity\Equipes
-            - ~
+    
+    odpfcyberjury.classesPHPExcelStyle:
+        class: App\ClassesPHPExcelStyle\PHPExcelStyleAlignment
+
+    admin.jures:
+        class: App\Admin\JuresAdmin
+        arguments: [~, App\Entity\Jures, ~]
         tags:
-            - { name: sonata.admin, manager_type: orm, group: Contenu, label: Equipes }
-        public: true
- 
+            - { name: sonata.admin, manager_type: orm, group: Jury, label: Jures }
+        public: true   
+        
     admin.eleves:
         class: App\Admin\ElevesAdmin
         arguments: [~, App\Entity\Eleves, ~]
         tags:
-            - { name: sonata.admin, manager_type: orm, group: Contenu, label: Eleves }
+            - { name: sonata.admin, manager_type: orm, group: Jury, label: Eleves }
+        public: true 
+     
+    admin.equipes:
+        class: App\Admin\EquipesAdmin
+        arguments: [~, App\Entity\Equipes, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: Jury, label: Equipes }
         public: true
-
+        
+    app.notes.extension:
+        class: App\Admin\Extension\NotesExtension
+        arguments: [~, App\Entty\Notes, ~]
+        tags: 
+            - {name: sonata.admin.extensions}
+        public: true

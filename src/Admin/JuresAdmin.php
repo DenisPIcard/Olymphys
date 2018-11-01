@@ -1,5 +1,5 @@
 <?php
-// src/Admin/EquipesAdmin.php
+// src/Admin/JuresAdmin.php
 
 namespace App\Admin;
 
@@ -9,24 +9,24 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
-class EquipesAdmin extends AbstractAdmin
+class JuresAdmin extends AbstractAdmin
 {
     protected function configureFormFields(FormMapper $formMapper)
     {
-        $formMapper ->add('lettre', TextType::class)
-                    ->add('titreProjet', TextType::class);
+        $formMapper->add('prenomJure', TextType::class)
+                   ->add('nomJure', TextType::class)
+                   ->add('initialesJure', TextType::class);
     }
 
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
-        $datagridMapper->add('lettre')
-                       ->add('titreProjet');
+        $datagridMapper->add('nomJure');
     }
 
     protected function configureListFields(ListMapper $listMapper)
     {
-        $listMapper->addIdentifier('lettre')
-                   ->addIdentifier('titreProjet');
+        $listMapper->add('prenomJure')
+                   ->addIdentifier('nomJure')
+                   ->add('initialesJure');
     }
 }
-
