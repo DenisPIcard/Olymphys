@@ -360,7 +360,7 @@ class SecretariatController extends Controller
 	public function palmares(Request $request)
 	{
 
-		$user=$this->getUser();
+		//$user=$this->getUser();
 		$repositoryEquipes = $this->getDoctrine()
 		->getManager()
 		->getRepository('App:Equipes');
@@ -400,7 +400,7 @@ class SecretariatController extends Controller
 		// $ListDeuxPrix = $repositoryEquipes->classement(2, $offset, $NbreDeuxPrix);
                 $qb = $repositoryEquipes->createQueryBuilder('e');
                 $qb ->orderBy('e.total', 'DESC')
-                    ->setFirstResult( $NbrePremierPrix )
+                    ->setFirstResult($NbrePremierPrix )
                     ->setMaxResults($NbreDeuxPrix);		
                 $ListDeuxPrix = $qb ->getQuery()->getResult();
                 //$offset = $offset + $NbreDeuxPrix  ; 
@@ -408,7 +408,7 @@ class SecretariatController extends Controller
                 $qb = $repositoryEquipes->createQueryBuilder('e');
                 $qb ->orderBy('e.total', 'DESC')
                     ->setFirstResult($NbrePremierPrix+ $NbreDeuxPrix )
-                    ->setMaxResults( $NbreTroisPrix);	
+                    ->setMaxResults($NbreTroisPrix);	
                 $ListTroisPrix = $qb ->getQuery()->getResult();
                 
 		$content = $this->get('templating')->render('secretariat/palmares.html.twig',
@@ -427,7 +427,7 @@ class SecretariatController extends Controller
 	*/
 	public function modifier_rang(Request $request, $id_equipe)
 	{
-		$user=$this->getUser();
+		//$user=$this->getUser();
 		$repositoryEquipes = $this
 			->getDoctrine()
 			->getManager()
@@ -443,18 +443,44 @@ class SecretariatController extends Controller
 				'Attrib_Cadeaux'=> false, 
 				'Deja_Attrib'=>false,)
 				);
-				
+		$ancien_rang = $equipe->getRang();		
 		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid() ) 
-		{
-			// création et gestion du formulaire. 
-			$em->persist($equipe);			
-			$em->flush();
+                    {
+                    $nouveau_rang = $equipe->getRang();
+                    $max=0;
+                    $mod=0;
+                    if ($nouveau_rang < $ancien_rang)
+                        {
+                        $deb = $nouveau_rang-1;
+                        $max = $ancien_rang-$nouveau_rang;
+                        $mod = 1;
+                        }
+                    elseif($ancien_rang < $nouveau_rang)
+                        {                            
+                        $deb = $ancien_rang;
+                        $max= $nouveau_rang-$deb;
+                        $mod= -1;                                                      
+                        }    
 
-			$request -> getSession()->getFlashBag()->add('notice', 'Modifications bien enregistrées');
+                    $qb = $repositoryEquipes->createQueryBuilder('e');
+                    $qb ->orderBy('e.rang', 'ASC')
+                        ->setFirstResult( $deb )
+                         ->setMaxResults( $max );
+                    $list = $qb ->getQuery()->getResult();
+
+                    foreach($list as $eq)
+                        {
+                        $rang= $eq->getRang();
+                        $eq ->setRang($rang+$mod);
+                        $em->persist($eq);			                       
+                        }
+                    $em->persist($equipe);			
+                    $em->flush();
+                    $request -> getSession()->getFlashBag()->add('notice', 'Modifications bien enregistrées');
 			// puis on redirige vers la page de visualisation de cette note dans le tableau de bord
-			return $this->redirectToroute('secretariat_palmares_ajuste');
+                    return $this->redirectToroute('secretariat_palmares_ajuste');
 
-		}
+                    }
 		// Si on n'est pas en POST, alors on affiche le formulaire. 
 		$content = $this->get('templating')->render('secretariat/modifier_rang.html.twig', 
 			array(

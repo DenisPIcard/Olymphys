@@ -8,117 +8,117 @@ cyberjury_accueil:
     
 cyberjury_evaluer_une_equipe:
     path:     /evaluer_une_equipe/{id}
-    defaults: { _controller: App\Controller\JuryController:evaluer_une_equipe }
+    defaults: { _controller: App\Controller\JuryController::evaluer_une_equipe }
     requirements: 
         id_equipe : \d{1}|\d{2}   
         
 cyberjury_infos_equipe:
     path:     /infos_equipe/{id}
-    defaults: { _controller: App\Controller\JuryController:infos_equipe }
+    defaults: { _controller: App\Controller\JuryController::infos_equipe }
     requirements: 
         id_equipe : \d{1}|\d{2}
         
 cyberjury_tableau_de_bord:
      path:     /tableau_de_bord
-     defaults: { _controller: App\Controller\JuryController:tableau }
+     defaults: { _controller: App\Controller\JuryController::tableau }
 
 
 cyberjury_phrases_amusantes:
     path:     /phrases_amusantes/{id}
-    defaults: { _controller: App\Controller\JuryController:phrases }
+    defaults: { _controller: App\Controller\JuryController::phrases }
     requirements: 
         id_equipe : \d{1}|\d{2}  
 
 secretariat_accueil:
     path: /secretariat/accueil
-    defaults: { _controller: App\Controller\SecretariatController:accueil }
+    defaults: { _controller: App\Controller\SecretariatController::accueil }
 
 secretariat_vueglobale:
     path: /secretariat/vueglobale
-    defaults: { _controller: App\Controller\SecretariatController:vueglobale }
+    defaults: { _controller: App\Controller\SecretariatController::vueglobale }
 
 secretariat_edition_visites:
     path: /secretariat/edition_visites
-    defaults: { _controller: App\Controller\SecretariatController:edition_visites }
+    defaults: { _controller: App\Controller\SecretariatController::edition_visites }
 
 secretariat_lescadeaux:
     path: /secretariat/lescadeaux/{compteur}
     defaults: 
-        _controller: App\Controller\SecretariatController:lescadeaux 
+        _controller: App\Controller\SecretariatController::lescadeaux 
         compteur: 1
     requirements: 
         niveau : \d{1}|\d{2}
 
 secretariat_attrib_cadeaux:
     path: /secretariat/attrib_cadeaux/{id_equipe}
-    defaults: { _controller: App\Controller\SecretariatController:attrib_cadeaux }
+    defaults: { _controller: App\Controller\SecretariatController::attrib_cadeaux }
     requirements: 
         id_equipe : \d{1}|\d{2}
 
 secretariat_classement:
     path: /secretariat/classement
-    defaults: { _controller: App\Controller\SecretariatController:classement }
+    defaults: { _controller: App\Controller\SecretariatController::classement }
 
 secretariat_palmares:
     path: /secretariat/palmares
-    defaults: { _controller: App\Controller\SecretariatController:palmares }
+    defaults: { _controller: App\Controller\SecretariatController::palmares }
 
 secretariat_modifier_rang:
     path:     /secretariat/modifier_rang/{id_equipe}
-    defaults: { _controller: App\Controller\SecretariatController:modifier_rang }
+    defaults: { _controller: App\Controller\SecretariatController::modifier_rang }
     requirements: 
         id_equipe : \d{1}|\d{2}
 
 secretariat_palmares_ajuste:
     path: /secretariat/palmares_ajuste
-    defaults: { _controller: App\Controller\SecretariatController:palmares_ajuste }
+    defaults: { _controller: App\Controller\SecretariatController::palmares_ajuste }
 
 secretariat_palmares_definitif:
     path: /secretariat/palmares_definitif
-    defaults: { _controller: App\Controller\SecretariatController:palmares_definitif }
+    defaults: { _controller: App\Controller\SecretariatController::palmares_definitif }
 
 secretariat_mise_a_zero:
     path: /secretariat/mise_a_zero
-    defaults: {_controller: App\Controller\SecretariatController:RaZ}
+    defaults: {_controller: App\Controller\SecretariatController::RaZ}
 
 
 secretariat_attrib_prix:
     path: /secretariat/attrib_prix/{niveau}
     defaults: 
-         _controller: App\Controller\SecretariatController:attrib_prix 
+         _controller: App\Controller\SecretariatController::attrib_prix 
          niveau: 1
     requirements: 
         niveau : \d{1}
 
 secretariat_edition_prix:
     path: /secretariat/edition_prix
-    defaults: {_controller: App\Controller\SecretariatController:edition_prix }
+    defaults: {_controller: App\Controller\SecretariatController::edition_prix }
 
 secretariat_modifier_prix:
     path:     /secretariat/modifier_prix/{id_prix}
-    defaults: { _controller: App\Controller\SecretariatController:modifier_prix }
+    defaults: { _controller: App\Controller\SecretariatController::modifier_prix }
     requirements: 
         id_equipe : \d{1}|\d{2}
 
 secretariat_lesprix:
     path:     /secretariat/lesprix
-    defaults: { _controller: App\Controller\SecretariatController:lesprix }
+    defaults: { _controller: App\Controller\SecretariatController::lesprix }
 
 secretariat_edition_phrases:
     path:     /secretariat/edition_phrases
-    defaults: { _controller: App\Controller\SecretariatController:edition_phrases }
+    defaults: { _controller: App\Controller\SecretariatController::edition_phrases }
 
 secretariat_edition_cadeaux:
     path:     /secretariat/edition_cadeaux
-    defaults: { _controller: App\Controller\SecretariatController:edition_cadeaux }
+    defaults: { _controller: App\Controller\SecretariatController::edition_cadeaux }
 
 secretariat_edition_palmares_complet:
     path: /secretariat/palmares_complet
-    defaults: { _controller: App\Controller\SecretariatController:tableau_palmares_complet}
+    defaults: { _controller: App\Controller\SecretariatController::tableau_palmares_complet}
 
 secretariat_tableau_excel_palmares_site:
     path: /secretariat/excel_site
-    defaults: { _controller: App\Controller\SecretariatController:tableau_excel_palmares_site}
+    defaults: { _controller: App\Controller\SecretariatController::tableau_excel_palmares_site}
 
 secretariat_tableau_excel_palmares_jury:
     path: /secretariat/excel_jury
