@@ -19,6 +19,9 @@ use App\Entity\Liaison ;
 use App\Entity\Prix ;
 use App\Entity\Classement ;
 
+use App\Form\PhrasesType ;
+use App\Form\CadeauxType ;
+
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -41,7 +44,7 @@ class EquipesType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $this->Modifier_Rang = $options['Modifier_Rang'];
+        $this->Modifier_Rang = $options['Modifier_Rang']; 
         $this->Attrib_Phrases = $options['Attrib_Phrases'];
         $this->Attrib_Cadeaux = $options['Attrib_Cadeaux'];
         $this->Deja_Attrib = $options['Deja_Attrib'];
@@ -59,7 +62,7 @@ class EquipesType extends AbstractType
         $builder
             ->add('phrases', PhrasesType::class)
             ->add('liaison', EntityType::class, array(
-                    'class' => 'OdpfCyberJuryBundle:Liaison',
+                    'class' => 'App:Liaison',
                     'choice_label'=> 'getLiaison',
                     'multiple' => false,))
             ->add('Enregistrer', SubmitType::class);            
@@ -70,14 +73,14 @@ class EquipesType extends AbstractType
             if($options['Deja_Attrib'])
             {
             $builder
-                ->add('cadeau',CadeauxType::class)
+                ->add('cadeau', CadeauxType::class)
                 ->add('Enregistrer', SubmitType::class);
             }
             else
             {
             $builder
                 ->add('cadeau', EntityType::class, array(
-                    'class' => 'Cadeaux', 
+                    'class' => 'App:Cadeaux', 
                     'query_builder' => function (EntityRepository $er) {
                         return $er->createQueryBuilder('c')
                         ->where('c.attribue = 0')

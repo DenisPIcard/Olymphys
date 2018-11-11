@@ -54,7 +54,11 @@ secretariat_attrib_cadeaux:
     defaults: { _controller: App\Controller\SecretariatController::attrib_cadeaux }
     requirements: 
         id_equipe : \d{1}|\d{2}
-
+        
+secretariat_edition_cadeaux:
+    path:     /secretariat/edition_cadeaux
+    defaults: { _controller: App\Controller\SecretariatController::edition_cadeaux }
+    
 secretariat_classement:
     path: /secretariat/classement
     defaults: { _controller: App\Controller\SecretariatController::classement }
@@ -81,7 +85,6 @@ secretariat_mise_a_zero:
     path: /secretariat/mise_a_zero
     defaults: {_controller: App\Controller\SecretariatController::RaZ}
 
-
 secretariat_attrib_prix:
     path: /secretariat/attrib_prix/{niveau}
     defaults: 
@@ -107,10 +110,6 @@ secretariat_lesprix:
 secretariat_edition_phrases:
     path:     /secretariat/edition_phrases
     defaults: { _controller: App\Controller\SecretariatController::edition_phrases }
-
-secretariat_edition_cadeaux:
-    path:     /secretariat/edition_cadeaux
-    defaults: { _controller: App\Controller\SecretariatController::edition_cadeaux }
 
 secretariat_edition_palmares_complet:
     path: /secretariat/palmares_complet

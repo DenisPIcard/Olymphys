@@ -23,7 +23,6 @@ use App\Entity\Visites ;
 use App\Entity\Phrases ;
 use App\Entity\Classement ;
 use App\Entity\Prix ;
-use App\Entity\Premiersprix ;
 use App\Entity\Cadeaux ;
 use App\Entity\Liaison ;
 
@@ -588,12 +587,30 @@ class SecretariatController extends Controller
 		$NbreTroisPrix = $repositoryClassement
 			->findOneByNiveau('3ème')
 			->getNbreprix(); 
-		
-		$ListPremPrix = $repositoryEquipes->palmares(1,0, $NbrePremierPrix); // classement par rang croissant 
-		$offset = $NbrePremierPrix  ; 
-		$ListDeuxPrix = $repositoryEquipes->palmares(2, $offset, $NbreDeuxPrix);
-		$offset = $offset + $NbreDeuxPrix  ; 
-		$ListTroisPrix = $repositoryEquipes->palmares(3, $offset, $NbreTroisPrix);
+
+                $qb = $repositoryEquipes->createQueryBuilder('e');           
+                $qb ->orderBy('e.total', 'DESC')
+                    ->setFirstResult( 0 )
+                    ->setMaxResults( $NbrePremierPrix );
+                $ListPremPrix = $qb ->getQuery()->getResult();	
+                
+                $qb = $repositoryEquipes->createQueryBuilder('e');
+                $qb ->orderBy('e.total', 'DESC')
+                    ->setFirstResult($NbrePremierPrix )
+                    ->setMaxResults($NbreDeuxPrix);		
+                $ListDeuxPrix = $qb ->getQuery()->getResult();
+
+                $qb = $repositoryEquipes->createQueryBuilder('e');
+                $qb ->orderBy('e.total', 'DESC')
+                    ->setFirstResult($NbrePremierPrix+ $NbreDeuxPrix )
+                    ->setMaxResults($NbreTroisPrix);	
+                $ListTroisPrix = $qb ->getQuery()->getResult();
+                
+		//$ListPremPrix = $repositoryEquipes->palmares(1,0, $NbrePremierPrix); // classement par rang croissant 
+		//$offset = $NbrePremierPrix  ; 
+		//$ListDeuxPrix = $repositoryEquipes->palmares(2, $offset, $NbreDeuxPrix);
+		//$offset = $offset + $NbreDeuxPrix  ; 
+		//$ListTroisPrix = $repositoryEquipes->palmares(3, $offset, $NbreTroisPrix);
 
 		$rang=0; 
 
@@ -690,7 +707,7 @@ class SecretariatController extends Controller
 	*/
 	public function attrib_prix(Request $request, $niveau)
 	{
-		$user=$this->getUser();
+		//$user=$this->getUser();
 		switch ($niveau) 
 		{
 			case 1:
@@ -732,7 +749,7 @@ class SecretariatController extends Controller
 		//$prix_a_attribuer  = $qb->getquery()->getResult();
 
 
-		$em=$this->getDoctrine()->getManager();
+		//$em=$this->getDoctrine()->getManager();
 		
 		$ListEquipes = $repositoryEquipes->findByClassement($niveau_court);  
 
@@ -760,7 +777,7 @@ class SecretariatController extends Controller
 
 		//Si la requête est en POST 
 		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) 
-			{
+                    {
 			// création et gestion du formulaire. 
 			$em=$this->getDoctrine()->getManager();
 			$em->persist($prix);
@@ -772,36 +789,34 @@ class SecretariatController extends Controller
         		$method = 'get'.ucfirst($i);
 
         		// Si le getter correspondant existe.
-        		if (method_exists($prix, $method))
-       			{
+                        if (method_exists($prix, $method))
+                            {
         		// On appelle le setter.
-        		$pprix = $prix->$method();
-            		if($pprix)
-            		{
-                	$equipe = $repositoryEquipes->findOneByLettre($i);
-                	$equipe->setPrix($pprix);
-					$em->persist($equipe);
-					$em->flush();
-
-            		} 
+                            $pprix = $prix->$method();
+                            if($pprix)
+                                {
+                                 $equipe = $repositoryEquipes->findOneByLettre($i);
+                                 $equipe->setPrix($pprix);
+                                 $em->persist($equipe);                          
+                                } 
+                            }
         		}
-        		}
-
+                        $em->flush();
 	
 			$request -> getSession()->getFlashBag()->add('notice', 'Notes bien enregistrées');
 			// puis on redirige vers la page de visualisation de cette note dans le tableau de bord
 			return $this->redirectToroute('secretariat_attrib_prix', array('niveau'=> $niveau));	
-			}
+                    }
 
 		// Si on n'est pas en POST, on affiche le formulaire. 
-		$content = $this->get('templating')->render('secretariat/attrib_prix.html.twig',
+                    $content = $this->get('templating')->render('secretariat/attrib_prix.html.twig',
 			array('ListEquipes' => $ListEquipes, 
 				'NbrePrix'=>$NbrePrix, 
 				'niveau'=>$niveau_long, 
 				'form'=>$form->createView(),
-				)
-			);
-		return new Response($content);
+                             )
+                           );
+                    return new Response($content);
 	}
 	
 	
@@ -810,11 +825,13 @@ class SecretariatController extends Controller
 	*/
 	public function edition_prix(Request $request)
 	{
-		$user=$this->getUser();
+		//$user=$this->getUser();
+
 		$listEquipes = $this->getDoctrine()
 			->getManager()
 			->getRepository('App:Equipes')
-			->getEquipesPrix();
+			->getEquipesPrix()
+                        ;
 
 		$content = $this->get('templating')->render('secretariat/edition_prix.html.twig', array('listEquipes' => $listEquipes));
 		return new Response($content);
@@ -825,7 +842,7 @@ class SecretariatController extends Controller
 	*/
 	public function edition_visites(Request $request)
 	{
-		$user=$this->getUser();
+		//$user=$this->getUser();
 		$listEquipes = $this->getDoctrine()
 			->getManager()
 			->getRepository('App:Equipes')
@@ -840,7 +857,7 @@ class SecretariatController extends Controller
 	*/
 	public function attrib_cadeaux(Request $request, $id_equipe)
 	{		
-		$user=$this->getUser();
+		//$user=$this->getUser();
 		$repositoryEquipes = $this
 			->getDoctrine()
 			->getManager()
@@ -859,21 +876,21 @@ class SecretariatController extends Controller
 
 		if(is_null($cadeau))
 		{
-		$flag = 0; 
-		$form = $this->createForm(EquipesType::class, $equipe, 
+                    $flag = 0; 
+                    $form = $this->createForm(EquipesType::class, $equipe, 
 			array(
 				'Attrib_Phrases'=> false, 
 				'Attrib_Cadeaux'=> true, 
 				'Deja_Attrib'=>false,
 				));
-		// Si la requête est en post, c'est que le visiteur a soumis le formulaire. 
-		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) 
+                    // Si la requête est en post, c'est que le visiteur a soumis le formulaire. 
+                    if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) 
 			{
 			// création et gestion du formulaire. 
 			
 			$em=$this->getDoctrine()->getManager();
 			$em->persist($equipe);
-			$em->flush();
+			//$em->flush();
 			$cadeau = $equipe->getCadeau();
 			$cadeau->setAttribue(1);
 			$em->persist($cadeau);
@@ -883,30 +900,30 @@ class SecretariatController extends Controller
 			// puis on redirige vers la page de visualisation de cette note dans le tableau de bord
 			return $this->redirectToroute('secretariat_attrib_cadeaux', array('id_equipe'=>$id_equipe));	
 			}
-		// Si on n'est pas en POST, alors on affiche le formulaire. 
-		$content = $this->get('templating')->render('secretariat/attrib_cadeaux.html.twig', 
+                    // Si on n'est pas en POST, alors on affiche le formulaire. 
+                    $content = $this->get('templating')->render('secretariat/attrib_cadeaux.html.twig', 
 			array(
 				'equipe'=>$equipe,
 				'form'=>$form->createView(),
 				'attribue'=> $flag,
 				  ));
 
-		return new Response($content);
-		}
+                    return new Response($content);
+                }
 
 		else
 		{
-		$flag = 1; 
-		$em=$this->getDoctrine()->getManager();
+                    $flag = 1; 
+                    $em=$this->getDoctrine()->getManager();
 
-		$form = $this->createForm(EquipesType::class, $equipe, 
+                    $form = $this->createForm(EquipesType::class, $equipe, 
 			array(
 				'Attrib_Phrases'=> false, 
 				'Attrib_Cadeaux'=> true, 
 				'Deja_Attrib'=>true,
 				));
 		
-		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) 
+                    if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) 
 			{
 			// création et gestion du formulaire. 
 
@@ -928,14 +945,14 @@ class SecretariatController extends Controller
 			return $this->redirectToroute('secretariat_attrib_cadeaux', array('id_equipe'=>$id_equipe));	
 			}
 		// Si on n'est pas en POST, alors on affiche le formulaire. 
-		$content = $this->get('templating')->render('secretariat/attrib_cadeaux.html.twig', 
+                    $content = $this->get('templating')->render('secretariat/attrib_cadeaux.html.twig', 
 			array(
 				'equipe'=>$equipe,
 				'form'=>$form->createView(),
 				'attribue'=> $flag,
 				  ));
 
-		return new Response($content);
+                    return new Response($content);
 		}
 
 	}
@@ -966,7 +983,7 @@ class SecretariatController extends Controller
 
 		$nbreEquipes = $repositoryEquipes
 			->createQueryBuilder('e')
-		    ->select('COUNT(e)') 
+                        ->select('COUNT(e)') 
 		 	->getQuery()
 		 	->getSingleScalarResult(); 
 
@@ -1008,7 +1025,7 @@ class SecretariatController extends Controller
 			
 			$em=$this->getDoctrine()->getManager();
 			$em->persist($equipe);
-			$em->flush();
+			//$em->flush();
 			$cadeau = $equipe->getCadeau();
 			$cadeau->setAttribue(1);
 			$em->persist($cadeau);
@@ -1020,7 +1037,7 @@ class SecretariatController extends Controller
 				{
 					return $this->redirectToroute('secretariat_lescadeaux',array('compteur'=>$compteur+1));	
 				}
-			else
+			else 
 				{
 					$content = $this->get('templating')->render('secretariat/edition_cadeaux.html.twig', 
 					array('equipe'=>$equipe,
@@ -1063,7 +1080,7 @@ class SecretariatController extends Controller
 			// création et gestion du formulaire. 
 
 			$em->persist($cadeau);
-			$em->flush();	
+			//$em->flush();	
 			if($cadeau->getAttribue())
 				{
 					$em->persist($equipe);
