@@ -962,7 +962,7 @@ class SecretariatController extends Controller
 	*/	
 	public function lescadeaux(Request $request, $compteur)
 	{
-		$user=$this->getUser();
+		//$user=$this->getUser();
 		$repositoryCadeaux = $this
 			->getDoctrine()
 			->getManager()
@@ -993,6 +993,7 @@ class SecretariatController extends Controller
 	
 		$equipe = $repositoryEquipes->findOneByRang($compteur);
 		if (is_null($equipe)) 
+                    //lié au pb des exaequo ?
 		{
 			$content = $this->get('templating')->render('secretariat/edition_cadeaux.html.twig', 
 			array(
@@ -1084,14 +1085,15 @@ class SecretariatController extends Controller
 			if($cadeau->getAttribue())
 				{
 					$em->persist($equipe);
-					$em->flush();					
+					//$em->flush();					
 				}	
 			else
 				{
 					$equipe->setCadeau(NULL);
 					$em->persist($equipe);
-					$em->flush();					
-				}	
+					//$em->flush();					
+				}
+                        $em->flush();
 			$request -> getSession()->getFlashBag()->add('notice', 'Notes bien enregistrées');
 			// puis on redirige vers la page de visualisation de cette note dans le tableau de bord
 			

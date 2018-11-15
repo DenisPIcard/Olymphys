@@ -84,7 +84,7 @@ class EquipesType extends AbstractType
                     'query_builder' => function (EntityRepository $er) {
                         return $er->createQueryBuilder('c')
                         ->where('c.attribue = 0')
-                        ->orderBy('c.montant', 'ASC');
+                        ->orderBy('c.montant', 'DESC');
                     },
                     'choice_label'=> 'displayCadeau', 
                     'multiple' => false,))
