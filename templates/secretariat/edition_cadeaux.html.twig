@@ -38,9 +38,9 @@
 
     {% else %}
 
-                {% set num=0 %}
+{#   {% set num=0 %} #}
             {% for equipes in listEquipesCadeaux %}
-                {% set num = num + 1  %}
+ {#   % set num = num + 1  %}#}
      		<tr
                 {% if equipes.classement == '1er' %} class="danger" {% elseif  equipes.classement == '2ème' %} class="warning" {% else %} class="active" {% endif %}
                  >

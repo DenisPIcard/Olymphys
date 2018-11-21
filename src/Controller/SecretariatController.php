@@ -963,35 +963,35 @@ class SecretariatController extends Controller
 	public function lescadeaux(Request $request, $compteur)
 	{
 		//$user=$this->getUser();
-		$repositoryCadeaux = $this
+            $repositoryCadeaux = $this
 			->getDoctrine()
 			->getManager()
 			->getRepository('App:Cadeaux')
 			;
 
-		$repositoryEquipes = $this
+            $repositoryEquipes = $this
 			->getDoctrine()
 			->getManager()
 			->getRepository('App:Equipes')
 			;
 
-		$repositoryPrix = $this
+            $repositoryPrix = $this
 			->getDoctrine()
 			->getManager()
 			->getRepository('App:Prix')
 			;
 
-		$nbreEquipes = $repositoryEquipes
+            $nbreEquipes = $repositoryEquipes
 			->createQueryBuilder('e')
                         ->select('COUNT(e)') 
 		 	->getQuery()
 		 	->getSingleScalarResult(); 
 
-		$listEquipesCadeaux = $repositoryEquipes->getEquipesCadeaux();
+            $listEquipesCadeaux = $repositoryEquipes->getEquipesCadeaux();
 
-		$listEquipesPrix = $repositoryEquipes->getEquipesPrix();
+            $listEquipesPrix = $repositoryEquipes->getEquipesPrix();
 	
-		$equipe = $repositoryEquipes->findOneByRang($compteur);
+            $equipe = $repositoryEquipes->findOneByRang($compteur);
 		if (is_null($equipe)) 
                     //lié au pb des exaequo ?
 		{
@@ -1004,7 +1004,7 @@ class SecretariatController extends Controller
 			return new Response($content);
 
 		}
-		$id_equipe = $equipe->getId();
+	$id_equipe = $equipe->getId();
 
 		$cadeau = $equipe->getCadeau();
 
