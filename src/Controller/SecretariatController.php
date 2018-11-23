@@ -58,8 +58,6 @@ class SecretariatController extends Controller
 	*/
 	public function accueil(Request $request)
 	{
-
-		$user=$this->getUser();
 		$repositoryEquipes = $this
 			->getDoctrine()
 			->getManager()
@@ -101,11 +99,6 @@ class SecretariatController extends Controller
 			$em->flush();
 		}
 
-/*		$listEquipes = $this->getDoctrine()
-			->getManager()
-			->getRepository('App:Equipes')
-			->getEquipesAccueil();
-*/
 		foreach ($listEquipes as $equipe) 
 		{
 			$lettre=$equipe->getLettre();
@@ -124,7 +117,6 @@ class SecretariatController extends Controller
 	*/
 	public function vueglobale(Request $request)
 	{
-		$user=$this->getUser();
 		$repositoryNotes = $this
 		->getDoctrine()
 		->getManager()
@@ -196,7 +188,6 @@ class SecretariatController extends Controller
 	*/	
 	public function classement(Request $request)
 	{
-		$user=$this->getUser();
 
 		$repositoryEquipes = $this->getDoctrine()
 		->getManager()
@@ -244,15 +235,13 @@ class SecretariatController extends Controller
 			}
 		}
 
-		/* $qb = $repositoryEquipes->createQueryBuilder('e');
-		 $qb ->select('COUNT(e)') ;
-		 $nbre_equipes = $qb->getQuery()->getSingleScalarResult(); 
-                */
-		$qb = $repositoryEquipes->createQueryBuilder('e');
-                $qb ->orderBy('e.total', 'DESC');
-                $classement = $qb ->getQuery()->getResult();
-		// $classement = $repositoryEquipes->classement(0,0, $nbre_equipes); #->orderBy('e.total', 'DESC')	 entre 0 et $nbre_equipes;
 
+		$qb = $repositoryEquipes->createQueryBuilder('e');
+		$qb ->select('COUNT(e)') ;
+		$nbre_equipes = $qb->getQuery()->getSingleScalarResult(); 
+		
+		$classement = $repositoryEquipes->classement(0,0, $nbre_equipes);
+                
 		$rang=0; 
 		
 		foreach ($classement as $equipe) 
@@ -276,7 +265,6 @@ class SecretariatController extends Controller
 	*/
 	public function lesprix(Request $request)
 	{
-		$user=$this->getUser();
 		$repositoryPrix = $this->getDoctrine()
 		->getManager()
 		->getRepository('App:Prix');
@@ -298,7 +286,6 @@ class SecretariatController extends Controller
 	*/
 	public function modifier_prixAction(Request $request, $id_prix)
 	{
-		$user=$this->getUser();
 		$repositoryPrix = $this
 			->getDoctrine()
 			->getManager()
@@ -359,12 +346,9 @@ class SecretariatController extends Controller
 	public function palmares(Request $request)
 	{
 
-		//$user=$this->getUser();
 		$repositoryEquipes = $this->getDoctrine()
 		->getManager()
 		->getRepository('App:Equipes');
-		//$listEquipes = $repositoryEquipes->findAll();
-
 
 		$qb = $repositoryEquipes->createQueryBuilder('e');
 		$qb ->select('COUNT(e)') ;
@@ -387,28 +371,14 @@ class SecretariatController extends Controller
 			->findOneByNiveau('3ème')
 			->getNbreprix(); 
 		
-		//$ListPremPrix = $repositoryEquipes->classement(1,0, $NbrePremierPrix);  // par ordre decroissant du total 
+		$ListPremPrix = $repositoryEquipes->classement(1,0, $NbrePremierPrix);  // par ordre decroissant du total 
 
-                $qb = $repositoryEquipes->createQueryBuilder('e');
-                $qb ->orderBy('e.total', 'DESC')
-                    ->setFirstResult( 0 )
-                    ->setMaxResults( $NbrePremierPrix );
-                $ListPremPrix = $qb ->getQuery()->getResult();		
+                $offset = $NbrePremierPrix  ; 
+		$ListDeuxPrix = $repositoryEquipes->classement(2, $offset, $NbreDeuxPrix);
 
-                // $offset = $NbrePremierPrix  ; 
-		// $ListDeuxPrix = $repositoryEquipes->classement(2, $offset, $NbreDeuxPrix);
-                $qb = $repositoryEquipes->createQueryBuilder('e');
-                $qb ->orderBy('e.total', 'DESC')
-                    ->setFirstResult($NbrePremierPrix )
-                    ->setMaxResults($NbreDeuxPrix);		
-                $ListDeuxPrix = $qb ->getQuery()->getResult();
-                //$offset = $offset + $NbreDeuxPrix  ; 
-		// $ListTroisPrix = $repositoryEquipes->classement(3, $offset, $NbreTroisPrix);
-                $qb = $repositoryEquipes->createQueryBuilder('e');
-                $qb ->orderBy('e.total', 'DESC')
-                    ->setFirstResult($NbrePremierPrix+ $NbreDeuxPrix )
-                    ->setMaxResults($NbreTroisPrix);	
-                $ListTroisPrix = $qb ->getQuery()->getResult();
+                $offset = $offset + $NbreDeuxPrix  ; 
+		$ListTroisPrix = $repositoryEquipes->classement(3, $offset, $NbreTroisPrix);
+
                 
 		$content = $this->get('templating')->render('secretariat/palmares.html.twig',
 			array('ListPremPrix' => $ListPremPrix, 
@@ -495,13 +465,9 @@ class SecretariatController extends Controller
 	*/
 	public function palmares_ajuste(Request $request)
 	{
-
-		$user=$this->getUser();
 		$repositoryEquipes = $this->getDoctrine()
 		->getManager()
 		->getRepository('App:Equipes');
-		//$listEquipes = $repositoryEquipes->findAll();
-
 
 		$qb = $repositoryEquipes->createQueryBuilder('e');
 		$qb ->select('COUNT(e)') ;
@@ -524,25 +490,13 @@ class SecretariatController extends Controller
 			->findOneByNiveau('3ème')
 			->getNbreprix(); 
 		
-		// $ListPremPrix = $repositoryEquipes->palmares(1,0, $NbrePremierPrix); // classement par rang croissant 
-		// $offset = $NbrePremierPrix  ; 
-                
-                $qb = $repositoryEquipes->createQueryBuilder('e');
-                $qb ->orderBy('e.rang', 'ASC')
-                    ->setFirstResult( 0 )
-                    ->setMaxResults( $NbrePremierPrix );
-                $ListPremPrix = $qb ->getQuery()->getResult();		
-                
-		// $ListDeuxPrix = $repositoryEquipes->palmares(2, $offset, $NbreDeuxPrix);
-		// $offset = $offset + $NbreDeuxPrix  ; 
-
-                $qb = $repositoryEquipes->createQueryBuilder('e');
-                $qb ->orderBy('e.rang', 'ASC')
-                    ->setFirstResult( $NbrePremierPrix )
-                    ->setMaxResults( $NbreDeuxPrix );
-                $ListDeuxPrix = $qb ->getQuery()->getResult();		                
-                
-               // $ListTroisPrix = $repositoryEquipes->palmares(3, $offset, $NbreTroisPrix);
+		$ListPremPrix = $repositoryEquipes->palmares(1,0, $NbrePremierPrix); // classement par rang croissant 
+		          
+                $offset = $NbrePremierPrix  ;
+		$ListDeuxPrix = $repositoryEquipes->palmares(2, $offset, $NbreDeuxPrix);
+		 
+                $offset = $offset + $NbreDeuxPrix  ;
+                $ListTroisPrix = $repositoryEquipes->palmares(3, $offset, $NbreTroisPrix);
 
                 $qb = $repositoryEquipes->createQueryBuilder('e');
                 $qb ->orderBy('e.rang', 'ASC')
@@ -566,7 +520,6 @@ class SecretariatController extends Controller
 	*/
 	public function palmares_definitif(Request $request)
 	{
-		$user=$this->getUser();
 		$repositoryEquipes = $this->getDoctrine()
 		->getManager()
 		->getRepository('App:Equipes');
@@ -588,29 +541,11 @@ class SecretariatController extends Controller
 			->findOneByNiveau('3ème')
 			->getNbreprix(); 
 
-                $qb = $repositoryEquipes->createQueryBuilder('e');           
-                $qb ->orderBy('e.total', 'DESC')
-                    ->setFirstResult( 0 )
-                    ->setMaxResults( $NbrePremierPrix );
-                $ListPremPrix = $qb ->getQuery()->getResult();	
-                
-                $qb = $repositoryEquipes->createQueryBuilder('e');
-                $qb ->orderBy('e.total', 'DESC')
-                    ->setFirstResult($NbrePremierPrix )
-                    ->setMaxResults($NbreDeuxPrix);		
-                $ListDeuxPrix = $qb ->getQuery()->getResult();
-
-                $qb = $repositoryEquipes->createQueryBuilder('e');
-                $qb ->orderBy('e.total', 'DESC')
-                    ->setFirstResult($NbrePremierPrix+ $NbreDeuxPrix )
-                    ->setMaxResults($NbreTroisPrix);	
-                $ListTroisPrix = $qb ->getQuery()->getResult();
-                
-		//$ListPremPrix = $repositoryEquipes->palmares(1,0, $NbrePremierPrix); // classement par rang croissant 
-		//$offset = $NbrePremierPrix  ; 
-		//$ListDeuxPrix = $repositoryEquipes->palmares(2, $offset, $NbreDeuxPrix);
-		//$offset = $offset + $NbreDeuxPrix  ; 
-		//$ListTroisPrix = $repositoryEquipes->palmares(3, $offset, $NbreTroisPrix);
+		$ListPremPrix = $repositoryEquipes->palmares(1,0, $NbrePremierPrix); // classement par rang croissant 
+		$offset = $NbrePremierPrix  ; 
+		$ListDeuxPrix = $repositoryEquipes->palmares(2, $offset, $NbreDeuxPrix);
+		$offset = $offset + $NbreDeuxPrix  ; 
+		$ListTroisPrix = $repositoryEquipes->palmares(3, $offset, $NbreTroisPrix);
 
 		$rang=0; 
 
@@ -659,7 +594,6 @@ class SecretariatController extends Controller
 	*/
 	public function RaZ(Request $request)
 	{
-		$user=$this->getUser();
 		$repositoryEquipes = $this->getDoctrine()
 		->getManager()
 		->getRepository('App:Equipes');
@@ -707,7 +641,6 @@ class SecretariatController extends Controller
 	*/
 	public function attrib_prix(Request $request, $niveau)
 	{
-		//$user=$this->getUser();
 		switch ($niveau) 
 		{
 			case 1:
@@ -746,11 +679,8 @@ class SecretariatController extends Controller
 		
 		$qb->where('p.classement=:niveau')
 		->setParameter('niveau', $niveau_court);
-		//$prix_a_attribuer  = $qb->getquery()->getResult();
 
-
-		//$em=$this->getDoctrine()->getManager();
-		
+	
 		$ListEquipes = $repositoryEquipes->findByClassement($niveau_court);  
 
 		$NbrePrix=$repositoryClassement
@@ -825,8 +755,6 @@ class SecretariatController extends Controller
 	*/
 	public function edition_prix(Request $request)
 	{
-		//$user=$this->getUser();
-
 		$listEquipes = $this->getDoctrine()
 			->getManager()
 			->getRepository('App:Equipes')
@@ -857,7 +785,6 @@ class SecretariatController extends Controller
 	*/
 	public function attrib_cadeaux(Request $request, $id_equipe)
 	{		
-		//$user=$this->getUser();
 		$repositoryEquipes = $this
 			->getDoctrine()
 			->getManager()
@@ -944,7 +871,7 @@ class SecretariatController extends Controller
 			// puis on redirige vers la page de visualisation de cette note dans le tableau de bord
 			return $this->redirectToroute('secretariat_attrib_cadeaux', array('id_equipe'=>$id_equipe));	
 			}
-		// Si on n'est pas en POST, alors on affiche le formulaire. 
+                    // Si on n'est pas en POST, alors on affiche le formulaire. 
                     $content = $this->get('templating')->render('secretariat/attrib_cadeaux.html.twig', 
 			array(
 				'equipe'=>$equipe,
@@ -962,7 +889,6 @@ class SecretariatController extends Controller
 	*/	
 	public function lescadeaux(Request $request, $compteur)
 	{
-		//$user=$this->getUser();
             $repositoryCadeaux = $this
 			->getDoctrine()
 			->getManager()
@@ -1004,13 +930,14 @@ class SecretariatController extends Controller
 			return new Response($content);
 
 		}
-	$id_equipe = $equipe->getId();
+            $id_equipe = $equipe->getId();
 
-		$cadeau = $equipe->getCadeau();
+            $cadeau = $equipe->getCadeau();
 
-		$em=$this->getDoctrine()->getManager();
+            $em=$this->getDoctrine()->getManager();
 
-		if(is_null($cadeau))
+            if(is_null($cadeau))
+                // On n'a pas encore attribué de cadeau à l'équipe de rang $compteur
 		{
 		$flag = 0; 
 		$form = $this->createForm(EquipesType::class, $equipe, 
@@ -1020,9 +947,9 @@ class SecretariatController extends Controller
 				'Deja_Attrib'=>false,
 				));
 		// Si la requête est en post, c'est que le visiteur a soumis le formulaire. 
-		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) 
+                if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) 
 			{
-			// création et gestion du formulaire. 
+			//gestion du formulaire. 
 			
 			$em=$this->getDoctrine()->getManager();
 			$em->persist($equipe);
@@ -1035,11 +962,13 @@ class SecretariatController extends Controller
 			$request -> getSession()->getFlashBag()->add('notice', 'Cadeaux bien enregistrés');
 			// puis on redirige vers la page de visualisation de cette note dans le tableau de bord
 			if($compteur<=$nbreEquipes)
+                            //on affiche l'équipe suivante
 				{
 					return $this->redirectToroute('secretariat_lescadeaux',array('compteur'=>$compteur+1));	
 				}
 			else 
 				{
+                                    // on affiche la page Edition, avec toutes les équipes
 					$content = $this->get('templating')->render('secretariat/edition_cadeaux.html.twig', 
 					array('equipe'=>$equipe,
 					'form'=>$form->createView(),
@@ -1051,8 +980,8 @@ class SecretariatController extends Controller
 					return new Response($content);
 				}
 			}
-		// Si on n'est pas en POST, alors on affiche le formulaire. 
-		$content = $this->get('templating')->render('secretariat/edition_cadeaux.html.twig', 
+                    // Si on n'est pas en POST, alors on affiche le formulaire. 
+                    $content = $this->get('templating')->render('secretariat/edition_cadeaux.html.twig', 
 			array('equipe'=>$equipe,
 				'form'=>$form->createView(),
 				'attribue'=> $flag,
@@ -1061,22 +990,22 @@ class SecretariatController extends Controller
 				'nbreEquipes'=>$nbreEquipes,
 				'compteur'=>$compteur,));
 
-		return new Response($content);
+                    return new Response($content);
 		}
 
-		else
+            else
 		{
-		$flag = 1; 
-		$em=$this->getDoctrine()->getManager();
+                    $flag = 1; 
+                    $em=$this->getDoctrine()->getManager();
 
-		$form = $this->createForm(EquipesType::class, $equipe, 
+                    $form = $this->createForm(EquipesType::class, $equipe, 
 			array(
 				'Attrib_Phrases'=> false, 
 				'Attrib_Cadeaux'=> true, 
 				'Deja_Attrib'=>true,
 				));
 		
-		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) 
+                    if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) 
 			{
 			// création et gestion du formulaire. 
 
@@ -1087,7 +1016,7 @@ class SecretariatController extends Controller
 					$em->persist($equipe);
 					//$em->flush();					
 				}	
-			else
+                        else
 				{
 					$equipe->setCadeau(NULL);
 					$em->persist($equipe);
@@ -1114,10 +1043,10 @@ class SecretariatController extends Controller
 					return new Response($content);
 
 				}
-				}
+                        }
 
-		// Si on n'est pas en POST, alors on affiche le formulaire. 
-		$content = $this->get('templating')->render('secretariat/edition_cadeaux.html.twig', 
+                    // Si on n'est pas en POST, alors on affiche le formulaire. 
+                    $content = $this->get('templating')->render('secretariat/edition_cadeaux.html.twig', 
 			array('equipe'=>$equipe,
 				'form'=>$form->createView(),
 				'attribue'=> $flag,
@@ -1125,8 +1054,8 @@ class SecretariatController extends Controller
 				'listEquipesPrix' => $listEquipesPrix,
 				'nbreEquipes'=>$nbreEquipes,
 				'compteur'=>$compteur,));
-		return new Response($content);
-	}
+                    return new Response($content);
+                }
 	}
 	
 	/**
@@ -1134,7 +1063,6 @@ class SecretariatController extends Controller
 	*/
 	public function edition_cadeaux(Request $request)
 	{
-		$user=$this->getUser();
 		$listEquipes = $this->getDoctrine()
 			->getManager()
 			->getRepository('App:Equipes')
@@ -1149,7 +1077,6 @@ class SecretariatController extends Controller
 	*/
 	public function edition_phrases(Request $request)
 	{
-		$user=$this->getUser();
 		$listEquipes = $this->getDoctrine()
 			->getManager()
 			->getRepository('App:Equipes')
@@ -1164,7 +1091,6 @@ class SecretariatController extends Controller
 	*/
 	public function tableau_palmares_complet(Request $request)
 	{
-		$user=$this->getUser();
 		$listEquipes = $this->getDoctrine()
 			->getManager()
 			->getRepository('App:Equipes')
@@ -1194,7 +1120,6 @@ class SecretariatController extends Controller
 	*/
 	public function tableau_excel_palmares_site(Request $request)
 	{
-		$user=$this->getUser();
 		$listEquipes = $this->getDoctrine()
 			->getManager()
 			->getRepository('App:Equipes')
