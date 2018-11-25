@@ -49,6 +49,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\ClassesPHPExcelStyle;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
     
 class SecretariatController extends Controller 
 {
@@ -1124,11 +1126,24 @@ class SecretariatController extends Controller
 			->getManager()
 			->getRepository('App:Equipes')
 			->getEquipesPalmares();
+                
+                $repositoryEquipes = $this
+			->getDoctrine()
+			->getManager()
+			->getRepository('App:Equipes')
+			;
+                
+                $nbreEquipes = $repositoryEquipes
+			->createQueryBuilder('e')
+                        ->select('COUNT(e)') 
+		 	->getQuery()
+		 	->getSingleScalarResult(); 
 
 		$repositoryEleves = $this
 			->getDoctrine()
 			->getManager()
 			->getRepository('App:Eleves');
+                
 
 		foreach ($listEquipes as $equipe) 
 		{
@@ -1136,130 +1151,114 @@ class SecretariatController extends Controller
 			$lesEleves[$lettre] = $repositoryEleves->findByLettreEquipe($lettre);
 		}
 
-		# create an empty object 
-		$phpExcelObject = $this->get('phpexcel')->createPHPExcelObject();
+                
+		$spreadsheet = new Spreadsheet();
+                $spreadsheet->getProperties()
+                        ->setCreator("Olymphys")
+                        ->setLastModifiedBy("Olymphys")
+                        ->setTitle("Palmarès de la 25ème édition - Février 2018")
+                        ->setSubject("Palmarès")
+                        ->setDescription("Palmarès avec Office 2005 XLSX, generated using PHP classes.")
+                        ->setKeywords("office 2005 openxml php")
+                        ->setCategory("Test result file");
+                $spreadsheet->getActiveSheet()->getPageSetup()
+                        ->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE); 
+                $spreadsheet->getDefaultStyle()->getFont()->setName('Calibri');
+                $spreadsheet->getDefaultStyle()->getFont()->setSize(6);
+                $spreadsheet->getDefaultStyle()->getAlignment()->setWrapText(true);
 
-		$phpExcelObject->getProperties()->setCreator("OdpF")
-           ->setLastModifiedBy("OdpF")
-           ->setTitle("Palmarès de la 26ème édition - Février 2019")
-           ->setSubject("Palmarès")
-           ->setDescription("Palmarès avec Office 2005 XLSX, generated using PHP classes.")
-           ->setKeywords("office 2005 openxml php")
-           ->setCategory("Test result file");
+                $sheet = $spreadsheet->getActiveSheet();
+ 
+                $nblignes=$nbreEquipes*4 +3;
+       
+                $ligne=3;
 
-        $phpExcelObject->getDefaultStyle()->getFont()->setName('Calibri');
-       	$phpExcelObject->getDefaultStyle()->getFont()->setSize(7);
-       	$phpExcelObject->getDefaultStyle()->getAlignment()->setWrapText(true);
+                $sheet->setCellValue('B'.$ligne, 'Académie')
+                    ->setCellValue('C'.$ligne, 'Lycée, sujet, élèves')
+                    ->setCellValue('D'.$ligne, 'Professeurs')
+                    ->setCellValue('F'.$ligne, 'Prix spécial - Visite de laboratoire - Prix en matériel scientifique');
 
-       	$ligne=3;
-       	$phpExcelObject->setActiveSheetIndex(0)
-           ->setCellValue('B'.$ligne, 'Académie')
-           ->setCellValue('C'.$ligne, 'Lycée, sujet, élèves')
-           ->setCellValue('D'.$ligne, 'Professeurs')
-           ->setCellValue('F'.$ligne, 'Prix spécial - Visite de laboratoire - Prix en matériel scientifique');
+                $ligne = $ligne+1; 
 
-        $ligne = $ligne+1; 
+        	foreach ($listEquipes as $equipe) 
+                {
+                    $lettre = $equipe->getLettre();
 
-       	foreach ($listEquipes as $equipe) 
-       	{
-       	$lettre = $equipe->getLettre();
+                    $ligne4 = $ligne + 3;
+                    $sheet->mergeCells('B'.$ligne.':B'.$ligne4);
+                    $sheet->setCellValue('B'.$ligne, strtoupper($equipe->getInfoequipe()->getLyceeAcademie()))
+                        ->setCellValue('C'.$ligne, $equipe->getInfoequipe()->getDenominationLycee().' '.$equipe->getInfoequipe()->getnomLycee()." - ".$equipe->getInfoequipe()->getLyceeLocalite() )
+                        ->setCellValue('D'.$ligne, $equipe->getInfoequipe()->getPrenomProf1().' '.strtoupper($equipe->getInfoequipe()->getnomProf1() ))
+                        ->setCellValue('E'.$ligne, $equipe->getClassement().' '.'prix')
+                        ->setCellValue('F'.$ligne, $equipe->getPhrases()->getPhrase().' '.$equipe->getLiaison()->getLiaison().' '.$equipe->getPhrases()->getPrix());
+                    
+                    $ligne = $ligne+1; 
+  
+                    $ligne3 = $ligne + 1; 
+                    $sheet->mergeCells('C'.$ligne.':C'.$ligne3);
+                    $sheet->setCellValue('C'.$ligne, $equipe->getTitreProjet())
+                        ->setCellValue('D'.$ligne, $equipe->getInfoequipe()->getPrenomProf2().' '.strtoupper($equipe->getInfoequipe()->getnomProf2() ))
+                        ->setCellValue('F'.$ligne, $equipe->getPrix()->getPrix() );
 
-       	$ligne4 = $ligne + 3;
-		$phpExcelObject->getActiveSheet()->mergeCells('B'.$ligne.':B'.$ligne4);
-       	$phpExcelObject->setActiveSheetIndex(0)
-           ->setCellValue('B'.$ligne, strtoupper($equipe->getInfoequipe()->getLyceeAcademie()))
-		   ->setCellValue('C'.$ligne, $equipe->getInfoequipe()->getDenominationLycee().' '.$equipe->getInfoequipe()->getnomLycee()." - ".$equipe->getInfoequipe()->getLyceeLocalite() )
-           ->setCellValue('D'.$ligne, $equipe->getInfoequipe()->getPrenomProf1().' '.strtoupper($equipe->getInfoequipe()->getnomProf1() ))
-           ->setCellValue('E'.$ligne, $equipe->getClassement().' '.'prix')
-           ->setCellValue('F'.$ligne, $equipe->getPhrases()->getPhrase().' '.$equipe->getLiaison()->getLiaison().' '.$equipe->getPhrases()->getPrix());
-
-       	$ligne = $ligne+1; 
-       	$ligne3 = $ligne + 1; 
-       	$phpExcelObject->getActiveSheet()->mergeCells('C'.$ligne.':C'.$ligne3);
-       	$phpExcelObject->setActiveSheetIndex(0)
-           ->setCellValue('C'.$ligne, $equipe->getTitreProjet())
-           ->setCellValue('D'.$ligne, $equipe->getInfoequipe()->getPrenomProf2().' '.strtoupper($equipe->getInfoequipe()->getnomProf2() ))
-           ->setCellValue('F'.$ligne, $equipe->getPrix()->getPrix() );
-
-           if ($equipe->getClassement()=='1er') 
-           {
-           	$phpExcelObject->setActiveSheetIndex(0)->setCellValue('E'.$ligne, PRIX::PREMIER.'€');
-           }
-           elseif ($equipe->getClassement()=='2ème') 
-           {
-           	$phpExcelObject->setActiveSheetIndex(0)->setCellValue('E'.$ligne, PRIX::DEUXIEME.'€' );
-           }
-           else
-           {
-           	$phpExcelObject->setActiveSheetIndex(0)->setCellValue('E'.$ligne, PRIX::TROISIEME.'€');
-           }
+                    if ($equipe->getClassement()=='1er') 
+                    {
+                        $sheet->setCellValue('E'.$ligne, PRIX::PREMIER.'€');
+                    }
+                    elseif ($equipe->getClassement()=='2ème') 
+                    {
+                        $sheet->setCellValue('E'.$ligne, PRIX::DEUXIEME.'€' );
+                    }
+                    else
+                    {
+                        $sheet->setCellValue('E'.$ligne, PRIX::TROISIEME.'€');
+                    }
            
 		
-       	$ligne = $ligne+1; 
-       	$phpExcelObject->setActiveSheetIndex(0)
-           ->setCellValue('E'.$ligne, 'Visite :')
-           ->setCellValue('F'.$ligne, $equipe->getVisite()->getIntitule());
+                    $ligne = $ligne+1; 
+                    $sheet->setCellValue('E'.$ligne, 'Visite :')
+                        ->setCellValue('F'.$ligne, $equipe->getVisite()->getIntitule());
 
-       	$ligne = $ligne+1; 
-       	$phpExcelObject->getActiveSheet()->mergeCells('E'.$ligne.':F'.$ligne);
-       	$phpExcelObject->setActiveSheetIndex(0)
-            ->setCellValue('E'.$ligne, $equipe->getCadeau()->getContenu().' offert par '.$equipe->getCadeau()->getFournisseur().' d\'une valeur de '.$equipe->getCadeau()->getMontant().' euros.' );
+                    $ligne = $ligne+1; 
+                    $sheet->mergeCells('E'.$ligne.':F'.$ligne);
+                    $sheet->setCellValue('E'.$ligne, $equipe->getCadeau()->getContenu().' offert par '.$equipe->getCadeau()->getFournisseur().' d\'une valeur de '.$equipe->getCadeau()->getMontant().' euros.' );
 
-        $listeleves='';
-        $nbre = count($lesEleves[$lettre]);
-		$eleves = $lesEleves[$lettre];
+                    $listeleves='';
+                    $nbre = count($lesEleves[$lettre]);
+                    $eleves = $lesEleves[$lettre];
 
-		for ($i=1; $i < $nbre-1 ; $i++) 
-		{ 
+                    for ($i=0; $i <= $nbre-1 ; $i++) 
+                    { 
 			$eleve = $eleves[$i];
 			$prenom=$eleve->getPrenom();
 			$nom=strtoupper($eleve->getNom());
-			$listeleves.=$prenom.' '.$nom.', ';
-			
-		}
-			$eleve = $eleves[$i];
-			$prenom=$eleve->getPrenom();
-			$nom=strtoupper($eleve->getNom());
-			$listeleves.=$prenom.' '.$nom;
+                        if ($i<$nbre-1)
+                            {$listeleves.=$prenom.' '.$nom.', ';}
+                        else 
+                        {$listeleves.=$prenom.' '.$nom;}
+                    }
 
-/*		foreach ($lesEleves[$lettre] as $eleves) 
-		{
-			$prenom=$eleves->getPrenom();
-			$nom=$eleves->getNom();
-			$listeleves.=$prenom.' '.$nom.', ';
-		}
-*/
-		$phpExcelObject->setActiveSheetIndex(0)->setCellValue('C'.$ligne, $listeleves );
+                    $sheet->setCellValue('C'.$ligne, $listeleves );
 
-        $ligne = $ligne+1; 
-       	}
+                    $ligne = $ligne+1; 
+                }
 
-		$phpExcelObject->getActiveSheet()->getColumnDimension('B')->setWidth(8.17);
-		$phpExcelObject->getActiveSheet()->getColumnDimension('C')->setWidth(32.17);
-		$phpExcelObject->getActiveSheet()->getColumnDimension('D')->setWidth(11.17);
-		$phpExcelObject->getActiveSheet()->getColumnDimension('E')->setWidth(5.17);
-		$phpExcelObject->getActiveSheet()->getColumnDimension('F')->setWidth(39.17);
-		
+		$sheet->getColumnDimension('B')->setWidth(15);
+		$sheet->getColumnDimension('C')->setWidth(80);
+		$sheet->getColumnDimension('D')->setWidth(25);
+		$sheet->getColumnDimension('E')->setWidth(15);
+		$sheet->getColumnDimension('F')->setWidth(110);
+		$spreadsheet->getActiveSheet()->getStyle('A1:F'.$nblignes)
+                            ->getAlignment()->setWrapText(true);
 
-       	$phpExcelObject->getActiveSheet()->setTitle('Palmarès JURY ');
-       	// Set active sheet index to the first sheet, so Excel opens this as the first sheet
-       	$phpExcelObject->setActiveSheetIndex(0);
 
-        // create the writer
-        $writer = $this->get('phpexcel')->createWriter($phpExcelObject, 'Excel5');
-        // create the response
-        $response = $this->get('phpexcel')->createStreamedResponse($writer);
-        // adding headers
-        $dispositionHeader = $response->headers->makeDisposition(
-            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            'palmares.xls'
-        );
-        $response->headers->set('Content-Type', 'text/vnd.ms-excel; charset=utf-8');
-        $response->headers->set('Pragma', 'public');
-        $response->headers->set('Cache-Control', 'maxage=1');
-        $response->headers->set('Content-Disposition', $dispositionHeader);
-
-        return $response;        
+ 
+                header('Content-Type: application/vnd.ms-excel');
+                header('Content-Disposition: attachment;filename="palmares.xls"');
+                header('Cache-Control: max-age=0');
+        
+                $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+                $writer->save('php://output');
+        
 
 	}
 	
@@ -1268,7 +1267,18 @@ class SecretariatController extends Controller
 	*/
 	public function tableau_excel_palmares_jury(Request $request)
 	{
-		$user=$this->getUser();
+		$repositoryEquipes = $this
+			->getDoctrine()
+			->getManager()
+			->getRepository('App:Equipes')
+			;
+                
+                $nbreEquipes = $repositoryEquipes
+			->createQueryBuilder('e')
+                        ->select('COUNT(e)') 
+		 	->getQuery()
+		 	->getSingleScalarResult(); 
+                
 		$listEquipes = $this->getDoctrine()
 			->getManager()
 			->getRepository('App:Equipes')
@@ -1284,22 +1294,29 @@ class SecretariatController extends Controller
 			$lettre=$equipe->getLettre();
 			$lesEleves[$lettre] = $repositoryEleves->findByLettreEquipe($lettre);
 		}
+		$spreadsheet = new Spreadsheet();
+                $spreadsheet->getProperties()
+                        ->setCreator("Olymphys")
+                        ->setLastModifiedBy("Olymphys")
+                        ->setTitle("Palmarès de la 25ème édition - Février 2018")
+                        ->setSubject("Palmarès")
+                        ->setDescription("Palmarès avec Office 2005 XLSX, generated using PHP classes.")
+                        ->setKeywords("office 2005 openxml php")
+                        ->setCategory("Test result file");
+                $spreadsheet->getActiveSheet()->getPageSetup()
+                        ->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE); 
+                $spreadsheet->getDefaultStyle()->getFont()->setName('Calibri');
+                $spreadsheet->getDefaultStyle()->getFont()->setSize(6);
+                $spreadsheet->getDefaultStyle()->getAlignment()->setWrapText(true);
 
-		# create an empty object 
-		$phpExcelObject = $this->get('phpexcel')->createPHPExcelObject();
+                $sheet = $spreadsheet->getActiveSheet();
 
-		$phpExcelObject->getProperties()->setCreator("OdpF")
-           ->setLastModifiedBy("OdpF")
-           ->setTitle("Deliberation du Jury")
-           ->setSubject("Deliberation du Jury")
-           ->setDescription("Deliberation du Jury avec Office 2005 XLSX, generated using PHP classes.")
-           ->setKeywords("office 2005 openxml php")
-           ->setCategory("Test result file");
-
-        $phpExcelObject->getDefaultStyle()->getFont()->setName('Calibri');
-       	$phpExcelObject->getDefaultStyle()->getFont()->setSize(14);
-       	$phpExcelObject->getDefaultStyle()->getAlignment()->setWrapText(true);
-		
+		$styleText=array('font'=>array(
+                                 'bold'=>false,
+                                 'size'=>14,
+                                 'name'=>'Calibri',
+                                    ),
+                                    );
 		$styleTitre=array('font'=>array(
                                 'bold'=>true,
                                 'size'=>16,
@@ -1307,103 +1324,97 @@ class SecretariatController extends Controller
                                 ),                  			
                   		);
 
-       	$ligne=1;
-       	foreach ($listEquipes as $equipe) 
-       	{
-       	$lettre = $equipe->getLettre();
+                $ligne=1;
+                foreach ($listEquipes as $equipe) 
+                {
+                    $lettre = $equipe->getLettre();
 
-       	$phpExcelObject->setActiveSheetIndex(0)
-           ->setCellValue('A'.$ligne, 'Prix spécial')
-           ->setCellValue('B'.$ligne, $equipe->getClassement())
-           ->setCellValue('C'.$ligne, $equipe->getPrix()->getPrix());
+                    $sheet->setCellValue('A'.$ligne, 'Prix spécial')
+                          ->setCellValue('B'.$ligne, $equipe->getClassement())
+                          ->setCellValue('C'.$ligne, $equipe->getPrix()->getPrix());
         
-        $phpExcelObject->getActiveSheet()
-        	->getStyle('A'.$ligne.':C'.$ligne)
-        	->applyFromArray($styleTitre) ; 
+                    $sheet->getStyle('A'.$ligne.':C'.$ligne)
+                          ->applyFromArray($styleTitre) ;     
        	
-       	$ligne = $ligne+1; 
-       	$phpExcelObject->getActiveSheet()->mergeCells('A'.$ligne.':C'.$ligne);
-       	$phpExcelObject->setActiveSheetIndex(0)
-           ->setCellValue('A'.$ligne, $equipe->getPhrases()->getPhrase().' '.$equipe->getLiaison()->getLiaison().' '.$equipe->getPhrases()->getPrix());
-		$phpExcelObject->getActiveSheet()->getStyle('A'.$ligne)->getAlignment()->setWrapText(true);
+                    $ligne = $ligne+1; 
+                    $sheet->mergeCells('A'.$ligne.':C'.$ligne);
+                    $sheet->setCellValue('A'.$ligne, $equipe->getPhrases()->getPhrase().' '.$equipe->getLiaison()->getLiaison().' '.$equipe->getPhrases()->getPrix());
+                    $sheet->getStyle('A'.$ligne)->getAlignment()->setWrapText(true);
+                    $sheet->getStyle('A'.$ligne.':C'.$ligne)
+                          ->applyFromArray($styleText);            
 
+                    $ligne = $ligne+1; 
+                    $lignep = $ligne + 1; 
+                    $sheet->mergeCells('A'.$ligne.':A'.$lignep);
+                    $sheet->setCellValue('A'.$ligne, 'Vous êtes l\'équipe')
+                           ->setCellValue('B'.$ligne, $equipe->getLettre())
+                           ->setCellValue('C'.$ligne, $equipe->getTitreProjet());
+                    $sheet->getStyle('C'.$ligne)->getAlignment()->setWrapText(true);
+                    $sheet->getStyle('A'.$ligne)->getAlignment()
+                        ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
 
-		
-		$phpExcelObject->getActiveSheet()
-      	->getStyle('A1')->applyFromArray($styleTitre);
-
-       	$ligne = $ligne+1; 
-       	$lignep = $ligne + 1; 
-       	$phpExcelObject->getActiveSheet()->mergeCells('A'.$ligne.':A'.$lignep);
-		$phpExcelObject->setActiveSheetIndex(0)
-           ->setCellValue('A'.$ligne, 'Vous êtes l\'équipe')
-           ->setCellValue('B'.$ligne, $equipe->getLettre())
-           ->setCellValue('C'.$ligne, $equipe->getTitreProjet());
-        $phpExcelObject->getActiveSheet()->getStyle('C'.$ligne)->getAlignment()->setWrapText(true);
-
-       	$ligne = $ligne+1; 
-       	$phpExcelObject->setActiveSheetIndex(0)
-           ->setCellValue('B'.$ligne, 'AC. '.$equipe->getInfoequipe()->getLyceeAcademie())
-           ->setCellValue('C'.$ligne, $equipe->getInfoequipe()->getDenominationLycee().' '.$equipe->getInfoequipe()->getnomLycee()."\n".$equipe->getInfoequipe()->getLyceeLocalite() );
+                    $sheet->getStyle('A'.$ligne.':C'.$ligne)
+                          ->applyFromArray($styleText); 
+                    $ligne = $ligne+1; 
+                    $sheet->setCellValue('B'.$ligne, 'AC. '.$equipe->getInfoequipe()->getLyceeAcademie())
+                          ->setCellValue('C'.$ligne, $equipe->getInfoequipe()->getDenominationLycee().' '.$equipe->getInfoequipe()->getnomLycee()."\n".$equipe->getInfoequipe()->getLyceeLocalite() );
  
 
-        $phpExcelObject->getActiveSheet()->getStyle('B'.$ligne)->getAlignment()->setWrapText(true);
-        $phpExcelObject->getActiveSheet()->getStyle('C'.$ligne)->getAlignment()->setWrapText(true);
+                    $sheet->getStyle('B'.$ligne)->getAlignment()->setWrapText(true);
+                    $sheet->getStyle('C'.$ligne)->getAlignment()->setWrapText(true);
+                    $sheet->getStyle('A'.$ligne.':C'.$ligne)
+                          ->applyFromArray($styleText);
 
+                    $ligne = $ligne+1; 
+                    $lignep = $ligne + 1; 
+                    $sheet->mergeCells('A'.$ligne.':A'.$lignep);
+                    $sheet->setCellValue('A'.$ligne, 'Nos partenaires vous offrent')
+                          ->setCellValue('B'.$ligne, 'une visite de laboratoire : ')
+                           ->setCellValue('C'.$ligne, $equipe->getVisite()->getIntitule());
+                    $sheet->getStyle('A'.$ligne)->getAlignment()->setWrapText(true);
+                    $sheet->getStyle('B'.$ligne)->getAlignment()->setWrapText(true);
+                    $sheet->getStyle('C'.$ligne)->getAlignment()->setWrapText(true);
+                    $sheet->getStyle('A'.$ligne)->getAlignment()
+                        ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+                    $sheet->getStyle('A'.$ligne.':C'.$ligne)
+                          ->applyFromArray($styleText);
+                    
+                    $ligne = $ligne+1; 
+                    $sheet->setCellValue('B'.$ligne, 'du matériel scientifique : ')
+                          ->setCellValue('C'.$ligne, $equipe->getCadeau()->getContenu().' offert par '.$equipe->getCadeau()->getFournisseur().' d\'une valeur de '.$equipe->getCadeau()->getMontant().' euros.' );
+                    $sheet->getStyle('B'.$ligne)->getAlignment()->setWrapText(true);
+                    $sheet->getStyle('C'.$ligne)->getAlignment()->setWrapText(true);
+                    $sheet->getStyle('A'.$ligne.':C'.$ligne)
+                          ->applyFromArray($styleText);
+                    
+                    $ligne = $ligne+2; 
 
-       	$ligne = $ligne+1; 
-       	$lignep = $ligne + 1; 
-       	$phpExcelObject->getActiveSheet()->mergeCells('A'.$ligne.':A'.$lignep);
-       	$phpExcelObject->setActiveSheetIndex(0)
-           ->setCellValue('A'.$ligne, 'Nos partenaires vous offrent')
-           ->setCellValue('B'.$ligne, 'une visite de laboratoire : ')
-           ->setCellValue('C'.$ligne, $equipe->getVisite()->getIntitule());
-		$phpExcelObject->getActiveSheet()->getStyle('A'.$ligne)->getAlignment()->setWrapText(true);
-		$phpExcelObject->getActiveSheet()->getStyle('B'.$ligne)->getAlignment()->setWrapText(true);
-		$phpExcelObject->getActiveSheet()->getStyle('C'.$ligne)->getAlignment()->setWrapText(true);
+                }
+                $nblignes= 5*$nbreEquipes;
+                
+                $sheet->getColumnDimension('A')->setWidth(63);
+		$sheet->getColumnDimension('B')->setWidth(35);
+		$sheet->getColumnDimension('C')->setWidth(159);
 
-       	$ligne = $ligne+1; 
-       	$phpExcelObject->setActiveSheetIndex(0)
-           ->setCellValue('B'.$ligne, 'du matériel scientifique : ')
-           ->setCellValue('C'.$ligne, $equipe->getCadeau()->getContenu().' offert par '.$equipe->getCadeau()->getFournisseur().' d\'une valeur de '.$equipe->getCadeau()->getMontant().' euros.' );
-		$phpExcelObject->getActiveSheet()->getStyle('B'.$ligne)->getAlignment()->setWrapText(true);
-		$phpExcelObject->getActiveSheet()->getStyle('C'.$ligne)->getAlignment()->setWrapText(true);
+		$spreadsheet->getActiveSheet()->getStyle('A1:C'.$nblignes)
+                            ->getAlignment()->setWrapText(true);
 
-       	$ligne = $ligne+2; 
+                $spreadsheet->getActiveSheet()->getPageSetup()->setFitToWidth(1);
+                $spreadsheet->getActiveSheet()->getPageSetup()->setFitToHeight(0);
+                $spreadsheet->getActiveSheet()->getPageSetup()->setHorizontalCentered(true);
+                $spreadsheet->getActiveSheet()->getPageSetup()->setVerticalCentered(false);
+                
+                $spreadsheet->getActiveSheet()->getHeaderFooter()->setOddFooter('RPage &P sur &N');
+                
+ 
+                header('Content-Type: application/vnd.ms-excel');
+                header('Content-Disposition: attachment;filename="proclamation.xls"');
+                header('Cache-Control: max-age=0');
+        
+                $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+                $writer->save('php://output');
+        
 
-       	}
-		$phpExcelObject->getActiveSheet()->getColumnDimension('A')->setWidth(27);
-		$phpExcelObject->getActiveSheet()->getColumnDimension('B')->setWidth(15);
-		$phpExcelObject->getActiveSheet()->getColumnDimension('C')->setWidth(68);
-
-		$phpExcelObject->getActiveSheet()->getPageSetup()->setFitToWidth(1);
-       	$phpExcelObject->getActiveSheet()->getPageSetup()->setFitToHeight(0);
-
-		$phpExcelObject->getActiveSheet()->getPageSetup()->setHorizontalCentered(true);
-		$phpExcelObject->getActiveSheet()->getPageSetup()->setVerticalCentered(false);
-
-		$phpExcelObject->getActiveSheet()->getHeaderFooter()->setOddFooter('RPage &P sur &N');
-
-
-       	$phpExcelObject->getActiveSheet()->setTitle('Proclamation du palmarès ');
-       	// Set active sheet index to the first sheet, so Excel opens this as the first sheet
-       	$phpExcelObject->setActiveSheetIndex(0);
-
-        // create the writer
-        $writer = $this->get('phpexcel')->createWriter($phpExcelObject, 'Excel5');
-        // create the response
-        $response = $this->get('phpexcel')->createStreamedResponse($writer);
-        // adding headers
-        $dispositionHeader = $response->headers->makeDisposition(
-            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            'proclamation.xls'
-        );
-        $response->headers->set('Content-Type', 'text/vnd.ms-excel; charset=utf-8');
-        $response->headers->set('Pragma', 'public');
-        $response->headers->set('Cache-Control', 'maxage=1');
-        $response->headers->set('Content-Disposition', $dispositionHeader);
-
-        return $response;        
 	}
 
 }

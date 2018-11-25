@@ -121,6 +121,7 @@ secretariat_tableau_excel_palmares_site:
 
 secretariat_tableau_excel_palmares_jury:
     path: /secretariat/excel_jury
+    defaults: { _controller: App\Controller\SecretariatController:tableau_excel_palmares_jury}
      
 sonata_user_admin_security:
     resource: '@SonataUserBundle/Resources/config/routing/admin_security.xml'
