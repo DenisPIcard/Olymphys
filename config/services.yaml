@@ -46,9 +46,9 @@ services:
             - { name: sonata.admin, manager_type: orm, group: Jury, label: Equipes }
         public: true
         
-    app.notes.extension:
-        class: App\Admin\Extension\NotesExtension
-        arguments: [~, App\Entty\Notes, ~]
+    app.cadeaux.extension:
+        class: App\Admin\Extension\CadeauxExtension
+        arguments: [~, App\Entity\Cadeaux, ~]
         tags: 
-            - {name: sonata.admin.extensions}
+            - {name: sonata.admin.extensions, manager_type: orm, group: Jury, label: Cadeaux}
         public: true

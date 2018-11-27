@@ -23,16 +23,19 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller ;
-use Symfony\Component\HttpFoundation\Request ; # récupérer des arguments de la requête hors route, récupérer la méthode de la requête HTTP. 
+use Symfony\Component\HttpFoundation\Request ; 
 use Symfony\Component\HttpFoundation\RedirectResponse ;
 use Symfony\Component\HttpFoundation\Response ;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Routing\Annotation\Route;
 
 class JuryController extends Controller
 {
-
+    /**
+     * @Route("cyberjury/accueil", name="cyberjury_accueil")
+     */
 	public function accueil()
  
         {
@@ -86,6 +89,8 @@ class JuryController extends Controller
         
         /**
 	* @Security("has_role('ROLE_JURY')")
+        *
+        * @Route( "/infos_equipe/{id}", name ="cyberjury_infos_equipe",requirements={"id_equipe"="\d{1}|\d{2}"}) 
 	*/
 	public function infos_equipe(Request $request, Equipes $equipe, $id)
 	{
@@ -113,7 +118,6 @@ class JuryController extends Controller
 		->getManager()
 		->getRepository('App:Equipes');
 
-		//$equipe=$repositoryEquipes->find($id);
 		$lettre=$equipe->getLettre();
 
 		$repositoryTotEquipes = $this
@@ -145,7 +149,11 @@ class JuryController extends Controller
         }
         
         /**
+        * 
 	* @Security("has_role('ROLE_JURY')")
+        *
+        * @Route("/evaluer_une_equipe/{id}", name="cyberjury_evaluer_une_equipe", requirements={"id_equipe"="\d{1}|\d{2}"})
+        *   
 	*/
   	public function evaluer_une_equipe(Request $request, Equipes $equipe, $id)
 	{
@@ -164,8 +172,8 @@ class JuryController extends Controller
 		$repositoryEquipes = $this->getDoctrine()
 		->getManager()
 		->getRepository('App:Equipes');
-		//$equipe = $repositoryEquipes->find($id);
-		$lettre=$equipe->getLettre();
+
+                $lettre=$equipe->getLettre();
 
 		$repositoryJures = $this->getDoctrine()
 		->getManager()
@@ -198,7 +206,6 @@ class JuryController extends Controller
 			else
 			{
 				$notes->setEcrit(0);
-				// On crée le Formulaire grâce au service form factory.
        			$form = $this->createForm(NotesType::class, $notes, array('EST_PasEncoreNotee'=> true, 'EST_Lecteur'=> false,));
 			}
 		}
@@ -222,7 +229,6 @@ class JuryController extends Controller
 			}
 		}
 
-		// Reste de la méthode
 		// Si la requête est en post, c'est que le visiteur a soumis le formulaire. 
 		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 			// création et gestion du formulaire. 
@@ -248,7 +254,10 @@ class JuryController extends Controller
 	}
       
         /**
-	* @Security("has_role('ROLE_JURY')")
+	 * @Security("has_role('ROLE_JURY')")
+         * 
+         * @Route("/tableau_de_bord", name ="cyberjury_tableau_de_bord")
+         * 
 	*/
 	public function tableau(Request $request)
 	{
@@ -269,8 +278,7 @@ class JuryController extends Controller
 		->getRepository('App:Notes')
 		;
 		$em=$this->getDoctrine()->getManager();
-		// Création de l'entité Notes
-//		$notes = new Notes();
+
 		$MonClassement = $repository->MonClassement($id_jure);
 		
 		$repository = $this->getDoctrine()
@@ -306,8 +314,12 @@ class JuryController extends Controller
 	}
         
         /**
-	* @Security("has_role('ROLE_JURY')")
-	*/
+         * 
+	 * @Security("has_role('ROLE_JURY')")
+         * 
+         * 
+         * @Route("/phrases_amusantes/{id}", name = "cyberjury_phrases_amusantes",requirements={"id_equipe"="\d{1}|\d{2}"})
+	 */
 	public function phrases(Request $request, Equipes $equipe, $id)
 	{
 
@@ -329,7 +341,6 @@ class JuryController extends Controller
 		->EquipeDejaNotee($id_jure, $id);
 		$progression = (!is_null($notes)) ? 1 : 0 ;
 
-		// Création de l'entité Phrases
 		$repositoryPhrases = $this->getDoctrine()
 		->getManager()
 		->getRepository('App:Phrases');
@@ -342,8 +353,6 @@ class JuryController extends Controller
 		->getDoctrine()
 		->getManager()
 		->getRepository('App:Equipes');
-
-		//$equipe=$repositoryEquipes->find($id);
 
 		$em=$this->getDoctrine()->getManager();
 
