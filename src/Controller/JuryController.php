@@ -148,6 +148,126 @@ class JuryController extends Controller
 		return new Response($content);   
         }
         
+ 	/**
+	* @Security("has_role('ROLE_JURY')")
+         * 
+         * @Route("/lescadeaux", name="cyberjury_lescadeaux")
+         * 
+	*/
+	public function lescadeaux(Request $request)
+	{
+		$repositoryCadeaux = $this->getDoctrine()
+                                          ->getManager()
+                                          ->getRepository('App:Cadeaux');
+		$ListCadeaux  = $repositoryCadeaux ->getListCadeaux();
+
+		$content = $this->get('templating')->render('cyberjury/lescadeaux.html.twig',
+			array('ListCadeaux' => $ListCadeaux )
+ 			);
+		return new Response($content);
+	}       
+         
+ 	/**
+	* @Security("has_role('ROLE_JURY')")
+         * 
+         * @Route("/lesprix", name="cyberjury_lesprix")
+         * 
+	*/
+	public function lesprix(Request $request)
+	{
+		$repositoryPrix = $this->getDoctrine()
+		->getManager()
+		->getRepository('App:Prix');
+		
+		$ListPremPrix = $repositoryPrix->findByClassement('1er');
+		$ListDeuxPrix = $repositoryPrix->findByClassement('2ème');
+		$ListTroisPrix = $repositoryPrix->findByClassement('3ème');
+
+		$content = $this->get('templating')->render('cyberjury/lesprix.html.twig',
+			array('ListPremPrix' => $ListPremPrix, 
+                              'ListDeuxPrix' => $ListDeuxPrix, 
+                              'ListTroisPrix' => $ListTroisPrix)
+			);
+		return new Response($content);
+	}   
+        
+ /**
+	* @Security("has_role('ROLE_JURY')")
+         * 
+         * @Route("palmares", name="cyberjury_palmares")
+         * 
+	*/
+	public function palmares(Request $request)
+	{
+		$repositoryEquipes = $this->getDoctrine()
+		->getManager()
+		->getRepository('App:Equipes');
+		$em=$this->getDoctrine()->getManager();
+
+		$repositoryClassement = $this->getDoctrine()
+		->getManager()
+		->getRepository('App:Classement');
+		
+		$NbrePremierPrix=$repositoryClassement
+			->findOneByNiveau('1er')
+			->getNbreprix(); 
+
+		$NbreDeuxPrix = $repositoryClassement
+			->findOneByNiveau('2ème')
+			->getNbreprix(); 
+
+		$NbreTroisPrix = $repositoryClassement
+			->findOneByNiveau('3ème')
+			->getNbreprix(); 
+
+		$ListPremPrix = $repositoryEquipes->palmares(1,0, $NbrePremierPrix); // classement par rang croissant 
+		$offset = $NbrePremierPrix  ; 
+		$ListDeuxPrix = $repositoryEquipes->palmares(2, $offset, $NbreDeuxPrix);
+		$offset = $offset + $NbreDeuxPrix  ; 
+		$ListTroisPrix = $repositoryEquipes->palmares(3, $offset, $NbreTroisPrix);
+
+		$rang=0; 
+
+		foreach ($ListPremPrix as $equipe) 
+		{
+			$niveau = '1er'; 
+			$equipe->setClassement($niveau);
+			$rang = $rang + 1 ; 			
+			$equipe->setRang($rang);
+			$em->persist($equipe);
+			$em->flush();
+		}
+
+		foreach ($ListDeuxPrix as $equipe) 
+		{
+			$niveau = '2ème';
+			$equipe->setClassement($niveau);
+			$rang = $rang + 1 ; 			
+			$equipe->setRang($rang);
+			$em->persist($equipe);
+			$em->flush();
+		}
+		foreach ($ListTroisPrix as $equipe) 
+		{
+			$niveau = '3ème';
+			$equipe->setClassement($niveau);
+			$rang = $rang + 1 ; 			
+			$equipe->setRang($rang);
+			$em->persist($equipe);
+			$em->flush();
+		}
+
+		$content = $this->get('templating')->render('cyberjury/palmares.html.twig',
+			array('ListPremPrix' => $ListPremPrix, 
+			      'ListDeuxPrix' => $ListDeuxPrix,
+			      'ListTroisPrix' => $ListTroisPrix,
+			      'NbrePremierPrix' => $NbrePremierPrix, 
+			      'NbreDeuxPrix' => $NbreDeuxPrix, 
+			      'NbreTroisPrix' => $NbreTroisPrix)
+			);
+		return new Response($content);
+	}       
+        
         /**
         * 
 	* @Security("has_role('ROLE_JURY')")

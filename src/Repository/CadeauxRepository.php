@@ -13,6 +13,13 @@ use Doctrine\ORM\QueryBuilder;
  */
 class CadeauxRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getListCadeaux()
+    {
+       $query = $this->createQueryBuilder('c')
+                     ->orderBy('c.montant', 'DESC')
+                     ->getQuery();
+       return $query ->getResult();
 
+    }
 }
 

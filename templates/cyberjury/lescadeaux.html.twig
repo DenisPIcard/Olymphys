@@ -1,0 +1,36 @@
+{% extends "layout.html.twig" %}
+{% block title %} Les cadeaux {% endblock %}
+
+{% block titre3 %} Les Cadeaux {% endblock %}
+
+{% block navigation %}
+	{{ include ("cyberjury/navigation.html.twig") }}
+{% endblock %}
+
+{% block body %}
+
+<div> 
+  <table class="table table-striped">
+    <thead>
+      <tr class="danger">
+        <th>Cadeau</th>
+        <th>Offert par</th>
+        <th>Valeur</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for cadeaux in ListCadeaux %}
+      <tr class="danger" >
+        <td> {{ cadeaux.contenu}} </td>
+        <td> {{ cadeaux.fournisseur }} </td>
+        <td> {{ cadeaux.montant }} € </td>
+        <td
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div> 
+
+ 
+
+{% endblock %}

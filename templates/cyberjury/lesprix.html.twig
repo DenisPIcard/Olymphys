@@ -1,10 +1,10 @@
-% extends "layout.html.twig" %}
+{% extends "layout.html.twig" %}
 {% block title %} Les prix {% endblock %}
 
 {% block titre3 %} Les prix {% endblock %}
 
 {% block navigation %}
-	{{ include ("secretariat/navigation.html.twig") }}
+	{{ include ("cyberjury/navigation.html.twig") }}
 {% endblock %}
 
 {% block body %}
@@ -28,8 +28,7 @@
           {{loop.index }}
         </td>
         <td>
-          <a href="{{ path('secretariat_modifier_prix', {'id_prix': prix.id} ) }}"> {{prix.prix}} 
-          </a> 
+          {{prix.prix}} 
         </td>
       </tr>
       {% endfor %}
@@ -38,7 +37,7 @@
 </div> 
 
   <h2>
-  	Les deuxièmes prix d'un montant de {{constant('\\App\\Entity\\Prix::DEUXIEME')}} EUROS. 
+  	Les deuxièmes prix d'un montant de {{constant('\\App\\Entity\\Prix::DEUXIEME')}} EUROS. 
   </h2>
   <div> 
   <table class="table table-striped">
@@ -55,8 +54,7 @@
           {{loop.index }}
         </td>
         <td>
-          <a href="{{ path('secretariat_modifier_prix', {'id_prix': prix.id} ) }}"> {{prix.prix}} 
-          </a> 
+          {{prix.prix}} 
         </td>
       </tr>
       {% endfor %}
@@ -65,7 +63,7 @@
 </div> 
 
   <h2>
-    Les troisièmes prix d'un montant de {{constant('\\App\\Entity\\Prix::TROISIEME')}} EUROS. 
+    Les troisièmes prix d'un montant de {{constant('\\App\\Entity\\Prix::TROISIEME')}} EUROS. 
   </h2>
   <div> 
   <table class="table table-striped">
@@ -82,11 +80,13 @@
           {{loop.index }}
         </td>
         <td>
-          <a href="{{ path('secretariat_modifier_prix', {'id_prix': prix.id} ) }}"> {{prix.prix}} 
-          </a> 
+            {{prix.prix}} 
+        
         </td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
 </div> 
+
+{% endblock %}
