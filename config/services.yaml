@@ -21,9 +21,6 @@ services:
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
-    
-    cyberjury.classesPHPExcelStyle:
-        class: App\ClassesPHPExcelStyle\PHPExcelStyleAlignment
 
     admin.jures:
         class: App\Admin\JuresAdmin
@@ -46,9 +43,9 @@ services:
             - { name: sonata.admin, manager_type: orm, group: Jury, label: Equipes }
         public: true
         
-    app.cadeaux.extension:
-        class: App\Admin\Extension\CadeauxExtension
+    admin.cadeaux:
+        class: App\Admin\CadeauxAdmin
         arguments: [~, App\Entity\Cadeaux, ~]
         tags: 
-            - {name: sonata.admin.extensions, manager_type: orm, group: Jury, label: Cadeaux}
+            - {name: sonata.admin, manager_type: orm, group: Jury, label: Cadeaux}
         public: true

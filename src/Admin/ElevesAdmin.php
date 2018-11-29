@@ -15,7 +15,7 @@ class ElevesAdmin extends AbstractAdmin
     {
         $formMapper->add('nom', TextType::class)
                    ->add('prenom', TextType::class)
-                   ->add('numeroEequipe', TextType::class)
+                   ->add('numeroEquipe', TextType::class)
                    ->add('lettreEquipe', TextType::class);
     }
 
