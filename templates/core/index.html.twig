@@ -36,7 +36,11 @@
   {% endfor %}
 
   <h3>Menu</h3>
+  	
 
+{{ knp_menu_render('main') }}
+
+{#
 <ul class="nav nav-pills nav-stacked">
     <li>
     {% if is_granted('ROLE_ADMIN') %}
@@ -69,6 +73,7 @@
     <li>Présentations</li>
     
 </ul>
+#}
 {% endblock %}
 
 
