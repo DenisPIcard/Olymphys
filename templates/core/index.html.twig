@@ -7,7 +7,7 @@
 {% endblock %}
 {%block navigation %}
     <a href="{{ path('core_home') }}">Accueil</a>
-  <ul>
+  <ul class="nav nav-pills nav-stacked">
             <li><h3>Utilisateur</h3></li>
         {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
             <li>Connecté en tant que {{ app.user.username }}</li>

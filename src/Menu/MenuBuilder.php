@@ -27,25 +27,28 @@ class MenuBuilder implements ContainerAwareInterface
         
       
        $menu = $this->factory->createItem('root');
-       //$menu->setChildrenAttribute('class', 'nav navbar-nav');
+       $menu->setChildrenAttribute('class', 'nav nav-tabs nav-stacked');
         
        $menu->addChild('Accueil', ['route' => 'core_home']);
         // create another menu item
        if($this->checker->isGranted('ROLE_ADMIN'))
        {
-            $menu->addChild('Administration', ['route' => 'sonata_admin_redirect']);
+            $menu->addChild('Administration');
+            $menu['Administration']->addChild('Tableau de bord', ['route' => 'sonata_admin_redirect']);
+            $menu['Administration']->addChild('Secrétariat du Jury', ['route' => 'secretariat_accueil']);
        }
-       $menu->addChild('Pages comité', ['route' => '']);
+       if($this->checker->isGranted('ROLE_COMITE'))
+       {
+           $menu->addChild('Pages comité', ['route' => '']);
+       }
        if($this->checker->isGranted('ROLE_JURY'))
        {
             $menu->addChild('Accueil du Jury', ['route' => 'cyberjury_accueil']);
        }
-       if($this->checker->isGranted('ROLE_ADMIN'))
-       {
-            $menu->addChild('Secrétariat du Jury', ['route' => 'secretariat_accueil']);
-       }
-       $menu->addChild('Galeries photos', ['route' => '']);
 
+       $menu->addChild('Galeries photos', ['route' => '']);
+       $menu->addChild('Mémoires', ['route' => '']);
+       $menu->addChild('Présentations', ['route' => '']);
 
         return $menu;
     }
