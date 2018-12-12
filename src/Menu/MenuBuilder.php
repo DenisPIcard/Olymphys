@@ -49,6 +49,7 @@ class MenuBuilder implements ContainerAwareInterface
        $menu->addChild('Galeries photos', ['route' => '']);
        $menu->addChild('Mémoires', ['route' => '']);
        $menu->addChild('Présentations', ['route' => '']);
+ 
 
         return $menu;
     }
