@@ -1,4 +1,4 @@
-#config/packages/sonata_admin.yaml
+ #config/packages/sonata_admin.yaml
 
 sonata_admin:
     title: 'Sonata Admin'

@@ -7,6 +7,8 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
 class CadeauxAdmin extends AbstractAdmin
 {
@@ -14,7 +16,7 @@ class CadeauxAdmin extends AbstractAdmin
     {
         $formMapper->add('contenu', TextType::class)
                    ->add('fournisseur', TextType::class)
-                   ->add('montant', TextType::class)
+                   ->add('montant', MoneyType::class, array('currency'=>'EUR'))
                    ->add('attribue', TextType::class);
     }
 
@@ -30,7 +32,7 @@ class CadeauxAdmin extends AbstractAdmin
     {
         $listMapper->addIdentifier('contenu')
                    ->addIdentifier('fournisseur')
-                   ->addIdentifier('montant')
+                   ->add('montant')
                    ->addIdentifier('attribue');
     }
 

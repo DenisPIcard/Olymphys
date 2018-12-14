@@ -8,7 +8,7 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
 class JuresAdmin extends AbstractAdmin
 {
@@ -17,32 +17,32 @@ class JuresAdmin extends AbstractAdmin
         $formMapper->add('prenomJure', TextType::class)
                    ->add('nomJure', TextType::class)
                    ->add('initialesJure', TextType::class)
-                   ->add('A', NumberType::class)
-                   ->add('B', NumberType::class)
-                   ->add('C', NumberType::class)
-                   ->add('D', NumberType::class)
-                   ->add('E', NumberType::class)
-                   ->add('F', NumberType::class)
-                   ->add('G', NumberType::class)
-                   ->add('H', NumberType::class)
-                   ->add('I', NumberType::class)
-                   ->add('J', NumberType::class)
-                   ->add('K', NumberType::class)
-                   ->add('L', NumberType::class)
-                   ->add('M', NumberType::class)
-                   ->add('N', NumberType::class)
-                   ->add('O', NumberType::class)
-                   ->add('P', NumberType::class)
-                   ->add('Q', NumberType::class)
-                   ->add('R', NumberType::class)
-                   ->add('S', NumberType::class)
-                   ->add('T', NumberType::class)
-                   ->add('U', NumberType::class)
-                   ->add('V', NumberType::class)
-                   ->add('W', NumberType::class)
-                   ->add('X', NumberType::class)
-                   ->add('Y', NumberType::class)
-                   ->add('Z', NumberType::class);
+                   ->add('A', IntegerType::class, ['required' => false])
+                   ->add('B', IntegerType::class, ['required' => false])
+                   ->add('C', IntegerType::class, ['required' => false])
+                   ->add('D', IntegerType::class, ['required' => false])
+                   ->add('E', IntegerType::class, ['required' => false])
+                   ->add('F', IntegerType::class, ['required' => false])
+                   ->add('G', IntegerType::class, ['required' => false])
+                   ->add('H', IntegerType::class, ['required' => false])
+                   ->add('I', IntegerType::class, ['required' => false])
+                   ->add('J', IntegerType::class, ['required' => false])
+                   ->add('K', IntegerType::class, ['required' => false])
+                   ->add('L', IntegerType::class, ['required' => false])
+                   ->add('M', IntegerType::class, ['required' => false])
+                   ->add('N', IntegerType::class, ['required' => false])
+                   ->add('O', IntegerType::class, ['required' => false])
+                   ->add('P', IntegerType::class, ['required' => false])
+                   ->add('Q', IntegerType::class, ['required' => false])
+                   ->add('R', IntegerType::class, ['required' => false])
+                   ->add('S', IntegerType::class, ['required' => false])
+                   ->add('T', IntegerType::class, ['required' => false])
+                   ->add('U', IntegerType::class, ['required' => false])
+                   ->add('V', IntegerType::class, ['required' => false])
+                   ->add('W', IntegerType::class, ['required' => false])
+                   ->add('X', IntegerType::class, ['required' => false])
+                   ->add('Y', IntegerType::class, ['required' => false])
+                   ->add('Z', IntegerType::class, ['required' => false]);
     }
 
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)

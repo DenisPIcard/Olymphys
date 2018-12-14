@@ -260,10 +260,9 @@ class SecretariatController extends Controller
 		{
 			$rang = $rang + 1 ; 
 			$equipe->setRang($rang);
-			$em->persist($equipe);
-			$em->flush();
+			$em->persist($equipe);	
 		}
-
+                $em->flush();
 		// Le render ne change pas, on passait un tableau, maintenant un objet 
 		$content = $this->get('templating')->render('secretariat/classement.html.twig', 
 			//array('listEquipes'=>$listEquipes)

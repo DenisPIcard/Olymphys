@@ -28,13 +28,21 @@ services:
         tags:
             - { name: knp_menu.menu_builder, method: createMainMenu, alias: main } # The alias is what is used to retrieve the menu
             
-    admin.jures:
-        class: App\Admin\JuresAdmin
-        arguments: [~, App\Entity\Jures, ~]
+
+    admin.cadeaux:
+        class: App\Admin\CadeauxAdmin
+        arguments: [~, App\Entity\Cadeaux, ~]
+        tags: 
+            - {name: sonata.admin, manager_type: orm, group: Jury, label: Cadeaux}
+        public: true
+                
+    admin.classement:
+        class: App\Admin\ClassementAdmin
+        arguments: [~, App\Entity\Classement, ~]
         tags:
-            - { name: sonata.admin, manager_type: orm, group: Jury, label: Jures }
+            - { name: sonata.admin, manager_type: orm, group: Jury, label: Classement }
         public: true   
-        
+               
     admin.eleves:
         class: App\Admin\ElevesAdmin
         arguments: [~, App\Entity\Eleves, ~]
@@ -49,12 +57,19 @@ services:
             - { name: sonata.admin, manager_type: orm, group: Jury, label: Equipes }
         public: true
         
-    admin.cadeaux:
-        class: App\Admin\CadeauxAdmin
-        arguments: [~, App\Entity\Cadeaux, ~]
-        tags: 
-            - {name: sonata.admin, manager_type: orm, group: Jury, label: Cadeaux}
-        public: true
+    admin.jures:
+        class: App\Admin\JuresAdmin
+        arguments: [~, App\Entity\Jures, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: Jury, label: Jures }
+        public: true 
+        
+    admin.prix:
+        class: App\Admin\PrixAdmin
+        arguments: [~, App\Entity\Prix, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: Jury, label: Prix }
+        public: true   
         
     nouveluser.mail:
         class: App\NouvelUser\EnvoiMails
