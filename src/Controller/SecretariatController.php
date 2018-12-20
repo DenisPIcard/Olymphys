@@ -14,11 +14,13 @@ use App\Form\JuresType ;
 use App\Form\CadeauxType ;
 use App\Form\ClassementType ;
 use App\Form\PrixType ;
+use App\Form\ChoixPrixType;
 
 use App\Entity\Equipes ;
 use App\Entity\Totalequipes ;
 use App\Entity\Jures ;
 use App\Entity\Notes ;
+use App\Entity\Pamares;
 use App\Entity\Visites ;
 use App\Entity\Phrases ;
 use App\Entity\Classement ;
@@ -36,8 +38,11 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+
 use Symfony\Bundle\FrameworkBundle\Controller\Controller ;
-use Symfony\Component\HttpFoundation\Request ; # récupérer des arguments de la requête hors route, récupérer la méthode de la requête HTTP. 
+use Symfony\Component\HttpFoundation\Request ;
 use Symfony\Component\HttpFoundation\RedirectResponse ;
 use Symfony\Component\HttpFoundation\Response ;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -55,7 +60,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
     
 class SecretariatController extends Controller 
 {
-	
+
 	/**
 	* @Security("has_role('ROLE_SUPER_ADMIN')")
          * 
@@ -697,10 +702,6 @@ class SecretariatController extends Controller
 		->getManager()
 		->getRepository('App:Equipes');
 
-		$repositoryPalmares = $this->getDoctrine()
-		->getManager()
-		->getRepository('App:Palmares');
-
 		$repositoryClassement = $this->getDoctrine()
 		->getManager()
 		->getRepository('App:Classement');
@@ -708,19 +709,21 @@ class SecretariatController extends Controller
 		$repositoryPrix = $this->getDoctrine()
 		->getManager()
 		->getRepository('App:Prix');
-		
-		$qb = $repositoryPrix->createQueryBuilder('p');
-		
-		$qb->where('p.classement=:niveau')
-		->setParameter('niveau', $niveau_court);
 
-	
-		$ListEquipes = $repositoryEquipes->findByClassement($niveau_court);  
-
-		$NbrePrix=$repositoryClassement
+		$repositoryPalmares = $this->getDoctrine()
+		->getManager()
+		->getRepository('App:Palmares');
+                
+                $ListEquipes = $repositoryEquipes->findByClassement($niveau_court); 
+                
+                $NbrePrix=$repositoryClassement
 			->findOneByNiveau($niveau_court)
 			->getNbreprix(); 
-
+                
+		$qb = $repositoryPrix->createQueryBuilder('p');
+		$qb->where('p.classement=:niveau')
+		->setParameter('niveau', $niveau_court);
+                
 		$prix = $repositoryPalmares->findOneByCategorie('prix');
 		$formBuilder=$this->get('form.factory')->createBuilder(FormType::class, $prix);
 		
@@ -728,20 +731,21 @@ class SecretariatController extends Controller
 		{
 			$lettre=strtoupper($equipe->getLettre());
 			$titre=$equipe->getTitreProjet();
-			$formBuilder
-				->add($lettre, EntityType::class, array(
-                    'class' => 'App:Prix',
-                    'query_builder' => $qb ,
-                    'choice_label'=> 'getPrix',
-                    'multiple' => false,
-                    'label' => $lettre." : ".$titre));
+			$formBuilder->add($lettre, EntityType::class, [
+                                        'class' => 'App:Prix',
+                                        'query_builder' => $qb ,
+                                        'choice_label'=> 'getPrix',
+                                        'multiple' => false,
+                                        'label' => $lettre." : ".$titre]
+                                     );
 		}
 		$formBuilder->add('Enregistrer', SubmitType::class);
 		$form=$formBuilder->getForm();
 
+                
 		//Si la requête est en POST 
 		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) 
-                    {
+			{
 			// création et gestion du formulaire. 
 			$em=$this->getDoctrine()->getManager();
 			$em->persist($prix);
@@ -753,15 +757,15 @@ class SecretariatController extends Controller
         		$method = 'get'.ucfirst($i);
 
         		// Si le getter correspondant existe.
-                        if (method_exists($prix, $method))
+        		if (method_exists($prix, $method))
                             {
-        		// On appelle le setter.
+                            // On appelle le setter.
                             $pprix = $prix->$method();
                             if($pprix)
                                 {
-                                 $equipe = $repositoryEquipes->findOneByLettre($i);
-                                 $equipe->setPrix($pprix);
-                                 $em->persist($equipe);                          
+                                $equipe = $repositoryEquipes->findOneByLettre($i);
+                                $equipe->setPrix($pprix);
+				$em->persist($equipe);
                                 } 
                             }
         		}
@@ -770,20 +774,22 @@ class SecretariatController extends Controller
 			$request -> getSession()->getFlashBag()->add('notice', 'Notes bien enregistrées');
 			// puis on redirige vers la page de visualisation de cette note dans le tableau de bord
 			return $this->redirectToroute('secretariat_attrib_prix', array('niveau'=> $niveau));	
-                    }
+			}
 
 		// Si on n'est pas en POST, on affiche le formulaire. 
-                    $content = $this->get('templating')->render('secretariat/attrib_prix.html.twig',
+		$content = $this->get('templating')->render('secretariat/attrib_prix.html.twig',
 			array('ListEquipes' => $ListEquipes, 
 				'NbrePrix'=>$NbrePrix, 
 				'niveau'=>$niveau_long, 
 				'form'=>$form->createView(),
-                             )
-                           );
-                    return new Response($content);
+				)
+			);
+		return new Response($content);
 	}
 	
 	
+
+
 	/**
 	* @Security("has_role('ROLE_SUPER_ADMIN')")
          * 
@@ -842,7 +848,7 @@ class SecretariatController extends Controller
 			;
 		$cadeau = $equipe->getCadeau();
 
-		$em=$this->getDoctrine()->getManager();
+		//$em=$this->getDoctrine()->getManager();
 
 		if(is_null($cadeau))
 		{
@@ -898,19 +904,20 @@ class SecretariatController extends Controller
 			// création et gestion du formulaire. 
 
 			$em->persist($cadeau);
-			$em->flush();	
+	
 			if($cadeau->getAttribue())
 				{
 					$em->persist($equipe);
-					$em->flush();					
+					//$em->flush();					
 				}	
 			else
 				{
 					$equipe->setCadeau(NULL);
 					$em->persist($equipe);
-					$em->flush();					
+					//$em->flush();					
 				}	
-			$request -> getSession()->getFlashBag()->add('notice', 'Notes bien enregistrées');
+			$em->flush();
+                        $request -> getSession()->getFlashBag()->add('notice', 'Notes bien enregistrées');
 			// puis on redirige vers la page de visualisation de cette note dans le tableau de bord
 			return $this->redirectToroute('secretariat_attrib_cadeaux', array('id_equipe'=>$id_equipe));	
 			}

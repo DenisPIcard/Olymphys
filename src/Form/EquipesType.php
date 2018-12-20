@@ -56,15 +56,15 @@ class EquipesType extends AbstractType
             ->add('rang', IntegerType::class) // au lieu de TextType
             ->add('Enregistrer', SubmitType::class);                        
         }
-
+        
         elseif($options['Attrib_Phrases'])
         {
         $builder
             ->add('phrases', PhrasesType::class)
-            ->add('liaison', EntityType::class, array(
+            ->add('liaison', EntityType::class, [
                     'class' => 'App:Liaison',
                     'choice_label'=> 'getLiaison',
-                    'multiple' => false,))
+                    'multiple' => false])
             ->add('Enregistrer', SubmitType::class);            
         }
 
@@ -79,7 +79,7 @@ class EquipesType extends AbstractType
             else
             {
             $builder
-                ->add('cadeau', EntityType::class, array(
+                ->add('cadeau', EntityType::class, [
                     'class' => 'App:Cadeaux', 
                     'query_builder' => function (EntityRepository $er) {
                         return $er->createQueryBuilder('c')
@@ -87,7 +87,7 @@ class EquipesType extends AbstractType
                         ->orderBy('c.montant', 'DESC');
                     },
                     'choice_label'=> 'displayCadeau', 
-                    'multiple' => false,))
+                    'multiple' => false])
                 ->add('Enregistrer', SubmitType::class);
 
             }
@@ -103,8 +103,8 @@ class EquipesType extends AbstractType
         $resolver->setDefaults(array(
             'data_class' => 'App\Entity\Equipes',
             'Modifier_Rang'=>false,
-            'Attrib_Phrases' =>true, 
-            'Attrib_Cadeaux'=>true,
+            'Attrib_Phrases' =>false, 
+            'Attrib_Cadeaux'=>false,
             'Deja_Attrib'=>false,
         ));
     }
