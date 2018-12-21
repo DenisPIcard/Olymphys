@@ -456,8 +456,14 @@ class SecretariatController extends Controller
                         $deb = $ancien_rang;
                         $max= $nouveau_rang-$deb;
                         $mod= -1;                                                      
-                        }    
-
+                        } 
+                    elseif($ancien_rang == $nouveau_rang)
+                        {
+                        $deb = $ancien_rang;
+                        $max= 0;
+                        $mod=0;
+                        }
+                        
                     $qb = $repositoryEquipes->createQueryBuilder('e');
                     $qb ->orderBy('e.rang', 'ASC')
                         ->setFirstResult( $deb )
@@ -468,7 +474,7 @@ class SecretariatController extends Controller
                         {
                         $rang= $eq->getRang();
                         $eq ->setRang($rang+$mod);
-                        $em->persist($eq);			                       
+                       //$em->persist($eq);			                       
                         }
                     $em->persist($equipe);			
                     $em->flush();
@@ -766,10 +772,10 @@ class SecretariatController extends Controller
                                 $equipe = $repositoryEquipes->findOneByLettre($i);
                                 $equipe->setPrix($pprix);
 				$em->persist($equipe);
-                                } 
+                                $em->flush();
+                        } 
                             }
         		}
-                        $em->flush();
 	
 			$request -> getSession()->getFlashBag()->add('notice', 'Notes bien enregistrées');
 			// puis on redirige vers la page de visualisation de cette note dans le tableau de bord
