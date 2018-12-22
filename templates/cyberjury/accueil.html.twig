@@ -4,7 +4,7 @@
 
 
 {% block navigation %}
-<button type="button" class="btn btn-default btn-block"  > <span class="glyphicon glyphicon-user">  </span> 					
+<button type="button" class="btn btn-default btn-block"  > <span class="fas fa-user">  </span> 					
 {{ jure.prenomJure|title }} {{ jure.nomJure|title }} 
   </button>
   <br />
@@ -21,9 +21,9 @@
 href="{{ path('cyberjury_evaluer_une_equipe', {'id': equipes.id} ) }}" >{{ equipes.lettre }}</a> 
 
     {{ equipes.titreProjet }}
-    <a href="{{ equipes.urlMemoire }}" class="glyphicon glyphicon-book" title="Accéder au mémoire de l'équipe" target="_blank"> </a>
-    <a href="{{ path('cyberjury_infos_equipe', {'id': equipes.id} ) }}" class="glyphicon glyphicon-info-sign" title="En savoir plus sur cette équipe"> </a>
-    <a href="{{ path('cyberjury_phrases_amusantes', {'id': equipes.id} ) }}" class="glyphicon glyphicon-pencil" title="Les phrases amusantes" > </a>
+    <a href="{{ equipes.urlMemoire }}" class="fas fa-book-reader" title="Accéder au mémoire de l'équipe" target="_blank"> </a>
+    <a href="{{ path('cyberjury_infos_equipe', {'id': equipes.id} ) }}" class="fas fa-info-circle" title="En savoir plus sur cette équipe"> </a>
+    <a href="{{ path('cyberjury_phrases_amusantes', {'id': equipes.id} ) }}" class="fas fa-pencil-alt" title="Les phrases amusantes" > </a>
     <p />
 
 {% endfor %}

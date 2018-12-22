@@ -29,7 +29,7 @@ class MenuBuilder implements ContainerAwareInterface
        $menu->setChildrenAttribute('class', 'nav flex-column nav-pills');
       
        
-       $menu->addChild('Accueil', ['route' => 'core_home']);
+       $menu->addChild('Accueil du site', ['route' => 'core_home']);
         // create another menu item
        if($this->checker->isGranted('ROLE_ADMIN'))
        {
@@ -67,7 +67,6 @@ class MenuBuilder implements ContainerAwareInterface
             $menu->addChild('Home', ['route' => 'homepage']);
         }
         $menu->setChildrenAttribute('class', 'nav flex-column nav-pills');
-        $menu->addChild('Accueil du site', ['route' => 'core_home']);
         $menu->addChild('Accueil du secrétariat', [ 'attributes' => ['dropdown' => true,],]);
         $menu['Accueil du secrétariat']
                     ->addChild('Accueil du secrétariat', ['route' => 'secretariat_accueil', 'attributes' => ['dropdown' => true,]]);
@@ -97,7 +96,7 @@ class MenuBuilder implements ContainerAwareInterface
             $menu['Édition du palmarès']->addChild('Fichier Excel pour le site',['route'=>'secretariat_tableau_excel_palmares_site']);
             $menu['Édition du palmarès']->addChild('Fichier Excel pour la proclamation du palmarès',['route'=>'secretariat_tableau_excel_palmares_jury']);
         $menu->addChild('Déconnexion', ['route'=>'fos_user_security_logout'])
-             ->setAttribute('icon', 'glyphicon glyphicon-log-out');
+             ->setAttribute('class', 'fas fa-procedures');
         return $menu;
     }
 

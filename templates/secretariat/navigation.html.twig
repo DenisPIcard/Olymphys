@@ -1,8 +1,8 @@
 <button type="button" class="btn btn-default btn-block"  > 
-	<span class="glyphicon glyphicon-user">  </span>  
+	<i class="fas fa-user">  </i>  
 		{{ app.user.username}}  
 </button>
-<a href="{{ path('fos_user_security_logout')}}" class="glyphicon glyphicon-log-out"> Déconnexion</a>
+<a href="{{ path('fos_user_security_logout')}}" class="fas fa-procedures"> Déconnexion</a>
 	
 
 {{ knp_menu_render('secretariat', {'currentClass': 'active'}) }}

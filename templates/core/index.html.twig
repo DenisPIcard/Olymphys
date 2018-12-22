@@ -8,9 +8,9 @@
 {%block navigation %}
 
   <ul class="nav flex-column nav-pills">
-            <li>Utilisateur : </h3></li>
+            <li>Utilisateur : 
         {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-            <li>Connecté en tant que {{ app.user.username }}</li>
+             {{ app.user.username }}</li>
             <li><a href="{{ path('fos_user_profile_show') }}">Mon profil</a></li>
             <li><a href="{{ path('fos_user_security_logout') }}">Déconnexion</a></li>
         {% else %}
