@@ -12,11 +12,11 @@
 {% endblock %} 
 
 {% block navigation %}
-<button type="button" class="btn btn-default btn-block"  > <span class="fas fa-user">  </span> 					
+<button type="button" class="btn btn-light btn-block"  > <span class="fas fa-user">  </span>           
 {{ jure.prenomJure|title }} {{ jure.nomJure|title }} 
   </button>
 
-	{{ include ("cyberjury/navigation.html.twig") }}
+{{ knp_menu_render('jury', {'currentClass': 'active'}) }}
 {% endblock %}
 {% block body %}
 

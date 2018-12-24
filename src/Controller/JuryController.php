@@ -156,15 +156,28 @@ class JuryController extends Controller
 	*/
 	public function lescadeaux(Request $request)
 	{
-		$repositoryCadeaux = $this->getDoctrine()
-                                          ->getManager()
-                                          ->getRepository('App:Cadeaux');
-		$ListCadeaux  = $repositoryCadeaux ->getListCadeaux();
+            $user=$this->getUser();
+            $nom=$user->getUsername();
 
-		$content = $this->get('templating')->render('cyberjury/lescadeaux.html.twig',
-			array('ListCadeaux' => $ListCadeaux )
+            $repositoryJure = $this
+			->getDoctrine()
+			->getManager()
+			->getRepository('App:Jures')
+			;
+
+            $jure=$repositoryJure->findOneByNomJure($nom);
+            $id_jure = $jure->getId();
+
+            $repositoryCadeaux = $this->getDoctrine()
+                                       ->getManager()
+                                        ->getRepository('App:Cadeaux');
+            $ListCadeaux  = $repositoryCadeaux ->getListCadeaux();
+
+            $content = $this->get('templating')->render('cyberjury/lescadeaux.html.twig',
+			array('ListCadeaux' => $ListCadeaux,
+                                'jure'=>$jure)
  			);
-		return new Response($content);
+	return new Response($content);
 	}       
          
  	/**
@@ -175,18 +188,41 @@ class JuryController extends Controller
 	*/
 	public function lesprix(Request $request)
 	{
-		$repositoryPrix = $this->getDoctrine()
+            $user=$this->getUser();
+            $nom=$user->getUsername();
+
+            $repositoryJure = $this
+			->getDoctrine()
+			->getManager()
+			->getRepository('App:Jures')
+			;
+
+            $jure=$repositoryJure->findOneByNomJure($nom);
+            $id_jure = $jure->getId();
+                $repositoryPrix = $this->getDoctrine()
 		->getManager()
 		->getRepository('App:Prix');
+                
+
 		
 		$ListPremPrix = $repositoryPrix->findByClassement('1er');
 		$ListDeuxPrix = $repositoryPrix->findByClassement('2ème');
 		$ListTroisPrix = $repositoryPrix->findByClassement('3ème');
 
+                $repositoryJure = $this
+                        ->getDoctrine()
+			->getManager()
+			->getRepository('App:Jures')
+			;
+
+		$jure=$repositoryJure->findOneByNomJure($nom);
+		$id_jure = $jure->getId();
+
 		$content = $this->get('templating')->render('cyberjury/lesprix.html.twig',
 			array('ListPremPrix' => $ListPremPrix, 
                               'ListDeuxPrix' => $ListDeuxPrix, 
-                              'ListTroisPrix' => $ListTroisPrix)
+                              'ListTroisPrix' => $ListTroisPrix,
+                              'jure'=>$jure)
 			);
 		return new Response($content);
 	}   
@@ -199,6 +235,17 @@ class JuryController extends Controller
 	*/
 	public function palmares(Request $request)
 	{
+            $user=$this->getUser();
+            $nom=$user->getUsername();
+
+            $repositoryJure = $this
+			->getDoctrine()
+			->getManager()
+			->getRepository('App:Jures')
+			;
+
+            $jure=$repositoryJure->findOneByNomJure($nom);
+            $id_jure = $jure->getId();
 		$repositoryEquipes = $this->getDoctrine()
 		->getManager()
 		->getRepository('App:Equipes');
@@ -263,7 +310,8 @@ class JuryController extends Controller
 			      'ListTroisPrix' => $ListTroisPrix,
 			      'NbrePremierPrix' => $NbrePremierPrix, 
 			      'NbreDeuxPrix' => $NbreDeuxPrix, 
-			      'NbreTroisPrix' => $NbreTroisPrix)
+			      'NbreTroisPrix' => $NbreTroisPrix,
+                              'jure'=>$jure)
 			);
 		return new Response($content);
 	}       

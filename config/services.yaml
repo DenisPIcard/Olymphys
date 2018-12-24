@@ -27,7 +27,9 @@ services:
         arguments: ["@knp_menu.factory","@security.authorization_checker"]
         tags:
             - { name: knp_menu.menu_builder, method: createMainMenu, alias: main }
+            - { name: knp_menu.menu_builder, method: createUtilisateurMenu, alias: utilisateur }
             - { name: knp_menu.menu_builder, method: createSecretariatMenu, alias: secretariat }
+            - { name: knp_menu.menu_builder, method: createJuryMenu, alias: jury }
             
 
     admin.cadeaux:
@@ -72,6 +74,15 @@ services:
             - { name: sonata.admin, manager_type: orm, group: Jury, label: Prix }
         public: true   
         
+    #utilisateur.menu:
+        #class: Knp\Menu\MenuItem
+        #factory_service: utilisateur.menu_builder
+        #factory_method: createUtilisateurMenu
+        #arguments: ["@request","@security.context"]
+        #scope: request
+        #tags:
+         #   - { name: knp_menu.menu, alias: utilisateur }
+            
     nouveluser.mail:
         class: App\NouvelUser\EnvoiMails
 

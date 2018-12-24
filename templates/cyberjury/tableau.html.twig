@@ -3,12 +3,15 @@
 
 {% block titre3 %} Classement provisoire de mes équipes {% endblock %}
 {% block navigation %}
-<button type="button" class="btn btn-default btn-block"  > <span class="fas fa-user">  </span>           
+<button type="button" class="btn btn-light btn-block"  > <span class="fas fa-user">  </span>           
 {{ jure.prenomJure|title }} {{ jure.nomJure|title }} 
   </button>
 
-  {{ include ("cyberjury/navigation.html.twig") }}
-{% endblock %}{% block body %}
+{{ knp_menu_render('jury', {'currentClass': 'active'}) }}
+ {# {{ include ("cyberjury/navigation.html.twig") }} #}
+{% endblock %}
+
+{% block body %}
 
 <div class="table-responsive">
 
@@ -43,7 +46,7 @@
         {% if equipes.ecrit %}
 				<td> {{ equipes.ecrit }} </td>
 			{% else %}
-				<td> <span class = "glyphicon glyphicon-minus-sign"> </span> </td>
+				<td> <span class = "fas fa-minus-circle"> </span> </td>
 			{% endif %}
         <td>
         <a href="{{ equipes.urlMemoire }}" class="fas fa-book-reader" title="Accéder au mémoire de l'équipe" target="_blank"> </a>

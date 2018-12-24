@@ -3,9 +3,14 @@
 namespace App\Menu;
 
 use Knp\Menu\FactoryInterface;
+use Symfony\Component\HttpFoundation\Request ; # récupérer des arguments de la requête hors route, récupérer la méthode de la requête HTTP. 
+use Symfony\Component\HttpFoundation\RedirectResponse ;
+use Symfony\Component\HttpFoundation\Response ;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\SecurityContext;
 
 class MenuBuilder implements ContainerAwareInterface
 {
@@ -13,8 +18,6 @@ class MenuBuilder implements ContainerAwareInterface
      
       /**
      * @param FactoryInterface $factory
-     *
-     * Add any other dependency you need
      */
     public function __construct(FactoryInterface $factory, AuthorizationCheckerInterface $authorizationChecker)
     {
@@ -24,13 +27,11 @@ class MenuBuilder implements ContainerAwareInterface
     
     public function createMainMenu(array $options)
     {
-        
+    
        $menu = $this->factory->createItem('root');
        $menu->setChildrenAttribute('class', 'nav flex-column nav-pills');
-      
-       
        $menu->addChild('Accueil du site', ['route' => 'core_home']);
-        // create another menu item
+
        if($this->checker->isGranted('ROLE_ADMIN'))
        {
             $menu->addChild('Administration');
@@ -54,9 +55,49 @@ class MenuBuilder implements ContainerAwareInterface
         return $menu;
     }
     
-    public function createUtilisateurMenu(array $options)
+  //  public function createUtilisateurMenu(Request $request, SecurityContext $securityContext)
+    public function createUtilisateurMenu()
     {
+
+        //$securityContext->getToken()->getUser();
+        
         $menu = $this->factory->createItem('utilisateur');
+        if (isset($options['include_homepage']) && $options['include_homepage']) {
+            $menu->addChild('Home', ['route' => 'homepage']);
+        }
+        $menu->setChildrenAttribute('class', 'nav flex-column nav-pills'); 
+
+            $menu->addChild('Utilisateur');
+            //secho $nom		$user=$this->getUser();
+	//	$nom=$user->getUsername();;
+            $menu['Utilisateur']->addChild('Votre Profil', ['route'=>'fos_user_profile_show']);
+            $menu['Utilisateur']->addChild('Déconnexion', ['route'=>'fos_user_security_logout']);
+
+            
+            $menu['Utilisateur']->addChild('Connectez vous, si vous avez un compte',['route'=>'fos_user_security_login']);
+            $menu['Utilisateur']->addChild('créez un compte si vous en souhaitez un', ['route'=>'fos_user_registration_register']);
+            $menu['Utilisateur']->addChild('Sinon, choisissez dans le menu');
+        
+       
+        return $menu;       
+    }
+    
+    public function createJuryMenu(array $options)
+    {
+        $menu = $this->factory->createItem('jury');
+
+        if (isset($options['include_homepage']) && $options['include_homepage']) {
+            $menu->addChild('Home', ['route' => 'homepage']);
+        }
+        $menu->setChildrenAttribute('class', 'nav flex-column nav-pills');
+        $menu->addChild('Jury');
+        $menu['Jury']->addChild('Accueil du Jury', ['route' => 'cyberjury_accueil','attributes'=> ['class'=>'d-block fas fa-home']]); 
+        $menu['Jury']->addChild('Tableau de bord', ['route' =>'cyberjury_tableau_de_bord', 'attributes'=> ['class'=>'d-block fas fa-list']]);
+        $menu['Jury']->addChild('Le palmarès', ['route' =>'cyberjury_palmares',  'attributes'=>['class'=>'d-block fas fa-leaf']]);
+        $menu['Jury']->addChild('Les prix', ['route' =>'cyberjury_lesprix', 'attributes'=>['class'=>'d-block fas fa-list-alt']]);
+        $menu['Jury']->addChild('Les cadeaux', ['route' =>'cyberjury_lescadeaux', 'attributes'=>['class'=>'d-block fas fa-gift']]);
+        $menu['Jury']->addChild('Déconnexion', ['route' =>'fos_user_security_logout','attributes'=>['class'=>'d-block fas fa-procedures']]);
+        return $menu;
     }
     
     public function createSecretariatMenu(array $options)
@@ -67,12 +108,12 @@ class MenuBuilder implements ContainerAwareInterface
             $menu->addChild('Home', ['route' => 'homepage']);
         }
         $menu->setChildrenAttribute('class', 'nav flex-column nav-pills');
-        $menu->addChild('Accueil du secrétariat', [ 'attributes' => ['dropdown' => true,],]);
+        $menu->addChild('Accueil du secrétariat');
         $menu['Accueil du secrétariat']
-                    ->addChild('Accueil du secrétariat', ['route' => 'secretariat_accueil', 'attributes' => ['dropdown' => true,]]);
+                    ->addChild('Accueil du secrétariat', ['route' => 'secretariat_accueil']);
  
         $menu['Accueil du secrétariat']
-                    ->addChild('Vue Globale', ['route' => 'secretariat_vueglobale', 'attributes' => ['dropdown' => true,]]);
+                    ->addChild('Vue Globale', ['route' => 'secretariat_vueglobale']);
 
         $menu->addChild('Le Classement des équipes');
             $menu['Le Classement des équipes']->addChild('Classement des équipes (total des points décroissant)',['route' =>'secretariat_classement']);

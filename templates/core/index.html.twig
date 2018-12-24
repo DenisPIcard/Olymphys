@@ -7,7 +7,7 @@
 {% endblock %}
 {%block navigation %}
 
-  <ul class="nav flex-column nav-pills">
+ {# <ul class="nav flex-column nav-pills">
             <li>Utilisateur : 
         {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
              {{ app.user.username }}</li>
@@ -19,6 +19,8 @@
         <li>Sinon, entrez dans le menu</li>
    
         {% endif %}
+ #}
+ {{ knp_menu_render('utilisateur', {'currentClass': 'active', 'user' : 'app.user'}) }}
  </ul>
     
 {% endblock %}  
@@ -28,7 +30,7 @@
 {% endblock %}
 {% block body %}
 
-  <h2>Page d'accueil de notre site</h2>
+
 
   {# On affiche tous les messages flash dont le nom est « info » #}
   {% for message in app.session.flashbag.get('info') %}

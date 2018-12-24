@@ -13,6 +13,8 @@ class CoreController extends Controller
      */
   public function index()
   {
+    $user=$this->getUser();
+    $nom=$user->getUsername();
     return $this->render('core/index.html.twig');
   }
 }

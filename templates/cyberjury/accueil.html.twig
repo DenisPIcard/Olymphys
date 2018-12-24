@@ -4,14 +4,14 @@
 
 
 {% block navigation %}
-<button type="button" class="btn btn-default btn-block"  > <span class="fas fa-user">  </span> 					
+<button type="button" class="btn btn-light btn-block"  > <span class="fas fa-user">  </span>           
 {{ jure.prenomJure|title }} {{ jure.nomJure|title }} 
   </button>
-  <br />
-  
-    {{ include ("cyberjury/navigation.html.twig") }}
-{% endblock %}
 
+{{ knp_menu_render('jury', {'currentClass': 'active'}) }}
+
+{% endblock %}
+{% block titre3 %} Mes équipes {% endblock %}
 
 {% block body %}
 {% for equipes in listEquipes %}

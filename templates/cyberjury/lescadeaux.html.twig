@@ -4,7 +4,11 @@
 {% block titre3 %} Les Cadeaux {% endblock %}
 
 {% block navigation %}
-	{{ include ("cyberjury/navigation.html.twig") }}
+<button type="button" class="btn btn-light btn-block"  > <span class="fas fa-user">  </span>           
+{{ jure.prenomJure|title }} {{ jure.nomJure|title }} 
+  </button>
+
+{{ knp_menu_render('jury', {'currentClass': 'active'}) }}
 {% endblock %}
 
 {% block body %}
