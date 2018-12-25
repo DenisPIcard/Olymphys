@@ -4,13 +4,14 @@
 
 {% block title %}
   Page d'accueil - {{ parent() }}
+  
 {% endblock %}
 {%block navigation %}
 
- {# <ul class="nav flex-column nav-pills">
-            <li>Utilisateur : 
+ <ul class="nav flex-column nav-pills">
+ 
         {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-             {{ app.user.username }}</li>
+            <li>Utilisateur :  {{ app.user.username }}</li>
             <li><a href="{{ path('fos_user_profile_show') }}">Mon profil</a></li>
             <li><a href="{{ path('fos_user_security_logout') }}">Déconnexion</a></li>
         {% else %}
@@ -19,8 +20,8 @@
         <li>Sinon, entrez dans le menu</li>
    
         {% endif %}
- #}
- {{ knp_menu_render('utilisateur', {'currentClass': 'active', 'user' : 'app.user'}) }}
+
+{#{{ knp_menu_render('utilisateur') }}#}
  </ul>
     
 {% endblock %}  

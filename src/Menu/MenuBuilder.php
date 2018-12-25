@@ -3,14 +3,14 @@
 namespace App\Menu;
 
 use Knp\Menu\FactoryInterface;
-use Symfony\Component\HttpFoundation\Request ; # récupérer des arguments de la requête hors route, récupérer la méthode de la requête HTTP. 
+use Symfony\Component\HttpFoundation\Request ;
 use Symfony\Component\HttpFoundation\RedirectResponse ;
 use Symfony\Component\HttpFoundation\Response ;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Security\Core\SecurityContext;
+use App\Event\ConfigureMenuEvent;
 
 class MenuBuilder implements ContainerAwareInterface
 {
@@ -25,10 +25,10 @@ class MenuBuilder implements ContainerAwareInterface
       $this->checker = $authorizationChecker;
     }    
     
-    public function createMainMenu(array $options)
+    public function createMainMenu()
     {
     
-       $menu = $this->factory->createItem('root');
+       $menu = $this->factory->createItem('main');
        $menu->setChildrenAttribute('class', 'nav flex-column nav-pills');
        $menu->addChild('Accueil du site', ['route' => 'core_home']);
 
@@ -44,7 +44,11 @@ class MenuBuilder implements ContainerAwareInterface
        }
        if($this->checker->isGranted('ROLE_JURY'))
        {
-            $menu->addChild('Accueil du Jury', ['route' => 'cyberjury_accueil']);
+           if($this->checker->isGranted('ROLE_ADMIN')) 
+           {}
+           else {
+           $menu->addChild('Accueil du Jury', ['route' => 'cyberjury_accueil']);
+           }
        }
 
        $menu->addChild('Galeries photos', ['route' => '']);
@@ -55,11 +59,9 @@ class MenuBuilder implements ContainerAwareInterface
         return $menu;
     }
     
-  //  public function createUtilisateurMenu(Request $request, SecurityContext $securityContext)
-    public function createUtilisateurMenu()
+ /*   public function createUtilisateurMenu()
     {
 
-        //$securityContext->getToken()->getUser();
         
         $menu = $this->factory->createItem('utilisateur');
         if (isset($options['include_homepage']) && $options['include_homepage']) {
@@ -81,7 +83,7 @@ class MenuBuilder implements ContainerAwareInterface
        
         return $menu;       
     }
-    
+ */   
     public function createJuryMenu(array $options)
     {
         $menu = $this->factory->createItem('jury');
@@ -91,12 +93,21 @@ class MenuBuilder implements ContainerAwareInterface
         }
         $menu->setChildrenAttribute('class', 'nav flex-column nav-pills');
         $menu->addChild('Jury');
+        $menu['Jury']->addChild('Déconnexion', ['route' =>'fos_user_security_logout','attributes'=>['class'=>'d-block fas fa-procedures']]);
         $menu['Jury']->addChild('Accueil du Jury', ['route' => 'cyberjury_accueil','attributes'=> ['class'=>'d-block fas fa-home']]); 
         $menu['Jury']->addChild('Tableau de bord', ['route' =>'cyberjury_tableau_de_bord', 'attributes'=> ['class'=>'d-block fas fa-list']]);
-        $menu['Jury']->addChild('Le palmarès', ['route' =>'cyberjury_palmares',  'attributes'=>['class'=>'d-block fas fa-leaf']]);
         $menu['Jury']->addChild('Les prix', ['route' =>'cyberjury_lesprix', 'attributes'=>['class'=>'d-block fas fa-list-alt']]);
         $menu['Jury']->addChild('Les cadeaux', ['route' =>'cyberjury_lescadeaux', 'attributes'=>['class'=>'d-block fas fa-gift']]);
-        $menu['Jury']->addChild('Déconnexion', ['route' =>'fos_user_security_logout','attributes'=>['class'=>'d-block fas fa-procedures']]);
+       
+      /*  if (null != $this->container->get('event_dispatcher'))
+        {
+        $this->container->get('event_dispatcher')->dispatch(
+            ConfigureMenuEvent::CONFIGURE,
+            new ConfigureMenuEvent($factory, $menu)
+                );
+        }
+        */
+        $menu['Jury']->addChild('Le palmarès', ['route' =>'cyberjury_palmares',  'attributes'=>['class'=>'d-block fas fa-leaf']]);
         return $menu;
     }
     

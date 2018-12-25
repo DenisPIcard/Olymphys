@@ -24,14 +24,18 @@ services:
         
     app.menu_builder:
         class: App\Menu\MenuBuilder
-        arguments: ["@knp_menu.factory","@security.authorization_checker"]
+        arguments: ["@knp_menu.factory","@security.authorization_checker","@security.token_storage"]
         tags:
             - { name: knp_menu.menu_builder, method: createMainMenu, alias: main }
             - { name: knp_menu.menu_builder, method: createUtilisateurMenu, alias: utilisateur }
             - { name: knp_menu.menu_builder, method: createSecretariatMenu, alias: secretariat }
             - { name: knp_menu.menu_builder, method: createJuryMenu, alias: jury }
             
-
+    app.configure_menu_listener:
+        class: App\EventListener\ConfigureMenuListener
+        tags:
+          - { name: kernel.event_listener, event: app.menu_configure, method: onMenuConfigure }
+     
     admin.cadeaux:
         class: App\Admin\CadeauxAdmin
         arguments: [~, App\Entity\Cadeaux, ~]
@@ -75,13 +79,11 @@ services:
         public: true   
         
     #utilisateur.menu:
-        #class: Knp\Menu\MenuItem
-        #factory_service: utilisateur.menu_builder
-        #factory_method: createUtilisateurMenu
-        #arguments: ["@request","@security.context"]
-        #scope: request
-        #tags:
-         #   - { name: knp_menu.menu, alias: utilisateur }
+    #    class: App\Menu
+     #   factory: ['App\Menu\MenuBuilder','createUtilisateurMenu']
+     #   arguments: ["@security.context"]
+      #  tags:
+      #      - { name: menu.menu, alias: utilisateur }
             
     nouveluser.mail:
         class: App\NouvelUser\EnvoiMails
