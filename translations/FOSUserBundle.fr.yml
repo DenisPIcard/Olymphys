@@ -21,6 +21,9 @@ profile:
         username: 'Nom d''utilisateur'
         email: 'Adresse e-mail'
     edit:
+        lastname: 'Nom'
+        firstname: 'Prénom'
+        phone: 'Téléphone'
         submit: 'Mettre à jour'
     flash:
         updated: 'Le profil a été mis à jour.'
@@ -88,3 +91,4 @@ form:
     password_confirmation: 'Répéter le mot de passe'
     new_password: 'Nouveau mot de passe'
     new_password_confirmation: 'Répéter le nouveau mot de passe'
+    phone: 'Téléphone'
