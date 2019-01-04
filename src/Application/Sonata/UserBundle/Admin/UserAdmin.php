@@ -4,6 +4,7 @@ namespace App\Application\Sonata\UserBundle\Admin;
 
 use Sonata\UserBundle\Admin\Model\UserAdmin as BaseUserAdmin;
 use Sonata\AdminBundle\Form\FormMapper;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class UserAdmin extends BaseUserAdmin
 {
@@ -11,7 +12,8 @@ class UserAdmin extends BaseUserAdmin
        {
         parent::configureFormFields($formMapper);
         $formMapper
-                ->tab('User')
+                ->tab('User') 
+                    ->remove('dateOfBirth')
                     ->remove('website')
                     ->remove('biography')
                     ->remove('locale')
@@ -22,7 +24,9 @@ class UserAdmin extends BaseUserAdmin
                     ->remove('twitterName')
                     ->remove('gplusUid')
                     ->remove('gplusName')
-                   # ->add('rne')
+                ->with('General')
+                    ->add('rne', TextType::class, ['required' => false,'label'=>'RNE'])
+                ->end()
                 ;
         }
 }

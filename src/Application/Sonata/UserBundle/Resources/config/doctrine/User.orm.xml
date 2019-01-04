@@ -9,6 +9,7 @@
         <id name="id" column="id" type="integer">
             <generator strategy="AUTO" />
         </id>
+        <field name="rne" type="string" column="rne" length="255" nullable="false"/>
 
     </entity>
 
