@@ -3,7 +3,7 @@
 
 {% block titre3 %} <span {% if (progression) %} class ="btn btn-primary btn-lg" {% else %} class ="btn btn-default btn-lg" {% endif %} > 
 	{{equipe.lettre}} </span>  {{ equipe.titreProjet}} 
-<a href="{{ equipe.urlMemoire }}" class="glyphicon glyphicon-book" title="Accéder au mémoire de l'équipe" target="_blank"> </a>
+<a href="{{ equipe.urlMemoire }}" class="fas fa-book-reader" title="Accéder au mémoire de l'équipe" target="_blank"> </a>
 
 <a href="{{ path('cyberjury_infos_equipe', {'id': equipe.id} ) }}" class="fas fa-info-circle" title="En savoir plus sur cette équipe"> </a>
 
@@ -19,8 +19,5 @@
 {% block body %}
 {{ include ("cyberjury/form.html.twig") }}
 {% endblock %}
-{#{% if le jure est un lecteur %}
-			Une case pour évaluer le mémoire 
-		{% endif %} #}
 {% block pied_de_page %} 
 {% endblock %}

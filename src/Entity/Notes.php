@@ -71,7 +71,7 @@ class Notes
     private $equipe;
 
     /**
-    * @ORM\ManyToOne(targetEntity="App\Entity\Jures", inversedBy="notess")
+    * @ORM\ManyToOne(targetEntity="App\Entity\Jures", inversedBy="notesj")
     * @ORM\JoinColumn(nullable=false)
     */
     private $jure;

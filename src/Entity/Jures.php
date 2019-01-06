@@ -224,6 +224,12 @@ class Jures
      */
     private $z;
 
+     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Notes", mappedBy="jure")
+     */
+    private $notesj;  
+
+
  
     public function getId()
     {
@@ -930,7 +936,7 @@ class Jures
      */
     public function __construct()
     {
-        $this->notess = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->notesj = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
      public function getAttributions()
@@ -961,5 +967,42 @@ class Jures
         return $attribution;
 
     }
+       /**
+     * Add notesj
+     *
+     * @param \App\Entity\Notes $notesj
+     *
+     * @return Jures
+     */
+    public function addNotesj(\App\Entity\Notes $notesj)
+    {
+        $this->notesj[] = $notesj;
+
+        //On relie l'équipe à "une ligne note"
+        $notesj->setJure($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove notesj
+     *
+     * @param \App\Entity\Notes $notesj
+     */
+    public function removeNotesj(\App\Entity\Notes $notesj)
+    {
+        $this->notess->removeElement($notesj);
+    }
+
+    /**
+     * Get notesj
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getNotesj()
+    {
+        return $this->notesj;
+    }
+
 
 }

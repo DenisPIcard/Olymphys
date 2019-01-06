@@ -70,7 +70,14 @@ services:
         tags:
             - { name: sonata.admin, manager_type: orm, group: Jury, label: Jures }
         public: true 
-        
+    
+    admin.notes:
+        class: App\Admin\NotesAdmin
+        arguments: [~, App\Entity\Notes, ~]
+        tags : 
+            - {name: sonata.admin, manager_type: orm, group: Jury, label: Notes }
+        public: true
+    
     admin.prix:
         class: App\Admin\PrixAdmin
         arguments: [~, App\Entity\Prix, ~]

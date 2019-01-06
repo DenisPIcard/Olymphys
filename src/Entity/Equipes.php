@@ -272,7 +272,7 @@ class Equipes
     {
         $this->notess[] = $notess;
 
-        //On relit l'équipe à "une ligne note"
+        //On relie l'équipe à "une ligne note"
         $notess->setEquipe($this);
 
         return $this;
