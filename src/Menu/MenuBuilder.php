@@ -93,12 +93,11 @@ class MenuBuilder implements ContainerAwareInterface
         }
         $menu->setChildrenAttribute('class', 'nav flex-column nav-pills');
         $menu->addChild('Jury');
-        $menu['Jury']->addChild('Déconnexion', ['route' =>'fos_user_security_logout','attributes'=>['class'=>'d-block fas fa-procedures']]);
         $menu['Jury']->addChild('Accueil du Jury', ['route' => 'cyberjury_accueil','attributes'=> ['class'=>'d-block fas fa-home']]); 
         $menu['Jury']->addChild('Tableau de bord', ['route' =>'cyberjury_tableau_de_bord', 'attributes'=> ['class'=>'d-block fas fa-list']]);
         $menu['Jury']->addChild('Les prix', ['route' =>'cyberjury_lesprix', 'attributes'=>['class'=>'d-block fas fa-list-alt']]);
         $menu['Jury']->addChild('Les cadeaux', ['route' =>'cyberjury_lescadeaux', 'attributes'=>['class'=>'d-block fas fa-gift']]);
-       
+               
       /*  if (null != $this->container->get('event_dispatcher'))
         {
         $this->container->get('event_dispatcher')->dispatch(
@@ -108,8 +107,9 @@ class MenuBuilder implements ContainerAwareInterface
         }
         */
         $menu['Jury']->addChild('Le palmarès', ['route' =>'cyberjury_palmares',  'attributes'=>['class'=>'d-block fas fa-leaf']]);
+        $menu['Jury']->addChild('Déconnexion', ['route' =>'fos_user_security_logout','attributes'=>['class'=>'d-block fas fa-procedures']]);
         return $menu;
-    }
+        }
     
     public function createSecretariatMenu(array $options)
     {
@@ -147,7 +147,7 @@ class MenuBuilder implements ContainerAwareInterface
             $menu['Édition du palmarès']->addChild('Édition du palmarès complet',['route'=>'secretariat_edition_palmares_complet']);
             $menu['Édition du palmarès']->addChild('Fichier Excel pour le site',['route'=>'secretariat_tableau_excel_palmares_site']);
             $menu['Édition du palmarès']->addChild('Fichier Excel pour la proclamation du palmarès',['route'=>'secretariat_tableau_excel_palmares_jury']);
-        $menu->addChild('Déconnexion', ['route'=>'fos_user_security_logout'])
+        $menu->addChild('Administration', ['route'=>'sonata_admin_redirect'])
              ->setAttribute('class', 'fas fa-procedures');
         return $menu;
     }

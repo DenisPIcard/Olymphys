@@ -328,7 +328,7 @@ class JuryController extends Controller
 		$user=$this->getUser();
 		$nom=$user->getUsername();
 
-		$repositoryJure = $this
+		/*$repositoryJure = $this
 			->getDoctrine()
 			->getManager()
 			->getRepository('App:Jures')
@@ -336,7 +336,7 @@ class JuryController extends Controller
 
 		$jure=$repositoryJure->findOneByNomJure($nom);
 		$id_jure = $jure->getId();
-
+*/
 		$repositoryEquipes = $this->getDoctrine()
 		->getManager()
 		->getRepository('App:Equipes');
@@ -346,7 +346,8 @@ class JuryController extends Controller
 		$repositoryJures = $this->getDoctrine()
 		->getManager()
 		->getRepository('App:Jures');
-		$jure = $repositoryJures->find($id_jure);
+                $jure=$repositoryJures->findOneByNomJure($nom);
+		$id_jure = $jure->getId();
 		$attrib = $jure->getAttributions();   
 		
 		$em=$this->getDoctrine()->getManager();

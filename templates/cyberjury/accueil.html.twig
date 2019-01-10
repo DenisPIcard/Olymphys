@@ -17,7 +17,7 @@
 {% for equipes in listEquipes %}
     <p>
     <a
-    {% if (progression[equipes.lettre]) %}  class ="btn btn-primary btn-lg" {% else %} class ="btn btn-outline-primary-lg" {% endif %}
+    {% if (progression[equipes.lettre]) %}  class ="btn btn-primary btn-lg" {% else %} class ="btn btn-outline-primary btn-lg" {% endif %}
 href="{{ path('cyberjury_evaluer_une_equipe', {'id': equipes.id} ) }}" >{{ equipes.lettre }}</a> 
 
     {{ equipes.titreProjet }}

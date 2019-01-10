@@ -1,7 +1,7 @@
 {% extends "layout.html.twig" %}
 {% block title %} Évaluer une équipe {% endblock %}
 
-{% block titre3 %} <span {% if (progression) %} class ="btn btn-primary btn-lg" {% else %} class ="btn btn-default btn-lg" {% endif %} > 
+{% block titre3 %} <span {% if (progression) %} class ="btn btn-primary btn-lg" {% else %} class ="btn btn-outline-primary btn-lg" {% endif %} > 
 	{{equipe.lettre}} </span>  {{ equipe.titreProjet}} 
 <a href="{{ equipe.urlMemoire }}" class="fas fa-book-reader" title="Accéder au mémoire de l'équipe" target="_blank"> </a>
 

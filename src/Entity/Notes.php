@@ -267,7 +267,7 @@ class Notes
      *
      * @return Notes
      */
-    public function setEquipe(App\Entity\Equipes $equipe)
+    public function setEquipe(Equipes $equipe)
     {
         $this->equipe = $equipe;
 
@@ -291,7 +291,7 @@ class Notes
      *
      * @return Notes
      */
-    public function setJure(App\Entity\Jures $jure)
+    public function setJure(Jures $jure)
     {
         $this->jure = $jure;
 
