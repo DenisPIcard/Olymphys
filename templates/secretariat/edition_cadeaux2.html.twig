@@ -28,7 +28,7 @@
 			<th><a class ="btn btn-primary btn-lg" href="{{ path('secretariat_attrib_cadeaux', {'id_equipe': equipes.id} ) }}" target="_blank">{{ equipes.lettre }} </a></th>
           <td>{{ equipes.classement }} prix</td>
       		<td>{{ equipes.titreProjet }}</td>
-          {% if equipes.cadeau.contenu != null %}
+          {% if equipes.cadeau != null %}
       		<td>{{ equipes.cadeau.contenu }} offert par {{ equipes.cadeau.fournisseur|upper }} d'une valeur de {{ equipes.cadeau.montant }} euros.</td>
         {% else %}
           <td></td>

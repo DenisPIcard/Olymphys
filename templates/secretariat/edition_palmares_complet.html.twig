@@ -53,7 +53,7 @@
           {% endif %}
         </td>
         
-        <td><b>{{ equipe.prix.prix }}</b> </td>
+        <td><b>{% if  equipes.prix is not null %}{{ equipe.prix.prix }}{% endif %}</b> </td>
       </tr>
       <tr>
         <td></td>
@@ -75,7 +75,7 @@
 
         </td>
         <td></td>
-          {% if equipe.cadeau.contenu != null %}
+          {% if equipe.cadeau != null %}
           <td colspan="2"><i>{{ equipe.cadeau.contenu }} offert par {{ equipe.cadeau.fournisseur|upper }} d'une valeur de {{ equipe.cadeau.montant }} euros.</i></td>
         {% else %}
           <td colspan="2"></td>

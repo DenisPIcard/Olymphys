@@ -29,7 +29,7 @@
 		<th><span  class ="btn btn-primary btn-lg" >{{ equipes.lettre }} </span></th>
       		<td>{{ equipes.titreProjet }}</td>
                 <td>{{ equipes.classement}} prix </td>
-      		<td>{{ equipes.prix.prix }}</td>
+      		<td>{% if  equipes.prix is not null %}{{ equipes.prix.prix }}{% endif %}</td>
       		</tr>
 		{% endfor %}
 
