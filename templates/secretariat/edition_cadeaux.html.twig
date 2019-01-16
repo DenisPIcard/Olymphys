@@ -55,7 +55,9 @@
                         </td>
                  </tr>
             {% endfor %}
-
+                {% block nav_eq %}
+                {{include('secretariat/nav_equipe.html.twig') }}
+                {% endblock %}
 
 
     {% endif %}
