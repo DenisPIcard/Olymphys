@@ -15,14 +15,12 @@ class ElevesAdmin extends AbstractAdmin
     {
         $formMapper->add('nom', TextType::class)
                    ->add('prenom', TextType::class)
-                   ->add('numeroEquipe', TextType::class)
                    ->add('lettreEquipe', TextType::class);
     }
 
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper->add('nom')
-                       ->add('numeroEquipe')
                        ->add('lettreEquipe');
     }
 
@@ -30,7 +28,6 @@ class ElevesAdmin extends AbstractAdmin
     {
         $listMapper->addIdentifier('nom')
                    ->addIdentifier('prenom')
-                   ->addIdentifier('numeroEquipe')
-                   ->addIdentifier('lettreEquipe');
+                     ->addIdentifier('lettreEquipe');
     }
 }

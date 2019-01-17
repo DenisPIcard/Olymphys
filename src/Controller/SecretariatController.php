@@ -98,7 +98,7 @@ class SecretariatController extends Controller
 			$em->flush();
 		}
 
-		$listEleves=$repositoryEleves->findAll();
+	/*	$listEleves=$repositoryEleves->findAll();
 
 		foreach ($listEleves as $eleve) 
 		{ 
@@ -109,7 +109,7 @@ class SecretariatController extends Controller
 			$em->persist($eleve);
 			$em->flush();
 		}
-
+        */
 		foreach ($listEquipes as $equipe) 
 		{
 			$lettre=$equipe->getLettre();
@@ -1370,7 +1370,7 @@ class SecretariatController extends Controller
                 $spreadsheet->getProperties()
                         ->setCreator("Olymphys")
                         ->setLastModifiedBy("Olymphys")
-                        ->setTitle("Palmarès de la 25ème édition - Février 2018")
+                        ->setTitle("Palmarès de la 26ème édition - Février 2019")
                         ->setSubject("Palmarès")
                         ->setDescription("Palmarès avec Office 2005 XLSX, generated using PHP classes.")
                         ->setKeywords("office 2005 openxml php")
