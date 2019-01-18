@@ -5,9 +5,6 @@ sonata_admin:
     dashboard:
         blocks:
             - { type: sonata.admin.block.admin_list, position: left }
-      
-
-
     templates:
             # other configuration options
         search:              '@SonataAdmin/Core/search.html.twig'

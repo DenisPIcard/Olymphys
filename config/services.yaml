@@ -85,7 +85,14 @@ services:
             - { name: sonata.admin, manager_type: orm, group: Jury, label: Prix }
         public: true   
         
-    #utilisateur.menu:
+    admin.visites:
+        class: App\Admin\VisitesAdmin
+        arguments: [~, App\Entity\Visites, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: Jury, label: Visites }
+        public: true 
+        
+        #utilisateur.menu:
     #    class: App\Menu
      #   factory: ['App\Menu\MenuBuilder','createUtilisateurMenu']
      #   arguments: ["@security.context"]
