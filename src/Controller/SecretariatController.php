@@ -684,7 +684,7 @@ class SecretariatController extends Controller
          * @Route("/secretariat/attrib_prix/{niveau}", name="secretariat_attrib_prix", requirements={"niveau"="\d{1}"}))
          * 
 	*/
-	public function attrib_prix(Request $request, $niveau)
+        public function attrib_prix(Request $request, $niveau)
 	{
 		switch ($niveau) 
 		{
@@ -697,25 +697,20 @@ class SecretariatController extends Controller
 				$niveau_court = '2ème'; 
 				$niveau_long = 'deuxièmes';
 				break;
-
 			case 3:
 				$niveau_court = '3ème'; 
 				$niveau_long = 'troisièmes';
 				break;
 		}
-
 		$repositoryEquipes = $this->getDoctrine()
 		->getManager()
 		->getRepository('App:Equipes');
-
 		$repositoryClassement = $this->getDoctrine()
 		->getManager()
 		->getRepository('App:Classement');
-
 		$repositoryPrix = $this->getDoctrine()
 		->getManager()
 		->getRepository('App:Prix');
-
 		$repositoryPalmares = $this->getDoctrine()
 		->getManager()
 		->getRepository('App:Palmares');
@@ -747,7 +742,6 @@ class SecretariatController extends Controller
 		}
 		$formBuilder->add('Enregistrer', SubmitType::class);
 		$form=$formBuilder->getForm();
-
                 
 		//Si la requête est en POST 
 		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) 
@@ -756,12 +750,10 @@ class SecretariatController extends Controller
 			$em=$this->getDoctrine()->getManager();
 			$em->persist($prix);
 			$em->flush();
-
 			foreach (range('A','Z') as $i)
         		{
         		// On récupère le nom du getter correspondant à l'attribut.
         		$method = 'get'.ucfirst($i);
-
         		// Si le getter correspondant existe.
         		if (method_exists($prix, $method))
                             {
@@ -781,7 +773,6 @@ class SecretariatController extends Controller
 			// puis on redirige vers la page de visualisation de cette note dans le tableau de bord
 			return $this->redirectToroute('secretariat_attrib_prix', array('niveau'=> $niveau));	
 			}
-
 		// Si on n'est pas en POST, on affiche le formulaire. 
 		$content = $this->get('templating')->render('secretariat/attrib_prix.html.twig',
 			array('ListEquipes' => $ListEquipes, 
@@ -792,9 +783,6 @@ class SecretariatController extends Controller
 			);
 		return new Response($content);
 	}
-	
-	
-
 
 	/**
 	* @Security("has_role('ROLE_SUPER_ADMIN')")
@@ -809,7 +797,6 @@ class SecretariatController extends Controller
 			->getRepository('App:Equipes')
 			->getEquipesPrix()
                         ;
-
 		$content = $this->get('templating')->render('secretariat/edition_prix.html.twig', array('listEquipes' => $listEquipes));
 		return new Response($content);
 	}
@@ -827,10 +814,10 @@ class SecretariatController extends Controller
 			->getManager()
 			->getRepository('App:Equipes')
 			->getEquipesVisites();
-
 		$content = $this->get('templating')->render('secretariat/edition_visites.html.twig', array('listEquipes' => $listEquipes));
 		return new Response($content);
 	}
+		
 	
 	/**
 	* @Security("has_role('ROLE_SUPER_ADMIN')")
