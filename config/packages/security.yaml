@@ -41,6 +41,10 @@ security:
                 use_forward:    false
                 check_path:     /login_check
                 failure_path:   null
+            remember_me:
+                secret:         '%kernel.secret%'
+                lifetime:       3600
+                path:        /                
             logout:             true
             anonymous:          true
 

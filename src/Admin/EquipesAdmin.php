@@ -21,9 +21,9 @@ class EquipesAdmin extends AbstractAdmin
     {
         $formMapper ->add('lettre', TextType::class)
                     ->add('titreProjet', TextType::class)
-                    ->add('classement',EntityType::class, [
-                        'class'=> Classement::class,
-                        'choice_label'=> 'niveau'])
+                    //->add('classement',EntityType::class, [
+                    //    'class'=> Classement::class,
+                     //   'choice_label'=> 'niveau',])
                     ->add('prix', EntityType::class, [
                         'class'=> Prix::class, 
                         'choice_label'=> 'prix',])
