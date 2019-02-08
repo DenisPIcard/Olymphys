@@ -33,7 +33,7 @@ class CadeauxAdmin extends AbstractAdmin
         $listMapper->addIdentifier('contenu')
                    ->addIdentifier('fournisseur')
                    ->add('montant')
-                   ->addIdentifier('attribue');
+                   ->add('attribue');
     }
 
     
