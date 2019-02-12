@@ -37,7 +37,10 @@
           {% if equipe.classement == '1er' %} class="danger" 
           {% elseif  equipe.classement == '2ème' %} class="warning" 
           {% else %} class="active" {% endif %} > 
+          {% if  equipe.phrases is null %}
+          {% else %}
           <font color="blue">{{ equipe.phrases.phrase}} {{ equipe.liaison.liaison}} {{ equipe.phrases.prix}}</font>  </td>
+          {%endif%}
       </tr>
       <tr>
         <td rowspan="2"> <b><font color ="red">{{ equipe.titreProjet }} </font></b></td>
@@ -58,7 +61,9 @@
       <tr>
         <td></td>
         <td> <b>Visite : </b></td>  {# espace insécable entre Viste et : grace à alt+espace #}
+        {% if equipe.visite is not null %}
         <td> <b>{{ equipe.visite.intitule }}</b> </td>
+         {% endif %}
       </tr>
       <tr>
         {% set lettre = equipe.lettre %}

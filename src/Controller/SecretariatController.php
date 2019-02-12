@@ -1275,8 +1275,10 @@ class SecretariatController extends Controller
                     $sheet->setCellValue('A'.$ligne, strtoupper($equipe->getInfoequipe()->getLyceeAcademie()))
                         ->setCellValue('B'.$ligne,'LYCÉE'.' '.$equipe->getInfoequipe()->getnomLycee()." - ".$equipe->getInfoequipe()->getLyceeLocalite() )
                         ->setCellValue('C'.$ligne, $equipe->getInfoequipe()->getPrenomProf1().' '.strtoupper($equipe->getInfoequipe()->getnomProf1() ))
-                        ->setCellValue('D'.$ligne, $equipe->getClassement().' '.'prix')
-                        ->setCellValue('E'.$ligne, $equipe->getPhrases()==null?'Phrase':getPhrases()->getPhrase().' '.$equipe->getLiaison()->getLiaison().' '.$equipe->getPhrases()->getPrix());
+                        ->setCellValue('D'.$ligne, $equipe->getClassement().' '.'prix');
+                     if($equipe->getPhrases()!==null)   
+                    {$sheet->setCellValue('E'.$ligne, $equipe->getPhrases()->getPhrase().' '.$equipe->getLiaison()->getLiaison().' '.$equipe->getPhrases()->getPrix());}
+                    else{$sheet->setCellValue('E'.$ligne,'Phrase');}
                     $sheet ->getStyle('A'.$ligne)->getFont() ->setSize(7)->setBold(2);
                     $sheet->getStyle('A'.$ligne.':A'.$ligne4)->applyFromArray($borderArray);
                     $sheet->getStyle('C'.$ligne)->getAlignment()->applyFromArray($centerArray);
@@ -1312,8 +1314,10 @@ class SecretariatController extends Controller
                     $ligne3 = $ligne + 1; 
                     $sheet->mergeCells('B'.$ligne.':B'.$ligne3);
                     $sheet->setCellValue('B'.$ligne, $equipe->getTitreProjet())
-                        ->setCellValue('C'.$ligne, $equipe->getInfoequipe()->getPrenomProf2().' '.strtoupper($equipe->getInfoequipe()->getnomProf2() ))
-                        ->setCellValue('E'.$ligne, $equipe->getPrix()==null?'Prix':getPrix()->getPrix() );
+                        ->setCellValue('C'.$ligne, $equipe->getInfoequipe()->getPrenomProf2().' '.strtoupper($equipe->getInfoequipe()->getnomProf2() ));
+                     if($equipe->getPrix()!==null)
+                        {$sheet->setCellValue('E'.$ligne, $equipe->getPrix()->getPrix());
+                        }
                     $sheet->getStyle('B'.$ligne.':B'.$ligne3)->applyFromArray($borderArray);
                     $sheet->getStyle('B'.$ligne)->getAlignment()->applyFromArray($centerArray);
                     $sheet->getStyle('B'.$ligne.':B'.$ligne3)->getFont()->setBold(2)->getColor()->setRGB('ff0000');
@@ -1340,14 +1344,19 @@ class SecretariatController extends Controller
                     
 		
                     $ligne = $ligne+1; 
-                    $sheet->setCellValue('D'.$ligne, 'Visite :')
-                        ->setCellValue('E'.$ligne, $equipe->getVisite()==null?'visite':getVisite()->getIntitule());
+                    $sheet->setCellValue('D'.$ligne, 'Visite :');
+                    if( $equipe->getVisite()!==null)
+                    {$sheet->setCellValue('E'.$ligne,$equipe->getVisite()->getIntitule());
+                    }
                     $sheet->getStyle('D'.$ligne.':E'.$ligne)->getAlignment()->applyFromArray($vcenterArray);
 
 
                     $ligne = $ligne+1; 
                     $sheet->mergeCells('D'.$ligne.':E'.$ligne);
-                    $sheet->setCellValue('D'.$ligne, $equipe->getCadeau()==null?'cadeau':getCadeau()->getContenu().' offert par '.$equipe->getCadeau()->getFournisseur());
+                    if($equipe->getCadeau()!==null)
+                    {
+                    $sheet->setCellValue('D'.$ligne, $equipe->getCadeau()->getContenu().' offert par '.$equipe->getCadeau()->getFournisseur());
+                    }
                     $sheet->getStyle('D'.$ligne.':E'.$ligne)->getAlignment()->applyFromArray($vcenterArray);
                     
                     $listeleves='';
@@ -1470,14 +1479,17 @@ class SecretariatController extends Controller
 
                     $sheet->setCellValue('A'.$ligne, 'Prix')
                           ->setCellValue('B'.$ligne, $equipe->getClassement());
-                    $sheet ->setCellValue('C'.$ligne, $equipe->getPrix()==null?'prix':getPrix()->getPrix() );
+                    if($equipe->getPrix()!==null)
+                    {
+                    $sheet ->setCellValue('C'.$ligne, $equipe->getPrix()->getPrix() );
+                    }
                     $sheet->getStyle('A'.$ligne.':C'.$ligne)->getAlignment()->applyFromArray($vcenterArray);                           
         
                     $sheet->getStyle('A'.$ligne.':C'.$ligne)
                           ->applyFromArray($styleTitre) ;  
-                    $sheet->getRowDimension($ligne)->setRowHeight(20);
+                    $sheet->getRowDimension($ligne)->setRowHeight(30);
                     $ligne = $ligne+1; 
-                    $sheet->getRowDimension($ligne)->setRowHeight(20);
+                    $sheet->getRowDimension($ligne)->setRowHeight(30);
                     $sheet->mergeCells('A'.$ligne.':C'.$ligne);
                     if ($equipe->getPhrases() != null)
                         {
@@ -1513,11 +1525,14 @@ class SecretariatController extends Controller
 
                     $ligne = $ligne+1; 
                     $lignep = $ligne + 1;
-                    $sheet->getRowDimension($ligne)->setRowHeight(30);
+                    $sheet->getRowDimension($ligne)->setRowHeight(40);
                     $sheet->mergeCells('A'.$ligne.':A'.$lignep);
                     $sheet->setCellValue('A'.$ligne, 'Nos partenaires vous offrent')
-                          ->setCellValue('B'.$ligne, 'une visite de laboratoire : ')
-                           ->setCellValue('C'.$ligne, $equipe->getVisite()==null?'visite':getVisite()->getIntitule());
+                          ->setCellValue('B'.$ligne, 'une visite de laboratoire : ');
+                    if($equipe->getVisite()!==null)
+                    {
+                    $sheet->setCellValue('C'.$ligne, $equipe->getVisite()->getIntitule());
+                    }
                     $sheet->getStyle('A'.$ligne.':C'.$ligne)->getAlignment()->applyFromArray($vcenterArray);
                     $sheet->getStyle('A'.$ligne)->getAlignment()
                         ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
@@ -1527,9 +1542,9 @@ class SecretariatController extends Controller
                     $ligne = $ligne+1; 
                     $sheet->getRowDimension($ligne)->setRowHeight(30);
                     $sheet->setCellValue('B'.$ligne, 'du matériel scientifique : ');
-                    if ($equipe->getCadeau() != null)
+                    if ($equipe->getCadeau() !== null)
                         {
-                        $sheet->setCellValue('C'.$ligne, $equipe->getCadeau()==null?'cadeau':getCadeau()->getContenu().' offert par '.$equipe->getCadeau()->getFournisseur());
+                        $sheet->setCellValue('C'.$ligne, $equipe->getCadeau()->getContenu().' offert par '.$equipe->getCadeau()->getFournisseur());
                          }
                          
                     $sheet->getStyle('B'.$ligne.':C'.$ligne)->getAlignment()->setWrapText(true);
