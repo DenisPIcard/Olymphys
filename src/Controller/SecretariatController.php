@@ -722,13 +722,105 @@ class SecretariatController extends Controller
                 
 		$qb = $repositoryPrix->createQueryBuilder('p');
 		$qb->where('p.classement=:niveau')
-		->setParameter('niveau', $niveau_court);
+		    ->setParameter('niveau', $niveau_court);
                 
-		$prix = $repositoryPalmares->findOneByCategorie('prix');
-		$formBuilder=$this->get('form.factory')->createBuilder(FormType::class, $prix);
-		
+                //Alain
+                
+        $listPrix=$repositoryPrix->findOneByClassement($niveau_court)->getPrix();
+	$prix = $repositoryPalmares->findOneByCategorie('prix');
+	$i=0;	
 		foreach ($ListEquipes as $equipe) 
-		{
+                    {
+                    $qb2[$i]= $repositoryPrix->createQueryBuilder('p')
+                                             ->where('p.classement = :niveau')
+                                             ->setParameter('niveau', $niveau_court);
+                    $attribue=0;
+                    $Prix_eq=$equipe->getPrix();
+                    $intitule_prix='';
+                    if ($Prix_eq !=null) 
+                        {
+                        $intitule_prix = $Prix_eq->getPrix();
+                        $qb2[$i]->andwhere('p.id = :prix_sel')
+                                ->setParameter('prix_sel', $Prix_eq->getId());                        
+                        }
+                    if (!$Prix_eq) 
+                        {                                                
+                        $qb2[$i]->andwhere('p.attribue = :attribue')
+                                ->setParameter('attribue', $attribue);                    
+                        }                           
+                    $formBuilder[$i]=$this->get('form.factory')->createBuilder(FormType::class, $prix);
+                    $lettre=strtoupper($equipe->getLettre());
+                    $titre=$equipe->getTitreProjet();                                       
+                    $formBuilder[$i]->add($lettre, EntityType::class, [
+                                        'class' => 'App:Prix',
+                                        'query_builder' => $qb2[$i],
+                                        'choice_label'=> 'getPrix',
+                                        'multiple' => false,
+                                        'label' => $lettre." : ".$titre.".  Prix :  ".$intitule_prix]
+                                     );
+		
+                    $formBuilder[$i]->add('Enregistrer', SubmitType::class);
+                    $formBuilder[$i]->add('Effacer', SubmitType::class);
+                              
+                    $form[$i]=$formBuilder[$i]->getForm();
+                    $formtab[$i]=$form[$i]->createView();
+                    if ($request->isMethod('POST') && $form[$i]->handleRequest($request)->isValid()) 
+			{
+                        $em=$this->getDoctrine()->getManager();
+                        
+			foreach (range('A','Z') as $lettre_equipe)
+                            {
+                            if (isset($form[$i][$lettre_equipe] ))
+                                { 
+                                $equipe = $repositoryEquipes->findOneByLettre($lettre_equipe);
+                                if ($form[$i]->get('Enregistrer')->isClicked())
+                                    {
+                                        $method = 'get'.ucfirst($lettre_equipe);
+                                        if (method_exists($prix, $method))
+                                            {   
+                                            $pprix = $prix->$method();
+                                            $equipe->setPrix($pprix);
+                                            $em->persist($equipe);
+                                            $pprix->setAttribue(1);
+                                            $em->persist($pprix);
+                                            $em->flush();
+                                            $request -> getSession()->getFlashBag()->add('notice', 'Prix bien enregistrés');
+                                            return $this->redirectToroute('secretariat_attrib_prix', array('niveau'=> $niveau));
+                                            }
+                                    } 
+                                                                        
+                                if ($form[$i]->get('Effacer')->isClicked())
+                                   {
+                                        $method = 'get'.ucfirst($lettre_equipe);
+                                        if (method_exists($prix, $method))
+                                            {   
+                                            $pprix = $prix->$method();
+                                            $pprix->setAttribue(0);
+                                            $em->persist($pprix);
+                                            $equipe->setPrix(null);
+                                            $em->persist($equipe);
+                                            $em->flush();
+                                            $request -> getSession()->getFlashBag()->add('notice', 'Prix bien effacé');
+                                            return $this->redirectToroute('secretariat_attrib_prix', array('niveau'=> $niveau));                                                                         
+                                            }        
+                                    }                            
+                               }
+                            }
+                        }
+                        $i=$i+1;
+                    }                                        
+                    $content = $this->get('templating')->render('secretariat/attrib_prix.html.twig',
+			array('ListEquipes' => $ListEquipes, 
+                              'NbrePrix'=>$NbrePrix, 
+                              'niveau'=>$niveau_long, 
+                              'formtab'=>$formtab,
+                              )
+                                                               );
+                    return new Response($content);      
+                    /*	$prix = $repositoryPalmares->findOneByCategorie('prix');
+                     		foreach ($ListEquipes as $equipe) 
+                    {
+                        $formBuilder=$this->get('form.factory')->createBuilder(FormType::class, $prix);
 			$lettre=strtoupper($equipe->getLettre());
 			$titre=$equipe->getTitreProjet();
 			$formBuilder->add($lettre, EntityType::class, [
@@ -774,13 +866,14 @@ class SecretariatController extends Controller
 			}
 		// Si on n'est pas en POST, on affiche le formulaire. 
 		$content = $this->get('templating')->render('secretariat/attrib_prix.html.twig',
-			array('ListEquipes' => $ListEquipes, 
-				'NbrePrix'=>$NbrePrix, 
-				'niveau'=>$niveau_long, 
-				'form'=>$form->createView(),
-				)
-			);
+                                                        array('ListEquipes' => $ListEquipes, 
+                                                              'NbrePrix'=>$NbrePrix, 
+                                                              'niveau'=>$niveau_long, 
+                                                              'form'=>$form->createView(),
+                                                              )
+                                                            );
 		return new Response($content);
+                         */
 	}
 
 	/**
@@ -1164,7 +1257,7 @@ class SecretariatController extends Controller
 
 		$content = $this->get('templating')->render('secretariat/edition_palmares_complet.html.twig', 
 			array('listEquipes' => $listEquipes,
-				  'lesEleves'=>$lesEleves));
+			      'lesEleves'=>$lesEleves));
 		return new Response($content);
 
 	}

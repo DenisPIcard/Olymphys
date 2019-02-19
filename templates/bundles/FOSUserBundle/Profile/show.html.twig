@@ -3,12 +3,12 @@
 {% block fos_user_content %}
 <div class="fos_user_user_show">
     <h3>Profil de l'utilisateur {{ user.username }}</h3>
-    <p>Nom d''utilisateur : {{ user.username }}</p>
+    <p>Nom d'utilisateur : {{ user.username }}</p>
     <p>Nom : {{ user.lastname }}</p>
     <p>Prénom : {{ user.firstname }}</p>
     <p>Email : {{ user.email }}</p>
     <p>Téléphone : {{ user.phone }}</p>
     <p></p>
-    <p>Vous souhaitez modifier le profil : <a href= "{{ path('fos_user_profile_edit') }}">cliquez ici</a></p> 
+    <p>Vous souhaitez modifier le profil, changer votre mot de passe : <a href= "{{ path('fos_user_profile_edit') }}">cliquez ici</a></p> 
 </div>
 {% endblock fos_user_content %}

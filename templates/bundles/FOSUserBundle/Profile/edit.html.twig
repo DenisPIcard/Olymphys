@@ -4,6 +4,7 @@
     <h3>Modification du profil de l'utilisateur</h3>
 {% trans_default_domain 'FOSUserBundle' %}
  Vous avez oublié votre mot de passe ? <a href="{{ path('fos_user_resetting_request') }}">Cliquez ici</a> <br/><br />
+ Vous souhatez changer votre mot de passe <a href="{{path('fos_user_change_password') }}">Cliquez ici</a> <br/><br />
 {{ form_start(form, { 'action': path('fos_user_profile_edit'), 'attr': { 'class': 'fos_user_profile_edit' } }) }}
     {{ form_widget(form) }}
     

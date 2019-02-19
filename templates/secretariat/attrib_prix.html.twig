@@ -8,9 +8,19 @@
 {% endblock %}
 
 {% block body %}
+    
 
 <div class="well">
-   {{ form(form) }} 
+    {% for form in formtab %}
+        
+   <table> 
+       <tr>
+            <td>
+        {{ form(form) }} 
+            
+       </tr>
+   </table>
+   {% endfor %}
 </div>
 
 

@@ -41,11 +41,18 @@ class Prix
     const DEUXIEME = 400; 
     const TROISIEME = 200;
 
+        /**
+     * @var boolean
+     *
+     * @ORM\Column(name="attribue", type="boolean")
+     */
+    private $attribue;
     /**
      * Get id
      *
      * @return int
      */
+    
     public function getId()
     {
         return $this->id;
@@ -99,4 +106,27 @@ class Prix
         return $this->classement;
     }
 
+        /**
+     * Set attribue
+     *
+     * @param boolean $attribue
+     *
+     * @return Cadeaux
+     */
+    public function setAttribue($attribue)
+    {
+        $this->attribue = $attribue;
+
+        return $this;
+    }
+
+    /**
+     * Get attribue
+     *
+     * @return boolean
+     */
+    public function getAttribue()
+    {
+        return $this->attribue;
+    }
 }
