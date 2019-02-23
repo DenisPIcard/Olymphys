@@ -28,6 +28,7 @@ class PrixAdmin extends AbstractAdmin
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper->addIdentifier('classement')
-                   ->addIdentifier('prix');
+                   ->addIdentifier('prix')
+                   ->add('attribue');
     }
 }

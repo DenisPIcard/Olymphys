@@ -22,13 +22,6 @@ class Eleves
     private $id;
 
     /**
-    * @ORM\ManyToOne(targetEntity="App\Entity\Equipes", inversedBy="eleves")
-    * @ORM\JoinColumn(nullable=true)
-    */
-    private $equipeleves;
-
-
-    /**
      * @var string
      *
      * @ORM\Column(name="nom", type="string", length=255, nullable=true)
@@ -162,29 +155,5 @@ class Eleves
     public function getLettreEquipe()
     {
         return $this->lettreEquipe;
-    }
-
-    /**
-     * Set equipeleves
-     *
-     * @param \App\Entity\Equipes $equipeleves
-     *
-     * @return Eleves
-     */
-    public function setEquipeleves(\App\Entity\Equipes $equipeleves = null)
-    {
-        $this->equipeleves = $equipeleves;
-
-        return $this;
-    }
-
-    /**
-     * Get equipeleves
-     *
-     * @return \App\Entity\Equipes
-     */
-    public function getEquipeleves()
-    {
-        return $this->equipeleves;
     }
 }

@@ -36,23 +36,9 @@ class Equipes
      *
      * @ORM\Column(name="titreProjet", type="string", length=255, unique=true)
      */
-    private $titreProjet;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="titreCourt", type="string", length=255, unique=true)
-     */
-    private $titreCourt;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="urlMemoire", type="string", length=255, nullable=true, unique=true)
-     */
-    private $urlMemoire;
-
-    /**
+    private $titreProjet; 
+    
+     /**
      * @var int
      *
      * @ORM\Column(name="total", type="smallint", nullable=true)
@@ -188,54 +174,6 @@ class Equipes
     }
 
     /**
-     * Set titreCourt
-     *
-     * @param string $titreCourt
-     *
-     * @return Equipes
-     */
-    public function setTitreCourt($titreCourt)
-    {
-        $this->titreCourt = $titreCourt;
-
-        return $this;
-    }
-
-    /**
-     * Get titreCourt
-     *
-     * @return string
-     */
-    public function getTitreCourt()
-    {
-         return $this->titreCourt;
-    }
-
-    /**
-     * Set urlMemoire
-     *
-     * @param string $urlMemoire
-     *
-     * @return Equipes
-     */
-    public function setUrlMemoire($urlMemoire)
-    {
-        $this->urlMemoire = $urlMemoire;
-
-        return $this;
-    }
-
-    /**
-     * Get urlMemoire
-     *
-     * @return string
-     */
-    public function getUrlMemoire()
-    {
-        return $this->urlMemoire;
-    }
-
-    /**
      * Set visite
      *
      * @param \App\Entity\Visites $visite
@@ -258,8 +196,6 @@ class Equipes
     {
         return $this->visite;
     }
-
-
 
     /**
      * Add notess
@@ -298,7 +234,7 @@ class Equipes
         return $this->notess;
     }
 
-/*    /**
+    /**
      * Set nbNotes
      *
      * @param integer $nbNotes
@@ -321,7 +257,6 @@ class Equipes
     {
         return $this->nbNotes;
     }
-
 
     /**
      * Set cadeau
@@ -371,7 +306,7 @@ class Equipes
         return $this->phrases;
     }
 
-        /**
+    /**
     * Set liaison
     *
     * @param \App\Entity\Liaison $liaison
@@ -394,7 +329,6 @@ class Equipes
     {
     return $this->liaison;
     }
-
 
     /**
      * Set total
@@ -490,40 +424,6 @@ class Equipes
     public function getPrix()
     {
         return $this->prix;
-    }
-
-    /**
-     * Add elefe
-     *
-     * @param \App\Entity\Eleves $elefe
-     *
-     * @return Equipes
-     */
-    public function addElefe(\App\Entity\Eleves $elefe)
-    {
-        $this->eleves[] = $elefe;
-
-        return $this;
-    }
-
-    /**
-     * Remove elefe
-     *
-     * @param \App\Entity\Eleves $elefe
-     */
-    public function removeElefe(\App\Entity\Eleves $elefe)
-    {
-        $this->eleves->removeElement($elefe);
-    }
-
-    /**
-     * Get eleves
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getEleves()
-    {
-        return $this->eleves;
     }
 
     /**

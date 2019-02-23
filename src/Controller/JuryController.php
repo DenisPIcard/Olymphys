@@ -472,7 +472,6 @@ class JuryController extends Controller
 			$listEquipes[$j]['wgroupe']=$notes->getWgroupe();
 			$listEquipes[$j]['ecrit']=$notes->getEcrit();
 			$listEquipes[$j]['points']=$notes->getPoints();
-			$listEquipes[$j]['urlMemoire']=$equipe->getUrlMemoire();
 			$j++;
 		}
 

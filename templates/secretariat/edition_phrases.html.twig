@@ -27,7 +27,10 @@
 			<th><span  class ="btn btn-primary btn-lg" >{{ equipes.lettre }} </span></th>
       		<td>{{ equipes.titreProjet }}</td>
           <td>{{ equipes.classement }} prix</td>
-          <td>{{ equipes.phrases.phrase}} {{ equipes.liaison.liaison}} {{ equipes.phrases.prix}} </td>
+          <td>{% if equipes.phrases != NULL %}
+              {{ equipes.phrases.phrase}} {{ equipes.liaison.liaison}} {{ equipes.phrases.prix}}
+              {% endif %}
+          </td>
       		</tr>
 		{% endfor %}
 

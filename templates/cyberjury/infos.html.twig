@@ -5,8 +5,7 @@
 	href="{{ path('cyberjury_evaluer_une_equipe', {'id': id_equipe } ) }}" >{{ equipe.lettreEquipe }}</a>   
     {{ equipe.nomEquipe }}
 
-<a href="{{ eq.urlMemoire }}" class="fas fa-book-reader" title="Accéder au mémoire de l'équipe" target="_blank"> </a>
-
+<a href="https://odpf.org/images/archives_docs/26eme/memoires/Equipe{{ equipe.lettreEquipe }}/memoire.pdf" class="fas fa-book-reader" title="Accéder au mémoire de l'équipe" target="_blank"> </a>
 <a href="{{ path('cyberjury_phrases_amusantes', {'id': id_equipe} ) }}" class="fas fa-pencil-alt" title="Les phrases amusantes" > </a>
 
 {% endblock %} 
@@ -16,7 +15,8 @@
 {{ jure.prenomJure|title }} {{ jure.nomJure|title }} 
   </button>
 
-{{ knp_menu_render('jury', {'currentClass': 'active'}) }}
+{#{{ knp_menu_render('jury', {'currentClass': 'active'}) }}#}
+{{ include ('cyberjury/navigation.html.twig') }}
 {% endblock %}
 {% block body %}
 <div class="well">

@@ -13,15 +13,5 @@ use Doctrine\ORM\QueryBuilder;
  */
 class ElevesRepository extends \Doctrine\ORM\EntityRepository
 {
-	public function getEquipesEleves()
-	{
-		$query=$this->createQueryBuilder('e')
-		->Join('e.equipeleves', 'k')
-		->addSelect('k')
-		->getQuery();
-
-		return $query->getResult();
-	}
-
 
 }

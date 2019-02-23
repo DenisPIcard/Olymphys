@@ -97,18 +97,6 @@ class SecretariatController extends Controller
 			$em->flush();
 		}
 
-	/*	$listEleves=$repositoryEleves->findAll();
-
-		foreach ($listEleves as $eleve) 
-		{ 
-			$lettre = $eleve->getLettreEquipe(); 
-			$equipe=$repositoryEquipes->findOneByLettre($lettre);
-
-			$eleve->setEquipeleves($equipe);
-			$em->persist($eleve);
-			$em->flush();
-		}
-        */
 		foreach ($listEquipes as $equipe) 
 		{
 			$lettre=$equipe->getLettre();
@@ -121,7 +109,18 @@ class SecretariatController extends Controller
 
 		return new Response($content);
 	}
-	
+
+        /**
+	* @Security("has_role('ROLE_SUPER_ADMIN')")
+         * 
+         * @Route("/secretariat/initialisation", name="secretariat_initialisation")
+         * 
+         */
+	public function initialisation(Request $request)
+	{
+            
+        }
+        
 	/**
 	* @Security("has_role('ROLE_SUPER_ADMIN')")
          * 
@@ -143,7 +142,7 @@ class SecretariatController extends Controller
 		;
 		$listJures = $repositoryJures->findAll();
 
-		$em=$this->getDoctrine()->getManager();
+		//$em=$this->getDoctrine()->getManager();
 		
 		$repositoryEquipes = $this
 		->getDoctrine()
@@ -394,7 +393,7 @@ class SecretariatController extends Controller
 			->findOneByNiveau('3ème')
 			->getNbreprix(); 
 		
-		$ListPremPrix = $repositoryEquipes->classement(1,0, $NbrePremierPrix);  // par ordre decroissant du total 
+		$ListPremPrix = $repositoryEquipes->classement(1,0, $NbrePremierPrix);  
 
                 $offset = $NbrePremierPrix  ; 
 		$ListDeuxPrix = $repositoryEquipes->classement(2, $offset, $NbreDeuxPrix);

@@ -6,7 +6,7 @@ Layout de départ du site #}
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" type="image/png" href="favicon.png"/>    
+    <link rel="shortcut icon" type="image/png" href="{{ asset('favicon.png') }}"/>    
     <title>{% block title %}Olymphys{% endblock %}</title>
 
     {% block stylesheets %}
@@ -19,10 +19,8 @@ Layout de départ du site #}
   <body>
   <div class="container_fluid">
     <div class="page-header">
-    {#<div id="header" class="jumbotron">
-      <h1>Olympiades de Physique France</h1>
-    <img src="../public/Phi.png" alt="logo des OdpF"  width="300"/>#}
-    <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/Logo_odpf_long.png" alt="logo des OdpF"  width="300"/>  					<h1 align="right"> 
+    <img src="{{ asset('images/Phicomplet.png')}}" alt="logo des OdpF"  width="300"/> 
+    <h1 align="right"> 
     </div>
     <div class ="row">
         <div id="menu" class="col-md-3">

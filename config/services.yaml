@@ -22,14 +22,14 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
         
-    app.menu_builder:
-        class: App\Menu\MenuBuilder
-        arguments: ["@knp_menu.factory","@security.authorization_checker","@security.token_storage"]
-        tags:
-            - { name: knp_menu.menu_builder, method: createMainMenu, alias: main }
-            - { name: knp_menu.menu_builder, method: createUtilisateurMenu, alias: utilisateur }
-            - { name: knp_menu.menu_builder, method: createSecretariatMenu, alias: secretariat }
-            - { name: knp_menu.menu_builder, method: createJuryMenu, alias: jury }
+    #app.menu_builder:
+     #   class: App\Menu\MenuBuilder
+     #   arguments: ["@knp_menu.factory","@security.authorization_checker","@security.token_storage"]
+     #   tags:
+     #       - { name: knp_menu.menu_builder, method: createMainMenu, alias: main }
+     #       - { name: knp_menu.menu_builder, method: createUtilisateurMenu, alias: utilisateur }
+     #       - { name: knp_menu.menu_builder, method: createSecretariatMenu, alias: secretariat }
+     #       - { name: knp_menu.menu_builder, method: createJuryMenu, alias: jury }
             
     app.configure_menu_listener:
         class: App\EventListener\ConfigureMenuListener

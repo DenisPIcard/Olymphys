@@ -7,8 +7,8 @@
 <button type="button" class="btn btn-outline-primary btn-lg btn-bloc"  > <span class="fas fa-user">  </span>           
 {{ jure.prenomJure|title }} {{ jure.nomJure|title }} 
   </button>
-
-{{ knp_menu_render('jury', {'currentClass': 'active'}) }}
+{{ include ('cyberjury/navigation.html.twig') }}
+{#{{ knp_menu_render('jury', {'currentClass': 'active'}) }}#}
 
 {% endblock %}
 {% block titre3 %} Mes équipes {% endblock %}
@@ -21,7 +21,7 @@
 href="{{ path('cyberjury_evaluer_une_equipe', {'id': equipes.id} ) }}" >{{ equipes.lettre }}</a> 
 
     {{ equipes.titreProjet }}
-    <a href="{{ equipes.urlMemoire }}" class="fas fa-book-reader" title="Accéder au mémoire de l'équipe" target="_blank"> </a>
+    <a href="https://odpf.org/images/archives_docs/26eme/memoires/Equipe{{ equipes.lettre }}/memoire.pdf" class="fas fa-book-reader" title="Accéder au mémoire de l'équipe" target="_blank"> </a>
     <a href="{{ path('cyberjury_infos_equipe', {'id': equipes.id} ) }}" class="fas fa-info-circle" title="En savoir plus sur cette équipe"> </a>
     <a href="{{ path('cyberjury_phrases_amusantes', {'id': equipes.id} ) }}" class="fas fa-pencil-alt" title="Les phrases amusantes" > </a>
     <p />

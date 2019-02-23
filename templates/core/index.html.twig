@@ -1,5 +1,4 @@
 {# templates/Core/index.html.twig#}
-{# On utilise ici le layout général, qui se situe dans ce même CoreBundle #}
 {% extends "layout.html.twig" %}
 
 {% block title %}
@@ -38,45 +37,52 @@
     <div class="alert alert-info">Message flash : {{ message }}</div>
   {% endfor %}
 
-  <h3>Menu</h3>
+  <h3></h3>
   	
 
-{{ knp_menu_render('main') }}
 
-{#
-<ul class="nav nav-pills nav-stacked">
+
+{#{{ knp_menu_render('main') }}#}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<ul class="navbar-nav">
     <li>
     {% if is_granted('ROLE_ADMIN') %}
-      <a href="{{ path('sonata_admin_redirect') }}">
-        Administration
-      </a>
+      <button class="btn btn-outline-primary dropdown-toggle active" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Administration</button>
+      
+        <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+            <a class="dropdown-item"  href="{{ path('sonata_admin_redirect') }}" role="button">Tableau de bord</a>
+            <a class="dropdown-item"  href="{{ path('secretariat_accueil') }}" role="button">Secrétariat du Jury</a>
+        </div>
       {% endif %}
     </li>
     
     <li>
         {% if is_granted('ROLE_COMITE') %}
-            Pages Comité
+            <a href="#" class="btn btn-outline-primary" role="button" aria-pressed="true">Pages Comité</a>
         {% endif %}
     </li>
     <li>
     
        {% if is_granted('ROLE_ADMIN') %}
-           <a href="{{ path('secretariat_accueil')}}">
-               Secrétariat
+           <a href="{{ path('secretariat_accueil')}}" class="btn btn-outline-primary" role="button" aria-pressed="true">
+               Secrétariat du Jury
            </a>
        {% elseif is_granted('ROLE_JURY') %}
-            <a href="{{ path('cyberjury_accueil') }}">
+            <a href="{{ path('cyberjury_accueil') }}" class="btn btn-outline-primary active" role="button" aria-pressed="true">
                 Accueil du Jury
             </a>
        {% endif %}
     </li>
  
-    <li>Galeries Photos</li>
-    <li>Mémoires</li>
-    <li>Présentations</li>
+    <li><a href="#" class="btn btn-outline-primary" role="button" aria-pressed="true">Galeries Photos</a></li>
+    <li><a href="#" class="btn btn-outline-primary" role="button" aria-pressed="true">Mémoires</a></li>
+    <li><a href="#" class="btn btn-outline-primary" role="button" aria-pressed="true">Présentations</a></li>
     
 </ul>
-#}
+</nav>
+       
+       <img src="{{ asset('images/bandeau.jpg') }}">
 {% endblock %}
 
 

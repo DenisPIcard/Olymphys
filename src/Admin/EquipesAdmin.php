@@ -24,6 +24,7 @@ class EquipesAdmin extends AbstractAdmin
                     //->add('classement',EntityType::class, [
                     //    'class'=> Classement::class,
                      //   'choice_label'=> 'niveau',])
+                    ->add('classement', TextType::class, ['required' => false])
                     ->add('prix', EntityType::class, [
                         'class'=> Prix::class, 
                         'choice_label'=> 'prix',])
