@@ -170,7 +170,7 @@ class JuryController extends Controller
 
             $repositoryCadeaux = $this->getDoctrine()
                                        ->getManager()
-                                        ->getRepository('App:Cadeaux');
+                                       ->getRepository('App:Cadeaux');
             $ListCadeaux  = $repositoryCadeaux ->getListCadeaux();
 
             $content = $this->get('templating')->render('cyberjury/lescadeaux.html.twig',

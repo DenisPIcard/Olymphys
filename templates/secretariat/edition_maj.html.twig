@@ -1,0 +1,13 @@
+{% extends "layout.html.twig" %}
+{% block title %} Édition {% endblock %}
+{% block titre3 %} Mise à jour de l'édition {% endblock %}
+
+{% block navigation %}
+	{{ include ("secretariat/navigation.html.twig") }}
+{% endblock %}
+
+{% block body %}
+    <div class='well'>
+        {{ form(form) }}
+    </div>
+{% endblock %}

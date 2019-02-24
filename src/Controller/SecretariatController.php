@@ -17,6 +17,7 @@ use App\Form\PrixType ;
 use App\Form\ChoixPrixType;
 
 use App\Entity\Equipes ;
+use App\Entity\Edition ;
 use App\Entity\Totalequipes ;
 use App\Entity\Jures ;
 use App\Entity\Notes ;
@@ -113,13 +114,35 @@ class SecretariatController extends Controller
         /**
 	* @Security("has_role('ROLE_SUPER_ADMIN')")
          * 
-         * @Route("/secretariat/initialisation", name="secretariat_initialisation")
+         * @Route("/secretariat/edition_maj", name="secretariat_edition_maj")
          * 
          */
-	public function initialisation(Request $request)
-	{
-            
-        }
+	public function edition_maj(Request $request)
+	{ 
+        $repositoryEdition = $this->getDoctrine()
+                                ->getManager()
+                                ->getRepository('App:Edition');
+        $ed = $repositoryEdition->findOneByEd('ed');     
+        $em = $this->getDoctrine()->getManager();
+
+        //$edition = new Edition();
+        $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $ed);
+        $formBuilder ->add('date',    DateType::class)
+                     ->add('edition', IntegerType::class)
+                     ->add('ville',   TextType::class)
+                     ->add('lieu',    TextType::class)
+                     ->add('Enregistrer', SubmitType::class);
+        $form = $formBuilder->getForm();
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) 
+            {
+            $em->persist($ed );
+            $em->flush();
+            return $this->redirectToroute('secretariat_accueil');
+            }
+        $content = $this->get('templating')
+                        ->render('secretariat\edition_maj.html.twig', array('form'=>$form->createView(),));
+	return new Response($content);          
+        }       
         
 	/**
 	* @Security("has_role('ROLE_SUPER_ADMIN')")
@@ -1291,6 +1314,14 @@ class SecretariatController extends Controller
 			->getManager()
 			->getRepository('App:Eleves');
                 
+                $repositoryEdition=$this
+			->getDoctrine()
+			->getManager()
+			->getRepository('App:Edition');
+                $ed=$repositoryEdition->findOneByEd('ed');
+                $date=$ed->getDate();
+                $result = $date->format('d/m/Y');
+                $edition=$ed->getEdition();
 
 		foreach ($listEquipes as $equipe) 
 		{
@@ -1303,7 +1334,7 @@ class SecretariatController extends Controller
                 $spreadsheet->getProperties()
                         ->setCreator("Olymphys")
                         ->setLastModifiedBy("Olymphys")
-                        ->setTitle("Palmarès de la 26ème édition - Février 2019")
+                        ->setTitle("Palmarès de la ".$edition."ème édition - ".$result)
                         ->setSubject("Palmarès")
                         ->setDescription("Palmarès avec Office 2005 XLSX, generated using PHP classes.")
                         ->setKeywords("office 2005 openxml php")
