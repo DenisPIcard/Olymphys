@@ -14,7 +14,7 @@ use App\Form\JuresType ;
 use App\Form\CadeauxType ;
 use App\Form\ClassementType ;
 use App\Form\PrixType ;
-use App\Form\ChoixPrixType;
+use App\Form\EditionType;
 
 use App\Entity\Equipes ;
 use App\Entity\Edition ;
@@ -38,6 +38,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -125,22 +126,84 @@ class SecretariatController extends Controller
         $ed = $repositoryEdition->findOneByEd('ed');     
         $em = $this->getDoctrine()->getManager();
 
-        //$edition = new Edition();
-        $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $ed);
-        $formBuilder ->add('date',    DateType::class)
-                     ->add('edition', IntegerType::class)
-                     ->add('ville',   TextType::class)
-                     ->add('lieu',    TextType::class)
-                     ->add('Enregistrer', SubmitType::class);
-        $form = $formBuilder->getForm();
+        $form = $this->createForm(EditionType::class, $ed);
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) 
             {
-            $em->persist($ed );
+            $em->persist($ed);
             $em->flush();
             return $this->redirectToroute('secretariat_accueil');
             }
         $content = $this->get('templating')
                         ->render('secretariat\edition_maj.html.twig', array('form'=>$form->createView(),));
+	return new Response($content);          
+        }       
+        
+        /**
+	* @Security("has_role('ROLE_SUPER_ADMIN')")
+         * 
+         * @Route("/secretariat/charge_equipe1", name="secretariat_charge_equipe1")
+         * 
+         */
+	public function charge_equipe1(Request $request)
+	{ 
+
+            $defaultData = ['message' => 'Charger le fichier Équipe'];
+            $form = $this->createFormBuilder($defaultData)
+                            ->add('fichier',      FileType::class)
+                            ->add('Envoyer',      SubmitType::class)
+                            ->getForm();
+            $form->handleRequest($request);                            
+            if ($form->isSubmitted() && $form->isValid()) 
+                {
+                $data=$form->getData();
+                $fichier=$data['fichier'];
+                $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($fichier);
+                $worksheet = $spreadsheet->getActiveSheet();
+            
+                $highestRow = $worksheet->getHighestRow();
+                $highestColumn = $worksheet->getHighestColumn();
+                $highestColumnIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn);
+                
+ 
+                $em = $this->getDoctrine()->getManager();
+                $lettres = range('A', 'Z');
+                $row=1;
+               foreach ($lettres as $lettre)
+                   {                       
+                   $equipe= new totalequipes(); 
+                   $value = $worksheet->getCellByColumnAndRow(1, $row)->getValue(); 
+                   $equipe->setNumeroEquipe($value) ; 
+                   $value = $worksheet->getCellByColumnAndRow(2, $row)->getValue();
+                   $equipe->setLettreEquipe($value) ;
+                   $value = $worksheet->getCellByColumnAndRow(3, $row)->getValue(); 
+                   $equipe->setNomEquipe($value) ;
+                   $value = $worksheet->getCellByColumnAndRow(4, $row)->getValue(); 
+                   $equipe->setNomLycee($value) ;
+                   $value = $worksheet->getCellByColumnAndRow(5, $row)->getValue(); 
+                   $equipe->setDenominationLycee($value) ;
+                   $value = $worksheet->getCellByColumnAndRow(6, $row)->getValue(); 
+                   $equipe->setLyceeLocalite($value) ;
+                   $value = $worksheet->getCellByColumnAndRow(7, $row)->getValue(); 
+                   $equipe->setLyceeAcademie($value) ; 
+                   $value = $worksheet->getCellByColumnAndRow(8, $row)->getValue(); 
+                   $equipe->setPrenomProf1($value) ; 
+                   $value = $worksheet->getCellByColumnAndRow(9, $row)->getValue(); 
+                   $equipe->setNomProf1($value) ; 
+                   $value = $worksheet->getCellByColumnAndRow(10, $row)->getValue(); 
+                   $equipe->setPrenomProf2($value) ; 
+                   $value = $worksheet->getCellByColumnAndRow(11, $row)->getValue(); 
+                   $equipe->setNomProf2($value) ; 
+                   
+                   $em->persist($equipe);
+
+                   $row +=1;
+                    }
+                    $em->flush();
+
+                  return $this->redirectToRoute('secretariat_accueil');
+            }
+        $content = $this->get('templating')
+                        ->render('secretariat\uploadexcel.html.twig', array('form'=>$form->createView(),));
 	return new Response($content);          
         }       
         
@@ -164,8 +227,6 @@ class SecretariatController extends Controller
 		->getRepository('App:Jures')
 		;
 		$listJures = $repositoryJures->findAll();
-
-		//$em=$this->getDoctrine()->getManager();
 		
 		$repositoryEquipes = $this
 		->getDoctrine()
@@ -206,7 +267,7 @@ class SecretariatController extends Controller
 					$progression[$nbre_equipes][$nbre_jures] = (is_null($note)) ? 'zero' : $note->getPoints() ;
 				}	
 			}
-	    }
+                }
 
 		$content = $this->get('templating')->render('secretariat/vueglobale.html.twig', array(
 			'listJures'=>$listJures, 
@@ -289,9 +350,8 @@ class SecretariatController extends Controller
 			$em->persist($equipe);	
 		}
                 $em->flush();
-		// Le render ne change pas, on passait un tableau, maintenant un objet 
+
 		$content = $this->get('templating')->render('secretariat/classement.html.twig', 
-			//array('listEquipes'=>$listEquipes)
 			array('classement' => $classement )
 			);
 		return new Response($content);
@@ -344,7 +404,6 @@ class SecretariatController extends Controller
 				
 		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid() ) 
 		{
-			// création et gestion du formulaire. 
 			$em->persist($prix);			
 			$em->flush();
 
@@ -352,13 +411,11 @@ class SecretariatController extends Controller
 			$nbrePremPrix = $repositoryPrix->getNbrePrix('1er');
 			$classement->setNbreprix($nbrePremPrix); 
 			$em->persist($classement);			
-			$em->flush();
 
 			$classement = $repositoryClassement->findOneByNiveau('2ème');			
 			$nbreDeuxPrix = $repositoryPrix->getNbrePrix('2ème');
 			$classement->setNbreprix($nbreDeuxPrix); 
 			$em->persist($classement);			
-			$em->flush();
 
 
 			$classement = $repositoryClassement->findOneByNiveau('3ème');			
@@ -369,11 +426,9 @@ class SecretariatController extends Controller
 
 
 			$request -> getSession()->getFlashBag()->add('notice', 'Modifications bien enregistrées');
-			// puis on redirige vers la page de visualisation de cette note dans le tableau de bord
 			return $this->redirectToroute('secretariat_lesprix');
 
 		}
-		// Si on n'est pas en POST, alors on affiche le formulaire. 
 		$content = $this->get('templating')->render('secretariat/modifier_prix.html.twig', 
 			array(
 				'prix'=>$prix,
@@ -444,7 +499,6 @@ class SecretariatController extends Controller
 	*/
 	public function modifier_rang(Request $request, $id_equipe)
 	{
-		//$user=$this->getUser();
 		$repositoryEquipes = $this
 			->getDoctrine()
 			->getManager()
@@ -494,17 +548,14 @@ class SecretariatController extends Controller
                     foreach($list as $eq)
                         {
                         $rang= $eq->getRang();
-                        $eq ->setRang($rang+$mod);
-                       //$em->persist($eq);			                       
+                        $eq ->setRang($rang+$mod);                      
                         }
                     $em->persist($equipe);			
                     $em->flush();
                     $request -> getSession()->getFlashBag()->add('notice', 'Modifications bien enregistrées');
-			// puis on redirige vers la page de visualisation de cette note dans le tableau de bord
                     return $this->redirectToroute('secretariat_palmares_ajuste');
 
                     }
-		// Si on n'est pas en POST, alors on affiche le formulaire. 
 		$content = $this->get('templating')->render('secretariat/modifier_rang.html.twig', 
 			array(
 				'equipe'=>$equipe,
@@ -547,7 +598,7 @@ class SecretariatController extends Controller
 			->findOneByNiveau('3ème')
 			->getNbreprix(); 
 		
-		$ListPremPrix = $repositoryEquipes->palmares(1,0, $NbrePremierPrix); // classement par rang croissant 
+		$ListPremPrix = $repositoryEquipes->palmares(1,0, $NbrePremierPrix); 
 		          
                 $offset = $NbrePremierPrix  ;
 		$ListDeuxPrix = $repositoryEquipes->palmares(2, $offset, $NbreDeuxPrix);
@@ -601,7 +652,7 @@ class SecretariatController extends Controller
 			->findOneByNiveau('3ème')
 			->getNbreprix(); 
 
-		$ListPremPrix = $repositoryEquipes->palmares(1,0, $NbrePremierPrix); // classement par rang croissant 
+		$ListPremPrix = $repositoryEquipes->palmares(1,0, $NbrePremierPrix);
 		$offset = $NbrePremierPrix  ; 
 		$ListDeuxPrix = $repositoryEquipes->palmares(2, $offset, $NbreDeuxPrix);
 		$offset = $offset + $NbreDeuxPrix  ; 
@@ -616,7 +667,6 @@ class SecretariatController extends Controller
 			$rang = $rang + 1 ; 			
 			$equipe->setRang($rang);
 			$em->persist($equipe);
-			$em->flush();
 		}
 
 		foreach ($ListDeuxPrix as $equipe) 
@@ -626,7 +676,6 @@ class SecretariatController extends Controller
 			$rang = $rang + 1 ; 			
 			$equipe->setRang($rang);
 			$em->persist($equipe);
-			$em->flush();
 		}
 		foreach ($ListTroisPrix as $equipe) 
 		{
@@ -635,9 +684,9 @@ class SecretariatController extends Controller
 			$rang = $rang + 1 ; 			
 			$equipe->setRang($rang);
 			$em->persist($equipe);
-			$em->flush();
+			
 		}
-
+                $em->flush();
 		$content = $this->get('templating')->render('secretariat/palmares_definitif.html.twig',
 			array('ListPremPrix' => $ListPremPrix, 
 			      'ListDeuxPrix' => $ListDeuxPrix,
@@ -673,28 +722,20 @@ class SecretariatController extends Controller
 		foreach ($ListeEquipes as $equipe)
     		{
             	$equipe->setPrix(null);
-				$em->persist($equipe);
-				$em->flush();
+		$em->persist($equipe);
     		}
 
 		foreach (range('A','Z') as $i)
     		{
-    			// On récupère le nom du getter correspondant à l'attribut.
-    			$method = 'set'.ucfirst($i);
-
-    			// Si le setter correspondant existe.
-    			if (method_exists($prix, $method))
-   				{
-    				// On appelle le setter.
-    				$prix = $prix->$method(null);
-
-					$em->persist($prix);
-					$em->flush();
+                    $method = 'set'.ucfirst($i);
+                    if (method_exists($prix, $method))
+                        {
+                            $prix = $prix->$method(null);
+                            $em->persist($prix);
         		} 
-
         	}
-    
-      	$content = $this->get('templating')->render('secretariat/RaZ.html.twig');
+		$em->flush();    
+                $content = $this->get('templating')->render('secretariat/RaZ.html.twig');
 
 		return new Response($content);
 	}
@@ -746,13 +787,13 @@ class SecretariatController extends Controller
 		$qb->where('p.classement=:niveau')
 		    ->setParameter('niveau', $niveau_court);
                 
-                //Alain
+
                 
-        $listPrix=$repositoryPrix->findOneByClassement($niveau_court)->getPrix();
-	$prix = $repositoryPalmares->findOneByCategorie('prix');
-	$i=0;	
+                $listPrix=$repositoryPrix->findOneByClassement($niveau_court)->getPrix();
+                $prix = $repositoryPalmares->findOneByCategorie('prix');
+                $i=0;	
 		foreach ($ListEquipes as $equipe) 
-                    {
+                {
                     $qb2[$i]= $repositoryPrix->createQueryBuilder('p')
                                              ->where('p.classement = :niveau')
                                              ->setParameter('niveau', $niveau_court);
@@ -839,63 +880,6 @@ class SecretariatController extends Controller
                               )
                                                                );
                     return new Response($content);      
-                    /*	$prix = $repositoryPalmares->findOneByCategorie('prix');
-                     		foreach ($ListEquipes as $equipe) 
-                    {
-                        $formBuilder=$this->get('form.factory')->createBuilder(FormType::class, $prix);
-			$lettre=strtoupper($equipe->getLettre());
-			$titre=$equipe->getTitreProjet();
-			$formBuilder->add($lettre, EntityType::class, [
-                                        'class' => 'App:Prix',
-                                        'query_builder' => $qb ,
-                                        'choice_label'=> 'getPrix',
-                                        'multiple' => false,
-                                        'label' => $lettre." : ".$titre]
-                                     );
-		}
-		$formBuilder->add('Enregistrer', SubmitType::class);
-		$form=$formBuilder->getForm();
-                
-		//Si la requête est en POST 
-		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) 
-			{
-			// création et gestion du formulaire. 
-			$em=$this->getDoctrine()->getManager();
-			$em->persist($prix);
-			$em->flush();
-			foreach (range('A','Z') as $i)
-        		{
-        		// On récupère le nom du getter correspondant à l'attribut.
-        		$method = 'get'.ucfirst($i);
-        		// Si le getter correspondant existe.
-        		if (method_exists($prix, $method))
-                            {
-                            // On appelle le setter.
-                            $pprix = $prix->$method();
-                            if($pprix)
-                                {
-                                $equipe = $repositoryEquipes->findOneByLettre($i);
-                                $equipe->setPrix($pprix);
-				$em->persist($equipe);
-                                $em->flush();
-                        } 
-                            }
-        		}
-	
-			$request -> getSession()->getFlashBag()->add('notice', 'Notes bien enregistrées');
-			// puis on redirige vers la page de visualisation de cette note dans le tableau de bord
-			return $this->redirectToroute('secretariat_attrib_prix', array('niveau'=> $niveau));	
-			}
-		// Si on n'est pas en POST, on affiche le formulaire. 
-		$content = $this->get('templating')->render('secretariat/attrib_prix.html.twig',
-                                                        array('ListEquipes' => $ListEquipes, 
-                                                              'NbrePrix'=>$NbrePrix, 
-                                                              'niveau'=>$niveau_long, 
-                                                              'form'=>$form->createView(),
-                                                              )
-                                                            );
-		return new Response($content);
-                         */
 	}
 
 	/**
@@ -955,8 +939,6 @@ class SecretariatController extends Controller
 			;
 		$cadeau = $equipe->getCadeau();
 
-		//$em=$this->getDoctrine()->getManager();
-
 		if(is_null($cadeau))
 		{
                     $flag = 0; 
@@ -966,24 +948,19 @@ class SecretariatController extends Controller
 				'Attrib_Cadeaux'=> true, 
 				'Deja_Attrib'=>false,
 				));
-                    // Si la requête est en post, c'est que le visiteur a soumis le formulaire. 
                     if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) 
 			{
-			// création et gestion du formulaire. 
 			
 			$em=$this->getDoctrine()->getManager();
 			$em->persist($equipe);
-			//$em->flush();
 			$cadeau = $equipe->getCadeau();
 			$cadeau->setAttribue(1);
 			$em->persist($cadeau);
 			$em->flush();
 
 			$request -> getSession()->getFlashBag()->add('notice', 'Notes bien enregistrées');
-			// puis on redirige vers la page de visualisation de cette note dans le tableau de bord
 			return $this->redirectToroute('secretariat_attrib_cadeaux', array('id_equipe'=>$id_equipe));	
 			}
-                    // Si on n'est pas en POST, alors on affiche le formulaire. 
                     $content = $this->get('templating')->render('secretariat/attrib_cadeaux.html.twig', 
 			array(
 				'equipe'=>$equipe,
@@ -1008,27 +985,23 @@ class SecretariatController extends Controller
 		
                     if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) 
 			{
-			// création et gestion du formulaire. 
-
 			$em->persist($cadeau);
 	
 			if($cadeau->getAttribue())
-				{
-					$em->persist($equipe);
-					//$em->flush();					
-				}	
+                            {
+                            $em->persist($equipe);
+				
+                            }	
 			else
-				{
-					$equipe->setCadeau(NULL);
-					$em->persist($equipe);
-					//$em->flush();					
-				}	
+                            {
+                            $equipe->setCadeau(NULL);
+                            $em->persist($equipe);	
+                            }	
 			$em->flush();
                         $request -> getSession()->getFlashBag()->add('notice', 'Notes bien enregistrées');
-			// puis on redirige vers la page de visualisation de cette note dans le tableau de bord
 			return $this->redirectToroute('secretariat_attrib_cadeaux', array('id_equipe'=>$id_equipe));	
 			}
-                    // Si on n'est pas en POST, alors on affiche le formulaire. 
+
                     $content = $this->get('templating')->render('secretariat/attrib_cadeaux.html.twig', 
 			array(
 				'equipe'=>$equipe,
@@ -1079,7 +1052,6 @@ class SecretariatController extends Controller
 	
             $equipe = $repositoryEquipes->findOneByRang($compteur);
 		if (is_null($equipe)) 
-                    //lié au pb des exaequo ?
 		{
 			$content = $this->get('templating')->render('secretariat/edition_cadeaux.html.twig', 
 			array(
@@ -1088,7 +1060,6 @@ class SecretariatController extends Controller
 			'nbreEquipes'=>$nbreEquipes,
 			'compteur'=>$compteur,));
 			return new Response($content);
-
 		}
             $id_equipe = $equipe->getId();
 
@@ -1097,7 +1068,6 @@ class SecretariatController extends Controller
             $em=$this->getDoctrine()->getManager();
 
             if(is_null($cadeau))
-                // On n'a pas encore attribué de cadeau à l'équipe de rang $compteur
 		{
 		$flag = 0; 
 		$form = $this->createForm(EquipesType::class, $equipe, 
@@ -1106,29 +1076,22 @@ class SecretariatController extends Controller
 				'Attrib_Cadeaux'=> true, 
 				'Deja_Attrib'=>false,
 				));
-		// Si la requête est en post, c'est que le visiteur a soumis le formulaire. 
                 if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) 
 			{
-			//gestion du formulaire. 
-			
 			$em=$this->getDoctrine()->getManager();
 			$em->persist($equipe);
-			//$em->flush();
 			$cadeau = $equipe->getCadeau();
 			$cadeau->setAttribue(1);
 			$em->persist($cadeau);
 			$em->flush();
 
 			$request -> getSession()->getFlashBag()->add('notice', 'Cadeaux bien enregistrés');
-			// puis on redirige vers la page de visualisation de cette note dans le tableau de bord
 			if($compteur<=$nbreEquipes)
-                            //on affiche l'équipe suivante
 				{
 					return $this->redirectToroute('secretariat_lescadeaux',array('compteur'=>$compteur+1));	
 				}
 			else 
 				{
-                                    // on affiche la page Edition, avec toutes les équipes
 					$content = $this->get('templating')->render('secretariat/edition_cadeaux.html.twig', 
 					array('equipe'=>$equipe,
 					'form'=>$form->createView(),
@@ -1140,7 +1103,6 @@ class SecretariatController extends Controller
 					return new Response($content);
 				}
 			}
-                    // Si on n'est pas en POST, alors on affiche le formulaire. 
                     $content = $this->get('templating')->render('secretariat/edition_cadeaux.html.twig', 
 			array('equipe'=>$equipe,
 				'form'=>$form->createView(),
@@ -1167,45 +1129,39 @@ class SecretariatController extends Controller
 		
                     if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) 
 			{
-			// création et gestion du formulaire. 
-
 			$em->persist($cadeau);
-			//$em->flush();	
 			if($cadeau->getAttribue())
-				{
-					$em->persist($equipe);
-					//$em->flush();					
-				}	
+                            {
+                            $em->persist($equipe);
+                            }	
                         else
-				{
-					$equipe->setCadeau(NULL);
-					$em->persist($equipe);
-					//$em->flush();					
-				}
+			{
+                            $equipe->setCadeau(NULL);
+                            $em->persist($equipe);
+			}
                         $em->flush();
 			$request -> getSession()->getFlashBag()->add('notice', 'Notes bien enregistrées');
-			// puis on redirige vers la page de visualisation de cette note dans le tableau de bord
 			
 			if($compteur<$nbreEquipes)
-				{
-					return $this->redirectToroute('secretariat_lescadeaux',array('compteur'=>$compteur+1));	
-				}
+			{
+                            return $this->redirectToroute('secretariat_lescadeaux',array('compteur'=>$compteur+1));	
+			}
 			else
-				{
-					$content = $this->get('templating')->render('secretariat/edition_cadeaux.html.twig', 
-					array('equipe'=>$equipe,
-					'form'=>$form->createView(),
-					'attribue'=> $flag,
-					'listEquipesCadeaux' => $listEquipesCadeaux,
-					'listEquipesPrix' => $listEquipesPrix,
-					'nbreEquipes'=>$nbreEquipes,
-					'compteur'=>$compteur,));
-					return new Response($content);
+                        {
+                            $content = $this->get('templating')->render('secretariat/edition_cadeaux.html.twig', 
+				array('equipe'=>$equipe,
+                                    'form'=>$form->createView(),
+                                    'attribue'=> $flag,
+                                    'listEquipesCadeaux' => $listEquipesCadeaux,
+                                    'listEquipesPrix' => $listEquipesPrix,
+                                    'nbreEquipes'=>$nbreEquipes,
+                                    'compteur'=>$compteur,));
+                                    return new Response($content);
 
-				}
+			}
                         }
 
-                    // Si on n'est pas en POST, alors on affiche le formulaire. 
+
                     $content = $this->get('templating')->render('secretariat/edition_cadeaux.html.twig', 
 			array('equipe'=>$equipe,
 				'form'=>$form->createView(),

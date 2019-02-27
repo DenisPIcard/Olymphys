@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20190224101300 extends AbstractMigration
+final class Version20190226084312 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -22,13 +22,16 @@ final class Version20190224101300 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('CREATE TABLE edition (id INT AUTO_INCREMENT NOT NULL, date DATETIME NOT NULL, edition INT NOT NULL, ville VARCHAR(255) NOT NULL, lieu VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
-   
+        $this->addSql('CREATE TABLE essai (id INT AUTO_INCREMENT NOT NULL, lettre VARCHAR(10) NOT NULL, titre VARCHAR(255) NOT NULL, total INT NOT NULL, rang VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
+        
     }
 
     public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
+        $this->addSql('DROP TABLE essai');
+        
     }
 }

@@ -327,16 +327,6 @@ class JuryController extends Controller
 	{
 		$user=$this->getUser();
 		$nom=$user->getUsername();
-
-		/*$repositoryJure = $this
-			->getDoctrine()
-			->getManager()
-			->getRepository('App:Jures')
-			;
-
-		$jure=$repositoryJure->findOneByNomJure($nom);
-		$id_jure = $jure->getId();
-*/
 		$repositoryEquipes = $this->getDoctrine()
 		->getManager()
 		->getRepository('App:Equipes');
@@ -352,7 +342,6 @@ class JuryController extends Controller
 		
 		$em=$this->getDoctrine()->getManager();
 
-		// Création de l'entité Notes
 		$notes = $repositoryNotes = $this->getDoctrine()
 		->getManager()
 		->getRepository('App:Notes')
