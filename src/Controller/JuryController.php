@@ -75,7 +75,10 @@ class JuryController extends Controller
 			$progression[$key] = (!is_null($note)) ? 1 : 0 ;
 
 		}
-                
+                usort($listEquipes, function($a, $b) {
+                return $a->getOrdre() <=> $b->getOrdre();
+                });
+             
                 $content = $this->get('templating')->render('cyberjury/accueil.html.twig', 
 			array('listEquipes' => $listEquipes,'progression'=>$progression,'jure'=>$jure)
 			);
@@ -454,6 +457,7 @@ class JuryController extends Controller
 			$listEquipes[$j]['id']= $equipe->getId();
 			$listEquipes[$j]['lettre']=$equipe->getLettre();
 			$listEquipes[$j]['titre']=$equipe->getTitreProjet();
+                        $listEquipes[$j]['isef']=$equipe->getIsef();
 			$listEquipes[$j]['exper']=$notes->getExper();
 			$listEquipes[$j]['demarche']=$notes->getDemarche();
 			$listEquipes[$j]['oral']=$notes->getOral();

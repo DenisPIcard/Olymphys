@@ -113,13 +113,20 @@ class EquipesRepository extends \Doctrine\ORM\EntityRepository
 
 		return $query->getResult();
 	}
+        
+	public function miseEnOrdre()
+	{
+		$query=$this->createQueryBuilder('e')
+		->orderBy('e.ordre','ASC')
+		->getQuery();
+
+		return $query->getResult();
+	}
 
 	public function classement($niveau,$offset,$nbreprix)
 	{
 
-		$queryBuilder=$this->createQueryBuilder('e');  // e est un alias, un raccourci donné à l'entité du repository. 1ère lettre du nom de l'entité
-
-		// On ajoute des critères de tri, etc. 
+		$queryBuilder=$this->createQueryBuilder('e'); 
 		
 		if ($niveau==0) 
 		{

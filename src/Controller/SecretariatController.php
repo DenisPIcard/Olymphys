@@ -17,6 +17,7 @@ use App\Form\PrixType ;
 use App\Form\EditionType;
 
 use App\Entity\Equipes ;
+use App\Entity\Eleves ;
 use App\Entity\Edition ;
 use App\Entity\Totalequipes ;
 use App\Entity\Jures ;
@@ -61,7 +62,6 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
     
 class SecretariatController extends Controller 
 {
-
 	/**
 	* @Security("has_role('ROLE_SUPER_ADMIN')")
          * 
@@ -69,6 +69,20 @@ class SecretariatController extends Controller
          * 
 	*/
 	public function accueil(Request $request)
+        {
+           	$content = $this->get('templating')->render('secretariat/accueil.html.twig', 
+			array(''));
+
+		return new Response($content); 
+        }             
+             
+	/**
+	* @Security("has_role('ROLE_SUPER_ADMIN')")
+         * 
+         * @Route("/secretariat/accueil_jury", name="secretariat_accueil_jury")
+         * 
+	*/
+	public function accueilJury(Request $request)
 	{
 		$repositoryEquipes = $this
 			->getDoctrine()
@@ -80,24 +94,9 @@ class SecretariatController extends Controller
 			->getManager()
 			->getRepository('App:Eleves');
 
-		$repositoryTotEquipes = $this
-			->getDoctrine()
-			->getManager()
-			->getRepository('App:Totalequipes');
-
 		$em=$this->getDoctrine()->getManager();
 
 		$listEquipes=$repositoryEquipes->findAll();
-
-		foreach ($listEquipes as $equipe)
-		{
-			$lettre = $equipe->getLettre(); 
-			$info=$repositoryTotEquipes->findOneByLettreEquipe($lettre);
-
-			$equipe->setInfoequipe($info);
-			$em->persist($equipe);
-			$em->flush();
-		}
 
 		foreach ($listEquipes as $equipe) 
 		{
@@ -105,7 +104,7 @@ class SecretariatController extends Controller
 			$lesEleves[$lettre] = $repositoryEleves->findByLettreEquipe($lettre);
 		}
 
-		$content = $this->get('templating')->render('secretariat/accueil.html.twig', 
+		$content = $this->get('templating')->render('secretariat/accueil_jury.html.twig', 
 			array('listEquipes' => $listEquipes,
 				  'lesEleves'=>$lesEleves));
 
@@ -207,6 +206,180 @@ class SecretariatController extends Controller
 	return new Response($content);          
         }       
         
+        /**
+	* @Security("has_role('ROLE_SUPER_ADMIN')")
+         * 
+         * @Route("/secretariat/charge_equipe2", name="secretariat_charge_equipe2")
+         * 
+         */
+	public function charge_equipe2(Request $request)
+	{ 
+
+            $defaultData = ['message' => 'Charger le fichier Équipe2'];
+            $form = $this->createFormBuilder($defaultData)
+                            ->add('fichier',      FileType::class)
+                            ->add('Envoyer',      SubmitType::class)
+                            ->getForm();
+            
+            $repositoryTotEquipes = $this
+			->getDoctrine()
+			->getManager()
+			->getRepository('App:Totalequipes');
+            
+            $form->handleRequest($request);                            
+            if ($form->isSubmitted() && $form->isValid()) 
+                {
+                $data=$form->getData();
+                $fichier=$data['fichier'];
+                $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($fichier);
+                $worksheet = $spreadsheet->getActiveSheet();
+            
+                $highestRow = $worksheet->getHighestRow();              
+ 
+                $em = $this->getDoctrine()->getManager();
+                 
+                for ($row = 1; $row <= $highestRow; ++$row) 
+                   {                       
+                   $equipe= new equipes(); 
+                   $value = $worksheet->getCellByColumnAndRow(1, $row)->getValue();
+                   $lettre=$value;
+                   $equipe->setLettre($lettre) ;
+                   $info=$repositoryTotEquipes->findOneByLettreEquipe($lettre);
+        	   $equipe->setInfoequipe($info);
+                   
+                   $nomEq=$repositoryTotEquipes->getTotEquipesNom($lettre);
+                   if($nomEq)
+                       {
+                       $nomEquipe=$nomEq[0]['nomEquipe'];
+                       }
+                   $equipe->setTitreProjet($nomEquipe);
+                   
+                   $value = $worksheet->getCellByColumnAndRow(2, $row)->getValue(); 
+                   $equipe->setOrdre($value) ;
+                   $value = $worksheet->getCellByColumnAndRow(3, $row)->getValue(); 
+                   $equipe->setHeure($value) ;
+                   $value = $worksheet->getCellByColumnAndRow(4, $row)->getValue(); 
+                   $equipe->setSalle($value) ;
+                   $value = $worksheet->getCellByColumnAndRow(5, $row)->getValue(); 
+                   $equipe->setIsef($value) ;
+                   
+                   $em->persist($equipe);
+
+                    }
+                    $em->flush();
+                    return $this->redirectToRoute('secretariat_accueil');
+                }
+        $content = $this->get('templating')
+                        ->render('secretariat\uploadexcel.html.twig', array('form'=>$form->createView(),));
+	return new Response($content);          
+        }       
+        
+        /**
+	* @Security("has_role('ROLE_SUPER_ADMIN')")
+         * 
+         * @Route("/secretariat/charge_eleves", name="secretariat_charge_eleves")
+         * 
+         */
+	public function charge_eleves(Request $request)
+	{ 
+
+            $defaultData = ['message' => 'Charger le fichier Éleves'];
+            $form = $this->createFormBuilder($defaultData)
+                            ->add('fichier',      FileType::class)
+                            ->add('Envoyer',      SubmitType::class)
+                            ->getForm();
+            
+            
+            $form->handleRequest($request);                            
+            if ($form->isSubmitted() && $form->isValid()) 
+                {
+                $data=$form->getData();
+                $fichier=$data['fichier'];
+                $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($fichier);
+                $worksheet = $spreadsheet->getActiveSheet();
+            
+                $highestRow = $worksheet->getHighestRow();              
+ 
+                $em = $this->getDoctrine()->getManager();
+                 
+                for ($row = 1; $row <= $highestRow; ++$row) 
+                   { 
+                    $eleve=new eleves();
+                    $value = $worksheet->getCellByColumnAndRow(1, $row)->getValue();
+                    $eleve->setNom($value);
+                    $value = $worksheet->getCellByColumnAndRow(2, $row)->getValue();
+                    $eleve->setPrenom($value);
+                    $value = $worksheet->getCellByColumnAndRow(3, $row)->getValue();
+                    $eleve->setClasse($value);
+                    $value = $worksheet->getCellByColumnAndRow(4, $row)->getValue();
+                    $eleve->setLettreEquipe($value);
+ 
+                    $em->persist($eleve);
+                    }                     
+                    $em->flush();
+                    return $this->redirectToRoute('secretariat_accueil');
+                }
+                $content = $this->get('templating')
+                        ->render('secretariat\uploadexcel.html.twig', array('form'=>$form->createView(),));
+                return new Response($content); 
+        }
+ 
+       /**
+	* @Security("has_role('ROLE_SUPER_ADMIN')")
+         * 
+         * @Route("/secretariat/charge_jures", name="secretariat_charge_jures")
+         * 
+         */
+	public function charge_jures(Request $request)
+	{ 
+
+            $defaultData = ['message' => 'Charger le fichier Jures'];
+            $form = $this->createFormBuilder($defaultData)
+                            ->add('fichier',      FileType::class)
+                            ->add('Envoyer',      SubmitType::class)
+                            ->getForm();
+            
+            
+            $form->handleRequest($request);                            
+            if ($form->isSubmitted() && $form->isValid()) 
+                {
+                $data=$form->getData();
+                $fichier=$data['fichier'];
+                $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($fichier);
+                $worksheet = $spreadsheet->getActiveSheet();
+            
+                $highestRow = $worksheet->getHighestRow();              
+ 
+                $em = $this->getDoctrine()->getManager();
+                $lettres = range('A','Z') ;
+                for ($row = 1; $row <= $highestRow; ++$row) 
+                   { 
+                    $jure = new jures();   
+                    $value = $worksheet->getCellByColumnAndRow(1, $row)->getValue();
+                    $jure->setPrenomJure($value);
+                    $value = $worksheet->getCellByColumnAndRow(2, $row)->getValue();
+                    $jure->setNomJure($value);
+                    $value = $worksheet->getCellByColumnAndRow(3, $row)->getValue();
+                    $jure->setInitialesJure($value);
+                    $colonne = 4;
+                    foreach ($lettres as $lettre)
+                        {
+                        $value = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();
+
+                        $method ='set'.$lettre;
+                        $jure->$method($value);
+ 
+                        $colonne +=1;
+                        }                    
+                    $em->persist($jure);
+                    }                     
+                    $em->flush();
+                    return $this->redirectToRoute('secretariat_accueil');
+                }
+                $content = $this->get('templating')
+                        ->render('secretariat\uploadexcel.html.twig', array('form'=>$form->createView(),));
+                return new Response($content);
+        }
 	/**
 	* @Security("has_role('ROLE_SUPER_ADMIN')")
          * 

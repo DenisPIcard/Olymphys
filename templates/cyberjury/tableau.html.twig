@@ -36,7 +36,11 @@
         {% for equipes in listEquipes %}
      <tr>
      	<th>{{ loop.index }}  </th>
-     		<td> <a href="{{ path('cyberjury_evaluer_une_equipe', {'id': equipes.id} ) }}" class ="btn btn-primary btn-lg">{{ equipes.lettre }} </a> </td>
+     		<td> <a href="{{ path('cyberjury_evaluer_une_equipe', {'id': equipes.id} ) }}"
+                        {% if (equipes.isef) %} class ="btn btn-success btn-lg"
+                        {% else %} class ="btn btn-primary btn-lg"
+                        {% endif %}
+                        >{{ equipes.lettre }} </a> </td>
      		<td> {{ equipes.titre }} </td>        
      		<td>{{ equipes.exper }}</td>
      		<td>{{ equipes.demarche }}</td>

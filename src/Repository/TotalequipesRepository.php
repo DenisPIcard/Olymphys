@@ -13,6 +13,14 @@ use Doctrine\ORM\QueryBuilder;
  */
 class TotalequipesRepository extends \Doctrine\ORM\EntityRepository
 {
+	public function getTotEquipesNom($lettre)
+	{
+		$query=$this->createQueryBuilder('e')
+                        ->select('e.nomEquipe')
+			->where('e.lettreEquipe=:lettre')
+			->setParameter('lettre', $lettre);
 
+		return $query->getQuery()->getResult();
+	}
 
 }

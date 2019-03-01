@@ -41,6 +41,34 @@ class Equipes
      /**
      * @var int
      *
+     * @ORM\Column(name="ordre", type="smallint",nullable=true)
+     */
+    private $ordre; 
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="heure", type="string", length=255, nullable=true)
+     */
+    private $heure; 
+    
+     /**
+     * @var string
+     *
+     * @ORM\Column(name="salle", type="string", length=255, nullable=true)
+     */
+    private $salle; 
+    
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="isef", type="boolean")
+     */
+    private $isef; 
+    
+     /**
+     * @var int
+     *
      * @ORM\Column(name="total", type="smallint", nullable=true)
      */
     private $total;
@@ -173,6 +201,102 @@ class Equipes
         return $this->titreProjet;
     }
 
+        /**
+     * Set ordre
+     *
+     * @param string $ordre
+     *
+     * @return Equipes
+     */
+    public function setOrdre($ordre)
+    {
+        $this->ordre = $ordre;
+
+        return $this;
+    }
+
+    /**
+     * Get ordre
+     *
+     * @return string
+     */
+    public function getOrdre()
+    {
+        return $this->ordre;
+    }
+    
+        /**
+     * Set heure
+     *
+     * @param string $heure
+     *
+     * @return Equipes
+     */
+    public function setHeure($heure)
+    {
+        $this->heure = $heure;
+
+        return $this;
+    }
+
+    /**
+     * Get heure
+     *
+     * @return string
+     */
+    public function getHeure()
+    {
+        return $this->heure;
+    }
+    
+        /**
+     * Set salle
+     *
+     * @param string $salle
+     *
+     * @return Equipes
+     */
+    public function setSalle($salle)
+    {
+        $this->salle = $salle;
+
+        return $this;
+    }
+
+    /**
+     * Get salle
+     *
+     * @return string
+     */
+    public function getSalle()
+    {
+        return $this->salle;
+    }
+    
+     /**
+     * Set isef
+     *
+     * @param boolean $isef
+     *
+     * @return Equipes
+     */
+    public function setIsef($isef)
+    {
+        $this->isef = $isef;
+
+        return $this;
+    }
+
+    /**
+     * Get salle
+     *
+     * @return string
+     */
+    public function getIsef()
+    {
+        return $this->isef;
+    }
+    
     /**
      * Set visite
      *
