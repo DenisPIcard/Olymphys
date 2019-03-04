@@ -23,12 +23,12 @@ class Prix
     private $id;
 
     /**
-     * @var string
+     * @var integer
      *
-     * @ORM\Column(name="prix", type="string", length=255, nullable=true)
+     * @ORM\Column(name="ordre", type="integer", nullable=true)
      */
-    private $prix;
-
+    private $ordre;
+    
     /**
      * @var string
      *
@@ -41,6 +41,14 @@ class Prix
     const DEUXIEME = 400; 
     const TROISIEME = 200;
 
+     /**
+     * @var string
+     *
+     * @ORM\Column(name="prix", type="string", length=255, nullable=true)
+     */
+    private $prix;
+
+    
         /**
      * @var boolean
      *
@@ -57,7 +65,30 @@ class Prix
     {
         return $this->id;
     }
+   /**
+     * Set ordre
+     *
+     * @param string $ordre
+     *
+     * @return Ordre
+     */
+    public function setOrdre($ordre)
+    {
+        $this->ordre = $ordre;
 
+        return $this;
+    }
+
+    /**
+     * Get ordre
+     *
+     * @return string
+     */
+    public function getOrdre()
+    {
+        return $this->ordre;
+    }
+    
     /**
      * Set prix
      *

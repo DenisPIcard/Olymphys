@@ -380,6 +380,57 @@ class SecretariatController extends Controller
                         ->render('secretariat\uploadexcel.html.twig', array('form'=>$form->createView(),));
                 return new Response($content);
         }
+        
+               /**
+	* @Security("has_role('ROLE_SUPER_ADMIN')")
+         * 
+         * @Route("/secretariat/charge_prix", name="secretariat_charge_prix")
+         * 
+         */
+	public function charge_prix(Request $request)
+	{ 
+
+            $defaultData = ['message' => 'Charger le fichier Prix'];
+            $form = $this->createFormBuilder($defaultData)
+                            ->add('fichier',      FileType::class)
+                            ->add('Envoyer',      SubmitType::class)
+                            ->getForm();
+            
+            
+            $form->handleRequest($request);                            
+            if ($form->isSubmitted() && $form->isValid()) 
+                {
+                $data=$form->getData();
+                $fichier=$data['fichier'];
+                $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($fichier);
+                $worksheet = $spreadsheet->getActiveSheet();
+            
+                $highestRow = $worksheet->getHighestRow();              
+ 
+                $em = $this->getDoctrine()->getManager();
+
+                for ($row = 1; $row <= $highestRow; ++$row) 
+                   { 
+                    $prix = new prix();   
+                    $value = $worksheet->getCellByColumnAndRow(1, $row)->getValue();
+                    $prix->setOrdre($value);
+                    $value = $worksheet->getCellByColumnAndRow(2, $row)->getValue();
+                    $prix->setPrix($value);
+                    $value = $worksheet->getCellByColumnAndRow(3, $row)->getValue();
+                    $prix->setClassement($value);
+                    $value = $worksheet->getCellByColumnAndRow(4, $row)->getValue();
+                    $prix->setAttribue($value);
+                            
+                    $em->persist($prix);
+                    }                     
+                    $em->flush();
+                    return $this->redirectToRoute('secretariat_accueil');
+                }
+                $content = $this->get('templating')
+                        ->render('secretariat\uploadexcel.html.twig', array('form'=>$form->createView(),));
+                return new Response($content);
+        }
+        
 	/**
 	* @Security("has_role('ROLE_SUPER_ADMIN')")
          * 
@@ -541,23 +592,137 @@ class SecretariatController extends Controller
 		$repositoryPrix = $this->getDoctrine()
 		->getManager()
 		->getRepository('App:Prix');
-		
-		$ListPremPrix = $repositoryPrix->findByClassement('1er');
-		$ListDeuxPrix = $repositoryPrix->findByClassement('2ème');
-		$ListTroisPrix = $repositoryPrix->findByClassement('3ème');
+                
+                $repositoryClassement =$this->getDoctrine()
+		->getManager()
+		->getRepository('App:Classement');
+                
+                $nb1 = $repositoryClassement->findByNiveau('1er');
+		$nbPrem = $nb1[0]->getNbreprix();
+                $nb2 = $repositoryClassement->findByNiveau('2ème');
+		$nbDeux = $nb2[0]->getNbreprix();
+                $nb3 = $repositoryClassement->findByNiveau('3ème');
+		$nbTrois = $nb3[0]->getNbreprix();
+                
+                $ListPremPrix = $repositoryPrix->findBy(
+                    array('attribue'=>0),
+                    array('ordre'=>'asc'),
+                    $nbPrem,
+                    0  );
+                $ListDeuxPrix = $repositoryPrix->findBy(
+                    array('attribue'=>0),
+                    array('ordre'=>'asc'),
+                    $nbDeux,
+                    $nbPrem  );
+                $ListTroisPrix = $repositoryPrix->findBy(
+                     array('attribue'=>0),   
+                     array('ordre'=>'asc'),
+                    $nbTrois,
+                    $nbDeux+$nbPrem  );
+                
+                    $defaultData = ['message' => 'Type your message here'];
+                    $form = $this->createFormBuilder($defaultData)
+                                 ->add('Enregistrer', SubmitType::class)
+                                 ->getForm();
+
+                    $form->handleRequest($request);
+
+                    if ($form->isSubmitted() && ($form->getClickedButton())) 
+                        {
+                        $em=$this->getDoctrine()->getManager(); 
+                        $listprix=$repositoryPrix->findAll();
+                         foreach ($listprix as $prix)
+                            {
+                             $ordre = $prix->getOrdre();
+                             $r1 = range(0,$nbPrem);
+                             $r2 = range($nbPrem,$nbPrem+$nbDeux);
+                             $r3 = range($nbPrem+$nbDeux,$nbPrem+$nbDeux+$nbTrois);
+                             switch(true)
+                                {
+                                 case in_array($ordre,$r1):
+                                     $classement='1er';
+                                     break;
+                                 case in_array($ordre, $r2):
+                                     $classement = '2ème';
+                                     break;
+                                 case in_array($ordre, $r3):
+                                     $classement = '3ème';
+                                    break;
+                                }
+                             $prix->setClassement($classement);
+                             $em->persist($prix);
+                            }
+                        $em->flush();
+                        }
+    
 
 		$content = $this->get('templating')->render('secretariat/lesprix.html.twig',
 			array('ListPremPrix' => $ListPremPrix, 
                               'ListDeuxPrix' => $ListDeuxPrix, 
-                              'ListTroisPrix' => $ListTroisPrix)
+                              'ListTroisPrix' => $ListTroisPrix,
+                              'form'=>$form->createView())
 			);
 		return new Response($content);
 	}
-	
+
+  	/**
+	* @Security("has_role('ROLE_SUPER_ADMIN')")
+        * 
+        * @Route("/secretariat/construire_palmares/{niveau}", name="secretariat_construire_palmares", requirements={"niveau"="\d{1}"})
+        * 
+	*/
+	public function construirePalmares(Request $request, $niveau)
+	{
+                  
+                 $repositoryEquipes =$this->getDoctrine()
+		->getManager()
+		->getRepository('App:Equipes');
+                 
+                $nbreEquipes = $repositoryEquipes
+			->createQueryBuilder('e')
+                        ->select('COUNT(e)') 
+		 	->getQuery()
+		 	->getSingleScalarResult(); 
+                
+                 $repositoryClassement =$this->getDoctrine()
+		->getManager()
+		->getRepository('App:Classement');
+                 
+                 $class=$repositoryClassement->findAll();
+                 
+              
+                    $classement = $repositoryClassement->findOneById($niveau);
+                    //var_dump($classement);
+                    $form = $this->createForm(ClassementType::class, $classement);
+                    if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) 
+			{
+                        $em=$this->getDoctrine()->getManager();
+                        $em->persist($classement);
+
+                        $reste = $nbreEquipes - $class[0]->getNbreprix() - $class[1]->getNbreprix();
+                        $class[2]->setNbreprix($reste);
+                        $em->persist($class[2]);
+                        $em->flush();
+                        $niveau +=1;
+                        return $this->redirectToroute('secretariat_construire_palmares', array('niveau'=> $niveau));
+                        }                   
+                    $content = $this->get('templating')->render('secretariat/construire_palmares.html.twig',
+			array('nbre_equipes' => $nbreEquipes, 
+                              'classements' => $class,
+                              'niveau'=> $niveau,
+                              'form'=>$form->createView()
+			));
+                    return new Response($content);
+                    
+
+                        
+	}
+	      
+        
 	/**
 	* @Security("has_role('ROLE_SUPER_ADMIN')")
         * 
-         * @Route("/secretariat/modifier_prix/{id_prix}", name="secretariat_modifier_prix", requirements={"id_prix"="\d{1}|\d{2}"}))
+        * @Route("/secretariat/modifier_prix/{id_prix}", name="secretariat_modifier_prix", requirements={"id_prix"="\d{1}|\d{2}"})
 	*/
 	public function modifier_prix(Request $request, $id_prix)
 	{
@@ -779,11 +944,6 @@ class SecretariatController extends Controller
                 $offset = $offset + $NbreDeuxPrix  ;
                 $ListTroisPrix = $repositoryEquipes->palmares(3, $offset, $NbreTroisPrix);
 
-                $qb = $repositoryEquipes->createQueryBuilder('e');
-                $qb ->orderBy('e.rang', 'ASC')
-                    ->setFirstResult(  $NbrePremierPrix + $NbreDeuxPrix )
-                    ->setMaxResults( $NbreTroisPrix );
-                $ListTroisPrix = $qb ->getQuery()->getResult();		
 
 		$content = $this->get('templating')->render('secretariat/palmares_ajuste.html.twig',
 			array('ListPremPrix' => $ListPremPrix, 
@@ -950,36 +1110,37 @@ class SecretariatController extends Controller
 		->getManager()
 		->getRepository('App:Palmares');
                 
-                $ListEquipes = $repositoryEquipes->findByClassement($niveau_court); 
+                $listEquipes = $repositoryEquipes->findByClassement($niveau_court); 
                 
                 $NbrePrix=$repositoryClassement
 			->findOneByNiveau($niveau_court)
 			->getNbreprix(); 
                 
-		$qb = $repositoryPrix->createQueryBuilder('p');
+	/*	$qb = $repositoryPrix->createQueryBuilder('p');
 		$qb->where('p.classement=:niveau')
 		    ->setParameter('niveau', $niveau_court);
-                
+              
 
                 
                 $listPrix=$repositoryPrix->findOneByClassement($niveau_court)->getPrix();
+         */         
                 $prix = $repositoryPalmares->findOneByCategorie('prix');
                 $i=0;	
-		foreach ($ListEquipes as $equipe) 
+		foreach ($listEquipes as $equipe) 
                 {
                     $qb2[$i]= $repositoryPrix->createQueryBuilder('p')
                                              ->where('p.classement = :niveau')
                                              ->setParameter('niveau', $niveau_court);
                     $attribue=0;
-                    $Prix_eq=$equipe->getPrix();
+                    $prix_eq=$equipe->getPrix();
                     $intitule_prix='';
-                    if ($Prix_eq !=null) 
+                    if ($prix_eq !=null) 
                         {
-                        $intitule_prix = $Prix_eq->getPrix();
+                        $intitule_prix = $prix_eq->getPrix();
                         $qb2[$i]->andwhere('p.id = :prix_sel')
-                                ->setParameter('prix_sel', $Prix_eq->getId());                        
+                                ->setParameter('prix_sel', $prix_eq->getId());                        
                         }
-                    if (!$Prix_eq) 
+                    if (!$prix_eq) 
                         {                                                
                         $qb2[$i]->andwhere('p.attribue = :attribue')
                                 ->setParameter('attribue', $attribue);                    
@@ -1046,7 +1207,7 @@ class SecretariatController extends Controller
                         $i=$i+1;
                     }                                        
                     $content = $this->get('templating')->render('secretariat/attrib_prix.html.twig',
-			array('ListEquipes' => $ListEquipes, 
+			array('listEquipes' => $listEquipes, 
                               'NbrePrix'=>$NbrePrix, 
                               'niveau'=>$niveau_long, 
                               'formtab'=>$formtab,
@@ -1421,16 +1582,14 @@ class SecretariatController extends Controller
 	*/
 	public function tableau_excel_palmares_site(Request $request)
 	{
-		$listEquipes = $this->getDoctrine()
-			->getManager()
-			->getRepository('App:Equipes')
-			->getEquipesPalmares();
+
                 
                 $repositoryEquipes = $this
 			->getDoctrine()
 			->getManager()
-			->getRepository('App:Equipes')
-			;
+			->getRepository('App:Equipes');
+                
+  		$listEquipes = $repositoryEquipes->getEquipesPalmares();  
                 
                 $nbreEquipes = $repositoryEquipes
 			->createQueryBuilder('e')
@@ -1447,6 +1606,7 @@ class SecretariatController extends Controller
 			->getDoctrine()
 			->getManager()
 			->getRepository('App:Edition');
+                
                 $ed=$repositoryEdition->findOneByEd('ed');
                 $date=$ed->getDate();
                 $result = $date->format('d/m/Y');
@@ -1501,10 +1661,12 @@ class SecretariatController extends Controller
                 'textRotation' => 0,
                 'wrapText'     => TRUE
             ]; 
-                $nblignes=$nbreEquipes*4 +3;
+                
+                
        
                 $ligne=3;
-
+                $nblignes=$nbreEquipes*4 +$ligne;
+                
                 $sheet->setCellValue('A'.$ligne, 'Académie')
                     ->setCellValue('B'.$ligne, 'Lycée, sujet, élèves')
                     ->setCellValue('C'.$ligne, 'Professeurs')
@@ -1516,6 +1678,7 @@ class SecretariatController extends Controller
                 $sheet->getStyle('D'.$ligne)->applyFromArray($borderArray);
                 $sheet->getStyle('E'.$ligne)->applyFromArray($borderArray);
                 $sheet->getStyle('A'.$ligne.':D'.$ligne)->getAlignment()->applyFromArray($centerArray);
+                
                 $ligne +=1; 
 
         	foreach ($listEquipes as $equipe) 
@@ -1523,6 +1686,7 @@ class SecretariatController extends Controller
                     $lettre = $equipe->getLettre();
 
                     $ligne4 = $ligne + 3;
+                    
                     $sheet->mergeCells('A'.$ligne.':A'.$ligne4);
                     $sheet->setCellValue('A'.$ligne, strtoupper($equipe->getInfoequipe()->getLyceeAcademie()))
                         ->setCellValue('B'.$ligne,'LYCÉE'.' '.$equipe->getInfoequipe()->getnomLycee()." - ".$equipe->getInfoequipe()->getLyceeLocalite() )

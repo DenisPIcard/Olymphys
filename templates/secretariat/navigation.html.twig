@@ -7,7 +7,7 @@
 <nav class="navbar navbar-default">
 
 {#{{ knp_menu_render('secretariat', {'currentClass': 'active'}) }}#}
-<ul class="dropdown" style="list-style-type:none">
+<ul class="dropright" style="list-style-type:none">
     <li><button class="fas fa-pencil-alt btn btn-outline btn-sm btn-block dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
          Préparation du Secrétariat</button>
          <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
@@ -16,6 +16,7 @@
          <a class="dropdown-item" href="{{ path('secretariat_charge_equipe2') }}">Remplissage de la table Equipes</a> 
          <a class="dropdown-item" href="{{ path('secretariat_charge_eleves') }}">Remplissage de la table Eleves</a>
          <a class="dropdown-item" href="{{ path('secretariat_charge_jures') }}">Remplissage de la table Jures</a> 
+         <a class="dropdown-item" href="{{ path('secretariat_charge_prix') }}">Remplissage de la table Prix</a>
          </div>
     </li>
     <li><button class="fas fa-child btn btn-outline btn-sm btn-block dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -31,12 +32,13 @@
         <a class="dropdown-item" href="{{ path('secretariat_classement') }}">Classement des équipes (total des points décroissant)</a>
         <a class="dropdown-item" href="{{ path('secretariat_lesprix') }}">Les Prix</a>
         <a class="dropdown-item" href="{{ path('secretariat_palmares') }}">Le palmarès (selon les points et les niveaux de prix)</a>
+        <a class="dropdown-item" href="{{ path('secretariat_construire_palmares', {'niveau' : 1 }) }}">Modifier la répartition des Prix</a>
         <a class="dropdown-item" href="{{ path('secretariat_palmares_ajuste') }}">Le palmarès ajusté</a>
         <a class="dropdown-item" href="{{ path('secretariat_palmares_definitif') }}">Le palmarès définitif</a>
         </div>
     </li>
     <li><button class="fas fa-list-alt btn btn-outline btn-sm btn-block dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-         Les prix</button>
+         Attribution des prix</button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
         <a class="dropdown-item" href="{{ path('secretariat_mise_a_zero') }}">Initialisation des tables</a>
         <a class="dropdown-item" href="{{ path('secretariat_attrib_prix', {'niveau' : 1 }) }}">Attribution des premiers prix</a>

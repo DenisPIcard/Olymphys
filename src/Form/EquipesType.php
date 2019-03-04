@@ -53,8 +53,7 @@ class EquipesType extends AbstractType
         if($options['Modifier_Rang'])
         {
         $builder
-            ->add('rang', IntegerType::class) // au lieu de TextType
-            ->add('Enregistrer', SubmitType::class);                        
+            ->add('rang', IntegerType::class);                       
         }
         
         elseif($options['Attrib_Phrases'])
@@ -64,8 +63,7 @@ class EquipesType extends AbstractType
             ->add('liaison', EntityType::class, [
                     'class' => 'App:Liaison',
                     'choice_label'=> 'getLiaison',
-                    'multiple' => false])
-            ->add('Enregistrer', SubmitType::class);            
+                    'multiple' => false]);          
         }
 
         elseif($options['Attrib_Cadeaux']) 
@@ -73,8 +71,7 @@ class EquipesType extends AbstractType
             if($options['Deja_Attrib'])
             {
             $builder
-                ->add('cadeau', CadeauxType::class)
-                ->add('Enregistrer', SubmitType::class);
+                ->add('cadeau', CadeauxType::class);
             }
             else
             {
@@ -87,12 +84,11 @@ class EquipesType extends AbstractType
                         ->orderBy('c.montant', 'DESC');
                     },
                     'choice_label'=> 'displayCadeau', 
-                    'multiple' => false])
-                ->add('Enregistrer', SubmitType::class);
+                    'multiple' => false]);
 
             }
         }
-
+    $builder->add('Enregistrer', SubmitType::class);
     }
     
     /**

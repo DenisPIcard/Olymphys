@@ -114,7 +114,7 @@ class EquipesRepository extends \Doctrine\ORM\EntityRepository
 		return $query->getResult();
 	}
         
-	public function miseEnOrdre()
+	public function miseEnOrdre() //créée pour affichage. Pas utilisée (2/3/19)
 	{
 		$query=$this->createQueryBuilder('e')
 		->orderBy('e.ordre','ASC')

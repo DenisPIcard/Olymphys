@@ -6,11 +6,13 @@ use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
 use App\Entity\Jures ;
+use App\Entity\Equipes;
 
 class NotesAdmin extends AbstractAdmin
 {
@@ -45,7 +47,7 @@ class NotesAdmin extends AbstractAdmin
 
     protected function configureListFields(ListMapper $listMapper)
     {
-        $listMapper->add('equipe', null, ['associated_property' => 'lettre'])
+        $listMapper->addIdentifier('equipe', null, ['associated_property' => 'lettre'])
                    ->addIdentifier('jure',null, ['associated_property' => 'nomjure'])
                    ->add('exper', null, ['row_align'=>'center'])
                    ->add('demarche', null, ['row_align'=>'center'])

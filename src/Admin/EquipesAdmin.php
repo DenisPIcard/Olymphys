@@ -27,13 +27,16 @@ class EquipesAdmin extends AbstractAdmin
                     ->add('classement', TextType::class, ['required' => false])
                     ->add('prix', EntityType::class, [
                         'class'=> Prix::class, 
-                        'choice_label'=> 'prix',])
+                        'choice_label'=> 'prix',
+                        'placeholder'=>''])
                     ->add('visite',EntityType::class, [
                         'class' => Visites::class,
-                        'choice_label' => 'intitule',])
+                        'choice_label' => 'intitule',
+                        'placeholder'=>''])
                      ->add('cadeau',EntityType::class, [
                         'class' => Cadeaux::class,
-                        'choice_label' => 'contenu',])
+                        'choice_label' => 'contenu',
+                         'placeholder'=>''])
         ;
         
 

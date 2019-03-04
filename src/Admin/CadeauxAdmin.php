@@ -16,8 +16,8 @@ class CadeauxAdmin extends AbstractAdmin
     {
         $formMapper->add('contenu', TextType::class)
                    ->add('fournisseur', TextType::class)
-                   ->add('montant', MoneyType::class, array('currency'=>'EUR'))
-                   ->add('attribue', TextType::class);
+                   ->add('montant', MoneyType::class, ['currency'=>'EUR'])
+                   ->add('attribue', TextType::class, ['required' => false]);
     }
 
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)

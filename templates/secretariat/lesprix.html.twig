@@ -8,12 +8,13 @@
 {% endblock %}
 
 {% block body %}
-
+   {{ form(form) }}
   <h2>
   	Les premiers prix d'un montant de {{ constant('\\App\\Entity\\Prix::PREMIER') }} EUROS. 
   </h2>
 
 <div> 
+ 
   <table class="table table-striped">
     <thead>
       <tr class="danger">
@@ -25,7 +26,7 @@
       {% for prix in ListPremPrix %}
       <tr class="danger" >
         <td> 
-          {{loop.index }}
+          {{prix.ordre }}
         </td>
         <td>
           <a href="{{ path('secretariat_modifier_prix', {'id_prix': prix.id} ) }}"> {{prix.prix}} 
@@ -52,7 +53,7 @@
       {% for prix in ListDeuxPrix %}
         <tr class="warning">
         <td> 
-          {{loop.index }}
+          {{prix.ordre }}
         </td>
         <td>
           <a href="{{ path('secretariat_modifier_prix', {'id_prix': prix.id} ) }}"> {{prix.prix}} 
@@ -79,7 +80,7 @@
       {% for prix in ListTroisPrix %}
         <tr class="active">
         <td> 
-          {{loop.index }}
+          {{prix.ordre }}
         </td>
         <td>
           <a href="{{ path('secretariat_modifier_prix', {'id_prix': prix.id} ) }}"> {{prix.prix}} 
@@ -89,5 +90,7 @@
       {% endfor %}
     </tbody>
   </table>
+
 </div> 
+    
     {% endblock %}
