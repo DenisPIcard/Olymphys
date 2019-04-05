@@ -59,7 +59,7 @@
     
     <li>
         {% if is_granted('ROLE_COMITE') %}
-            <a href="#" class="btn btn-outline-primary" role="button" aria-pressed="true">Pages Comité</a>
+            <a href="{{ path('comite_accueil')}}" class="btn btn-outline-primary" role="button" aria-pressed="true">Pages Comité</a>
         {% endif %}
     </li>
     <li>

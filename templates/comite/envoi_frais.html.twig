@@ -1,0 +1,23 @@
+{% extends "layout.html.twig" %}
+{% block title %} Frais du Comité {% endblock %}
+
+{% block navigation %}
+
+    {{ include ('comite/navigation.html.twig') }}
+{% endblock %}
+
+{% block titre3 %} Frais du comité {% endblock %}
+
+{% block body %}
+    En cliquant sur Entrée, le document Excel que vous venez de recevoir sera envoyé à Marine Jadoule (compta@sfpnet.fr) et Christain Usseglio (usseglio.christian@free.fr).
+    Vous pouvez choisir de lui joindre de 1 à 3 pièces justificatives, en les téléchargeant ci dessous.
+    {{ form_start(form) }}
+    {% for i in 1..3 %}
+          {{ form_widget(attribute(form, 'Fichier'~i)) }} 
+    {{ form(form) }}
+    {% endfor %}
+    {{ form_rest(form) }}
+
+    {{ form_end(form) }}
+  
+{% endblock %}

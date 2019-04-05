@@ -1,5 +1,6 @@
 parameters:
     locale: 'fr'
+    frais_directory: '%kernel.project_dir%/public/Frais_comite'
 
 services:
     # default configuration for services in *this* file
@@ -100,7 +101,7 @@ services:
       #      - { name: menu.menu, alias: utilisateur }
             
     nouveluser.mail:
-        class: App\NouvelUser\EnvoiMails
+        class: App\Utils\EnvoiMails
 
     nouveluser.listener:
         class: App\NouvelUser\InscritListener

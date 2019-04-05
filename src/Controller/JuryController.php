@@ -37,8 +37,7 @@ class JuryController extends Controller
      * @Route("cyberjury/accueil", name="cyberjury_accueil")
      */
 	public function accueil()
- 
-        {
+         {
             	$user=$this->getUser();
 		$nom=$user->getUsername();
 
@@ -91,7 +90,7 @@ class JuryController extends Controller
         }
         
         /**
-	* @Security("has_role('ROLE_JURY')")
+	* @Security("is_granted('ROLE_JURY')")
         *
         * @Route( "/infos_equipe/{id}", name ="cyberjury_infos_equipe",requirements={"id_equipe"="\d{1}|\d{2}"}) 
 	*/
@@ -152,7 +151,7 @@ class JuryController extends Controller
         }
         
  	/**
-	* @Security("has_role('ROLE_JURY')")
+	* @Security("is_granted('ROLE_JURY')")
          * 
          * @Route("/lescadeaux", name="cyberjury_lescadeaux")
          * 
@@ -184,7 +183,7 @@ class JuryController extends Controller
 	}       
          
  	/**
-	* @Security("has_role('ROLE_JURY')")
+	* @Security("is_granted('ROLE_JURY')")
          * 
          * @Route("/lesprix", name="cyberjury_lesprix")
          * 
@@ -231,7 +230,7 @@ class JuryController extends Controller
 	}   
         
  /**
-	* @Security("has_role('ROLE_JURY')")
+	* @Security("is_granted('ROLE_JURY')")
          * 
          * @Route("palmares", name="cyberjury_palmares")
          * 
@@ -321,7 +320,7 @@ class JuryController extends Controller
         
         /**
         * 
-	* @Security("has_role('ROLE_JURY')")
+	* @Security("is_granted('ROLE_JURY')")
         *
         * @Route("/evaluer_une_equipe/{id}", name="cyberjury_evaluer_une_equipe", requirements={"id_equipe"="\d{1}|\d{2}"})
         *   
@@ -415,7 +414,7 @@ class JuryController extends Controller
 	}
       
         /**
-	 * @Security("has_role('ROLE_JURY')")
+	 * @Security("is_granted('ROLE_JURY')")
          * 
          * @Route("/tableau_de_bord", name ="cyberjury_tableau_de_bord")
          * 
@@ -476,7 +475,7 @@ class JuryController extends Controller
         
         /**
          * 
-	 * @Security("has_role('ROLE_JURY')")
+	 * @Security("is_granted('ROLE_JURY')")
          * 
          * 
          * @Route("/phrases_amusantes/{id}", name = "cyberjury_phrases_amusantes",requirements={"id_equipe"="\d{1}|\d{2}"})

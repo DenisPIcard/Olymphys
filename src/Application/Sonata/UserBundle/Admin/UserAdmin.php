@@ -25,6 +25,9 @@ class UserAdmin extends BaseUserAdmin
                     ->remove('gplusUid')
                     ->remove('gplusName')
                 ->with('General')
+                    ->add('adresse', TextType::class)
+                    ->add('ville', TextType::class)
+                    ->add('code', IntegerType::class)
                     ->add('rne', TextType::class, ['required' => false,'label'=>'RNE'])
                 ->end()
                 ;

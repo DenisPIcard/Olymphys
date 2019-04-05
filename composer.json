@@ -15,7 +15,9 @@
         "sonata-project/user-bundle": "^4.2",
         "symfony/asset": "^4.0",
         "symfony/console": "^4.0",
+        "symfony/debug": "^4.0",
         "symfony/expression-language": "^4.0",
+        "symfony/finder": "^4.0",
         "symfony/flex": "^1.0",
         "symfony/form": "^4.0",
         "symfony/framework-bundle": "^4.0",
@@ -33,11 +35,14 @@
         "symfony/yaml": "^4.0"
     },
     "require-dev": {
-        "symfony/debug-pack": "*",
+        "easycorp/easy-log-handler": "^1.0.7",
+        "symfony/debug-bundle": "*",
         "symfony/dotenv": "^4.0",
         "symfony/maker-bundle": "^1.5",
+        "symfony/monolog-bundle": "^3.0",
         "symfony/profiler-pack": "*",
         "symfony/test-pack": "^1.0",
+        "symfony/var-dumper": "*",
         "symfony/web-server-bundle": "^4.0"
     },
     "config": {

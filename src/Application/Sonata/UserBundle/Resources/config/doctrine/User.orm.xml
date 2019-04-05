@@ -10,7 +10,9 @@
             <generator strategy="AUTO" />
         </id>
         <field name="rne" type="string" column="rne" length="255" nullable="false"/>
-
+        <field name="adresse" type="string" column="adresse" length="255" nullable="false"/>
+        <field name="ville" type="string" column="ville" length="255" nullable="false"/>
+        <field name="code" type="integer" column="code" length="11" nullable="false"/>
     </entity>
 
 </doctrine-mapping>

@@ -26,6 +26,7 @@ class User extends BaseUser
      * @var int $id
      */
     protected $id;
+    
     /**
      * @var string
      *
@@ -33,15 +34,96 @@ class User extends BaseUser
      */
     protected $rne;
 
+        /**
+     * @var string
+     *
+     * @ORM\Column(name="adresse", type="string", length=255, nullable=true)
+     */
+    protected $adresse;
+        /**
+     * @var string
+     *
+     * @ORM\Column(name="ville", type="string", length=255, nullable=true)
+     */
+    protected $ville;
+        /**
+     * @var integer
+     *
+     * @ORM\Column(name="code", type="integer", length=11, nullable=true)
+     */
+    protected $code;
     /**
      * Set rne
      *
-     * @param string $nom
+     * @param string $rne
      *
      * @return User
      */
     public function setRne( $rne) {
         $this->rne= $rne;
+
+        return $this;
+    }
+
+    /**
+     * Get Adresse
+     *
+     * @return string
+     */
+    public function getAdresse() {
+        return $this->adresse;
+    }
+    /**
+     * Set adresse
+     *
+     * @param string $adresse
+     *
+     * @return User
+     */
+    public function setAdresse( $adresse) {
+        $this->adresse= $adresse;
+
+        return $this;
+    }
+
+    /**
+     * Get ville
+     *
+     * @return string
+     */
+    public function getVille() {
+        return $this->ville;
+    }
+    /**
+     * Set ville
+     *
+     * @param string $ville
+     *
+     * @return User
+     */
+    public function setVille( $ville) {
+        $this->ville= $ville;
+
+        return $this;
+    }
+
+    /**
+     * Get code
+     *
+     * @return string
+     */
+    public function getCode() {
+        return $this->code;
+    }
+    /**
+     * Set Code
+     *
+     * @param string $code
+     *
+     * @return User
+     */
+    public function setCode( $code) {
+        $this->code= $code;
 
         return $this;
     }

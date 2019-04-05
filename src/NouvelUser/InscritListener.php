@@ -7,8 +7,8 @@ namespace App\NouvelUser;
 use FOS\UserBundle\FOSUserEvents;
 use FOS\UserBundle\Event\FilterUserResponseEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use App\NouvelUser\EnvoiMails;
+
+use App\Utils\EnvoiMails;
 
 class InscritListener implements EventSubscriberInterface
 {
@@ -30,7 +30,12 @@ class InscritListener implements EventSubscriberInterface
     
    public function RegistrationCompleted(FilterUserResponseEvent $event)
    {
-      $this->notificator->notifyByEmail($event->getUser());
+      $from = 'webmestre2@olymphys.fr';
+      $to = 'info@olymphys.fr';
+      $sujet="Connexion d'un nouvel utilisateur";
+      $user=$event->getUser;
+      $body = "L'utilisateur ".$user->getUsername()." a terminé son inscription";
+      $this->notificator->send($from, $to, $sujet, $body);
    }
 
 }

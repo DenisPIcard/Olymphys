@@ -63,7 +63,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 class SecretariatController extends Controller 
 {
 	/**
-	* @Security("has_role('ROLE_SUPER_ADMIN')")
+	* @Security("is_granted('ROLE_SUPER_ADMIN')")
          * 
          * @Route("/secretariat/accueil", name="secretariat_accueil")
          * 
@@ -77,7 +77,7 @@ class SecretariatController extends Controller
         }             
              
 	/**
-	* @Security("has_role('ROLE_SUPER_ADMIN')")
+	* @Security("is_granted('ROLE_SUPER_ADMIN')")
          * 
          * @Route("/secretariat/accueil_jury", name="secretariat_accueil_jury")
          * 
@@ -112,7 +112,7 @@ class SecretariatController extends Controller
 	}
 
         /**
-	* @Security("has_role('ROLE_SUPER_ADMIN')")
+	* @Security("is_granted('ROLE_SUPER_ADMIN')")
          * 
          * @Route("/secretariat/edition_maj", name="secretariat_edition_maj")
          * 
@@ -138,7 +138,7 @@ class SecretariatController extends Controller
         }       
         
         /**
-	* @Security("has_role('ROLE_SUPER_ADMIN')")
+	* @Security("is_granted('ROLE_SUPER_ADMIN')")
          * 
          * @Route("/secretariat/charge_equipe1", name="secretariat_charge_equipe1")
          * 
@@ -207,7 +207,7 @@ class SecretariatController extends Controller
         }       
         
         /**
-	* @Security("has_role('ROLE_SUPER_ADMIN')")
+	* @Security("is_granted('ROLE_SUPER_ADMIN')")
          * 
          * @Route("/secretariat/charge_equipe2", name="secretariat_charge_equipe2")
          * 
@@ -275,7 +275,7 @@ class SecretariatController extends Controller
         }       
         
         /**
-	* @Security("has_role('ROLE_SUPER_ADMIN')")
+	* @Security("is_granted('ROLE_SUPER_ADMIN')")
          * 
          * @Route("/secretariat/charge_eleves", name="secretariat_charge_eleves")
          * 
@@ -325,7 +325,7 @@ class SecretariatController extends Controller
         }
  
        /**
-	* @Security("has_role('ROLE_SUPER_ADMIN')")
+	* @Security("is_granted('ROLE_SUPER_ADMIN')")
          * 
          * @Route("/secretariat/charge_jures", name="secretariat_charge_jures")
          * 
@@ -382,7 +382,7 @@ class SecretariatController extends Controller
         }
         
                /**
-	* @Security("has_role('ROLE_SUPER_ADMIN')")
+	* @Security("is_granted('ROLE_SUPER_ADMIN')")
          * 
          * @Route("/secretariat/charge_prix", name="secretariat_charge_prix")
          * 
@@ -432,7 +432,7 @@ class SecretariatController extends Controller
         }
         
 	/**
-	* @Security("has_role('ROLE_SUPER_ADMIN')")
+	* @Security("is_granted('ROLE_SUPER_ADMIN')")
          * 
          * @Route("/secretariat/vueglobale", name="secretariat_vueglobale")
          * 
@@ -504,7 +504,7 @@ class SecretariatController extends Controller
 	}
 	
 	/**
-	* @Security("has_role('ROLE_SUPER_ADMIN')")
+	* @Security("is_granted('ROLE_SUPER_ADMIN')")
          * 
          * @Route("/secretariat/classement", name="secretariat_classement")
          * 
@@ -582,7 +582,7 @@ class SecretariatController extends Controller
 	}
 	
 	/**
-	* @Security("has_role('ROLE_SUPER_ADMIN')")
+	* @Security("is_granted('ROLE_SUPER_ADMIN')")
          * 
          * @Route("/secretariat/lesprix", name="secretariat_lesprix")
          * 
@@ -666,7 +666,7 @@ class SecretariatController extends Controller
 	}
 
   	/**
-	* @Security("has_role('ROLE_SUPER_ADMIN')")
+	* @Security("is_granted('ROLE_SUPER_ADMIN')")
         * 
         * @Route("/secretariat/construire_palmares/{niveau}", name="secretariat_construire_palmares", requirements={"niveau"="\d{1}"})
         * 
@@ -720,7 +720,7 @@ class SecretariatController extends Controller
 	      
         
 	/**
-	* @Security("has_role('ROLE_SUPER_ADMIN')")
+	* @Security("is_granted('ROLE_SUPER_ADMIN')")
         * 
         * @Route("/secretariat/modifier_prix/{id_prix}", name="secretariat_modifier_prix", requirements={"id_prix"="\d{1}|\d{2}"})
 	*/
@@ -776,7 +776,7 @@ class SecretariatController extends Controller
 	}
 	
 	/**
-	* @Security("has_role('ROLE_SUPER_ADMIN')")
+	* @Security("is_granted('ROLE_SUPER_ADMIN')")
          * 
          * @Route("/secretariat/palmares", name="secretariat_palmares")
          * 
@@ -830,7 +830,7 @@ class SecretariatController extends Controller
 	}
 	
 	/**
-	* @Security("has_role('ROLE_SUPER_ADMIN')")
+	* @Security("is_granted('ROLE_SUPER_ADMIN')")
          * 
          * @Route("/secretariat/modifier_rang/{id_equipe}", name="secretariat_modifier_rang", requirements={"id_equipe"="\d{1}|\d{2}"}))
          * 
@@ -904,7 +904,7 @@ class SecretariatController extends Controller
 
 	
 	/**
-	* @Security("has_role('ROLE_SUPER_ADMIN')")
+	* @Security("is_granted('ROLE_SUPER_ADMIN')")
          * 
          * @Route("/secretariat/palmares_ajuste", name="secretariat_palmares_ajuste")
          * 
@@ -957,7 +957,7 @@ class SecretariatController extends Controller
 	}
 	
 	/**
-	* @Security("has_role('ROLE_SUPER_ADMIN')")
+	* @Security("is_granted('ROLE_SUPER_ADMIN')")
          * 
          * @Route("/secretariat/palmares_definitif", name="secretariat_palmares_definitif")
          * 
@@ -1032,7 +1032,7 @@ class SecretariatController extends Controller
 	}
 	
 	/**
-	* @Security("has_role('ROLE_SUPER_ADMIN')")
+	* @Security("is_granted('ROLE_SUPER_ADMIN')")
          * 
          * @Route("/secretariat/mise_a_zero", name="secretariat_mise_a_zero")
          * 
@@ -1074,9 +1074,9 @@ class SecretariatController extends Controller
 	}
 	
 	/**
-	* @Security("has_role('ROLE_SUPER_ADMIN')")
+	* @Security("is_granted('ROLE_SUPER_ADMIN')")
          * 
-         * @Route("/secretariat/attrib_prix/{niveau}", name="secretariat_attrib_prix", requirements={"niveau"="\d{1}"}))
+         * @Route("/secretariat/attrib_prix/{niveau}", name="secretariat_attrib_prix", requirements={"niveau"="\d{1}"})
          * 
 	*/
         public function attrib_prix(Request $request, $niveau)
@@ -1217,7 +1217,7 @@ class SecretariatController extends Controller
 	}
 
 	/**
-	* @Security("has_role('ROLE_SUPER_ADMIN')")
+	* @Security("is_granted('ROLE_SUPER_ADMIN')")
          * 
          * @Route("/secretariat/edition_prix", name="secretariat_edition_prix")
          * 
@@ -1234,7 +1234,7 @@ class SecretariatController extends Controller
 	}
 	
 	/**
-	* @Security("has_role('ROLE_SUPER_ADMIN')")
+	* @Security("is_granted('ROLE_SUPER_ADMIN')")
          * 
          * @Route("/secretariat/edition_visites", name="secretariat_edition_visites")
          * 
@@ -1252,7 +1252,7 @@ class SecretariatController extends Controller
 		
 	
 	/**
-	* @Security("has_role('ROLE_SUPER_ADMIN')")
+	* @Security("is_granted('ROLE_SUPER_ADMIN')")
          * 
          * @Route("/secretariat/attrib_cadeaux/{id_equipe}", name="secretariat_attrib_cadeaux",  requirements={"id_equipe"="\d{1}|\d{2}"}))
          * 
@@ -1349,7 +1349,7 @@ class SecretariatController extends Controller
 	}
 	
 	/**
-	* @Security("has_role('ROLE_SUPER_ADMIN')")
+	* @Security("is_granted('ROLE_SUPER_ADMIN')")
          * 
          * @Route("/secretariat/lescadeaux/{compteur}", name="secretariat_lescadeaux", requirements={"compteur"="\d{1}|\d{2}"}))
          * 
@@ -1509,7 +1509,7 @@ class SecretariatController extends Controller
 	}
 	
 	/**
-	* @Security("has_role('ROLE_SUPER_ADMIN')")
+	* @Security("is_granted('ROLE_SUPER_ADMIN')")
          * 
          * @Route("/secretariat/edition_cadeaux", name="secretariat_edition_cadeaux")
          * 
@@ -1526,7 +1526,7 @@ class SecretariatController extends Controller
 	}
 	
 	/**
-	* @Security("has_role('ROLE_SUPER_ADMIN')")
+	* @Security("is_granted('ROLE_SUPER_ADMIN')")
          * 
          * @Route("/secretariat/edition_phrases", name="secretariat_edition_phrases")
          * 
@@ -1543,7 +1543,7 @@ class SecretariatController extends Controller
 	}
 	
 	/**
-	* @Security("has_role('ROLE_SUPER_ADMIN')")
+	* @Security("is_granted('ROLE_SUPER_ADMIN')")
          * 
          * @Route("/secretariat/palmares_complet", name="secretariat_edition_palmares_complet")
          * 
@@ -1575,7 +1575,7 @@ class SecretariatController extends Controller
 	}
 	
 	/**
-	* @Security("has_role('ROLE_SUPER_ADMIN')")
+	* @Security("is_granted('ROLE_SUPER_ADMIN')")
          * 
          * @Route("/secretariat/excel_site", name="secretariat_tableau_excel_palmares_site")
          * 
@@ -1819,7 +1819,7 @@ class SecretariatController extends Controller
 	}
 	
 	/**
-	* @Security("has_role('ROLE_SUPER_ADMIN')")
+	* @Security("is_granted('ROLE_SUPER_ADMIN')")
          * 
          * @Route("/secretariat/excel_jury", name="secretariat_tableau_excel_palmares_jury")
          * 
