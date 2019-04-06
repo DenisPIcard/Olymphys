@@ -13,11 +13,12 @@ class EnvoiMails
     }
 
 
-  public function send($from, $to, $sujet, $body, $attachments = [])
+  public function send($from, $to, $cc='', $sujet, $body, $attachments = [])
       {
        $message = new \Swift_Message($sujet, $body);
        $message->setFrom($from);
        $message->setTo($to);
+       $message->setCc($cc);
        if (count($attachments) > 0) {
             foreach ($attachments as $file) {
                 switch ($file) {

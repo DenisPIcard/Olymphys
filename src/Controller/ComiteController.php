@@ -143,7 +143,7 @@ class ComiteController extends AbstractController
             for ($i=1;$i<4;$i++) {
                $fichnouv=$form['Fichier'.$i]->getData(); 
                if (null !== $fichnouv) {
-                    $fileName = $nom.'Piece'.$i.'.'.$fichnouv->guessExtension();
+                    $fileName = $nom.'_'.'Piece'.$i.'_'.$auj.'.'.$fichnouv->guessExtension();
                     try {
                         $fichnouv->move(
                         $this->getParameter('frais_directory'),
@@ -160,20 +160,16 @@ class ComiteController extends AbstractController
             $finder = new Finder();          
             $finder->files()->in([__DIR__,$chemin])->name($reg)->date('> now - 5 hours');
             $attachments=iterator_to_array($finder);
-            //$attachments[]=$fichnouv;
             $sujet='Envoi de frais OdPF';
             $body = $this->renderView('emails/frais.html.twig',['nom' => $nom]);
             $from=$mailuser;
-            $to='webmestre2@olymphys.fr';
-            $mail->send($from, $to, $sujet, $body, $attachments);
+            $to='denis.picard@orange.fr';
+            $cc='info@olymphys.fr';
+            $mail->send($from, $to, $cc, $sujet, $body, $attachments);
 
              return $this->redirectToroute('comite_accueil' );
         }
         $content = $this->get('templating')->render('comite/envoi_frais.html.twig', ['user'=>$user, 'form'=>$form->createView()]);	
         return new Response($content);
-    }
-        
-    public function generateUniqueFileName() {
-        return md5(uniqid());
-    }
+        }
 }
