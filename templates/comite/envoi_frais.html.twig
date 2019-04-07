@@ -14,7 +14,7 @@
     {{ form_start(form) }}
     {% for i in 1..3 %}
           {{ form_widget(attribute(form, 'Fichier'~i)) }} 
-    {{ form(form) }}
+    
     {% endfor %}
     {{ form_rest(form) }}
 

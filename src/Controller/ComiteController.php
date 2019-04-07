@@ -74,7 +74,7 @@ class ComiteController extends AbstractController
      * @Security("is_granted('ROLE_COMITE')")
      * @Route("comite/frais/{nblig}", name="comite_frais", requirements={"nblig"="\d{1}|\d{2}"})
      */
-     public function frais(Request $request, ExcelCreate $create, $nblig)
+     public function frais(Request $request, ExcelCreate $create, $nblig, $data=[])
         {
             $user=$this->getUser();
             $repositoryEdition=$this
@@ -88,11 +88,20 @@ class ComiteController extends AbstractController
             $task=['nblig' => $nblig];
             
             $formBuilder = $this->createFormBuilder($task);
-
+            
             for ($i=1 ; $i<=$nblig ; $i++) {
-                $formBuilder  ->add('date'.$i, DateType::class, [ 'widget' => 'single_text'])
+                if ([] !== $data) {
+                    $date=$data['date'.$i];
+                    $depl=$data['deplacement'.$i];
+                }
+                else {
+                    $date='now';
+                    $depl='0';
+                }
+                
+                $formBuilder  ->add('date'.$i, DateType::class, ['widget' => 'single_text'])
                         ->add('designation'.$i, TextType::class)
-                        ->add('deplacement'.$i, MoneyType::class, ['required'=>false])
+                        ->add('deplacement'.$i, MoneyType::class, ['data'=>$depl, 'required'=>false])
                         ->add('repas'.$i, MoneyType::class, ['required'=>false])
                         ->add('fournitures'.$i, MoneyType::class, ['required'=>false])
                         ->add('poste'.$i, MoneyType::class, ['required'=>false])
@@ -113,7 +122,7 @@ class ComiteController extends AbstractController
                 
                 $fichier = $create->excelfrais($user, $edition, $data, $nblig);
 
-                 return $this->redirectToroute('comite_accueil' );
+                 return $this->redirectToroute('comite_frais', ['nblig' => $nblig, 'data'=>$data] );
                 }
             $content = $this->get('templating')->render('comite/frais.html.twig', [ 'edition' => $edition, 'nblig'=>$nblig,'form'=>$form->createView()]);		
             return new Response($content);
@@ -163,7 +172,7 @@ class ComiteController extends AbstractController
             $sujet='Envoi de frais OdPF';
             $body = $this->renderView('emails/frais.html.twig',['nom' => $nom]);
             $from=$mailuser;
-            $to='denis.picard@orange.fr';
+            $to='denis.picard48@orange.fr';
             $cc='info@olymphys.fr';
             $mail->send($from, $to, $cc, $sujet, $body, $attachments);
 

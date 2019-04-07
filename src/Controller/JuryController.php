@@ -22,7 +22,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextaeraType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller ;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController ;
 use Symfony\Component\HttpFoundation\Request ; 
 use Symfony\Component\HttpFoundation\RedirectResponse ;
 use Symfony\Component\HttpFoundation\Response ;
@@ -31,7 +31,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Routing\Annotation\Route;
 
-class JuryController extends Controller
+class JuryController extends AbstractController
 {
     /**
      * @Route("cyberjury/accueil", name="cyberjury_accueil")

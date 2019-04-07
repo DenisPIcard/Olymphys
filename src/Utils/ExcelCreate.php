@@ -264,15 +264,15 @@ class ExcelCreate
         
                 
                 $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
-                //$writer = new Xls;
+                
+                $writer->save('php://output');
+                
                 $adr='./Frais_comite/';
                 $fichier=$adr.$nomfic;
 
                 $writer->save($fichier);
                 
-                //$session->set('fichier',$fichier);
                 
-                $writer->save('php://output');
                 
                 return $fichier ;
         }
