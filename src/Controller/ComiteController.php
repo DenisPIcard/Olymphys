@@ -117,7 +117,7 @@ class ComiteController extends AbstractController
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
-                $data=$form->getData();
+                    $data=$form->getData();
                 $nblig=$data['nblig'];
                 
                 $fichier = $create->excelfrais($user, $edition, $data, $nblig);
